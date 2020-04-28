@@ -1472,7 +1472,10 @@ class rpSBML:
         self._checklibSBML(comp.setMetaId(meta_id), 'set the meta_id for the compartment')
         ############################ MIRIAM ############################
         comp.setAnnotation(libsbml.XMLNode.convertStringToXMLNode(self._defaultMIRIAMAnnot(meta_id)))
+        # print(libsbml.XMLNode.convertXMLNodeToString(comp.getAnnotation()))
         self.addUpdateMIRIAM(comp, 'compartment', compXref, meta_id)
+        # print(libsbml.XMLNode.convertXMLNodeToString(comp.getAnnotation()))
+        # print()
 
 
     ## Create libSBML unit definition
