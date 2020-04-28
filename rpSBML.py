@@ -35,7 +35,7 @@ class rpSBML:
     def __init__(self, modelName, document=None, path=None):
         self.logger = logging.getLogger(__name__)
         #WARNING: change this to reflect the different debugging levels
-        self.logger.info('Started instance of rpSBML')
+#        self.logger.info('Started instance of rpSBML')
         #self.logger.setLevel(logging.INFO)
         self.modelName = modelName
         self.document = document
@@ -44,7 +44,7 @@ class rpSBML:
         else:
             self.model = self.document.getModel()
         self.path = path
-        #More complete with 
+        #More complete with
         #self.miriam_header = {'compartment': {'go': 'go/GO:', 'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'mnx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/', 'uniprot': 'uniprot/'}, 'species': {'mnx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
         #self.header_miriam = {'compartment': {'go': 'go', 'metanetx.compartment': 'mnx', 'bigg.compartment': 'bigg', 'seed': 'seed', 'name': 'name'}, 'reaction': {'metanetx.reaction': 'mnx', 'rhea': 'rhea', 'reactome': 'reactome', 'bigg.reaction': 'bigg', 'sabiork.reaction': 'sabiork', 'ec-code': 'ec', 'biocyc': 'biocyc', 'lipidmaps': 'lipidmaps', 'uniprot': 'uniprot'}, 'species': {'metanetx.chemical': 'mnx', 'chebi': 'chebi', 'bigg.metabolite': 'bigg', 'hmdb': 'hmdb', 'kegg.compound': 'kegg_c', 'kegg.drug': 'kegg_d', 'biocyc': 'biocyc', 'seed.compound': 'seed', 'metacyc.compound': 'metacyc', 'sabiork.compound': 'sabiork', 'reactome': 'reactome'}}
         #removed GO
@@ -52,7 +52,7 @@ class rpSBML:
         self.header_miriam = {'compartment': {'metanetx.compartment': 'mnx', 'bigg.compartment': 'bigg', 'seed': 'seed', 'name': 'name'}, 'reaction': {'metanetx.reaction': 'mnx', 'rhea': 'rhea', 'reactome': 'reactome', 'bigg.reaction': 'bigg', 'sabiork.reaction': 'sabiork', 'ec-code': 'ec', 'biocyc': 'biocyc', 'lipidmaps': 'lipidmaps', 'uniprot': 'uniprot'}, 'species': {'pubchem.compound': 'pubchem', 'metanetx.chemical': 'mnx', 'chebi': 'chebi', 'bigg.metabolite': 'bigg', 'hmdb': 'hmdb', 'kegg.compound': 'kegg_c', 'kegg.drug': 'kegg_d', 'biocyc': 'biocyc', 'seed.compound': 'seed', 'metacyc.compound': 'metacyc', 'sabiork.compound': 'sabiork', 'reactome': 'reactome'}}
 
     #######################################################################
-    ############################# PRIVATE FUNCTIONS ####################### 
+    ############################# PRIVATE FUNCTIONS #######################
     #######################################################################
 
     ## Check the libSBML calls
@@ -112,7 +112,7 @@ class rpSBML:
         return self._nameToSbmlId(md5(str(name).encode('utf-8')).hexdigest())
 
 
-    ## compare two dictionarry of lists and return the 
+    ## compare two dictionarry of lists and return the
     #
     def _compareXref(self, current, toadd):
         toadd = copy.deepcopy(toadd)
@@ -327,14 +327,14 @@ class rpSBML:
             else:
                 self.logger.warning('Cannot return MIRIAM attribute')
                 pass
-        #add or ignore 
+        #add or ignore
         toadd = self._compareXref(inside, xref)
         for database_id in toadd:
             for species_id in toadd[database_id]:
                 #not sure how to avoid having it that way
                 if database_id in self.miriam_header[type_param]:
                     try:
-                        #determine if the dictionnaries 
+                        #determine if the dictionnaries
                         annotation = '''<annotation>
     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
     <rdf:Description rdf:about="#tmp">
@@ -376,7 +376,7 @@ class rpSBML:
                 self._checklibSBML(ori_miriam_annot.getChild('RDF').getChild('Description').getChild('is').addChild(miriam_annot), 'Adding annotation to the brsynth annotation')
         return True
 
-    ## Generate in-house json output of the rpSBML model including the annotations for the BRSynth and MIRIAM 
+    ## Generate in-house json output of the rpSBML model including the annotations for the BRSynth and MIRIAM
     #
     #
     def genJSON(self, pathway_id='rp_pathway'):
@@ -411,7 +411,7 @@ class rpSBML:
     #####################################################################
 
 
-    ## Open an SBML using libSBML 
+    ## Open an SBML using libSBML
     #
     # Situation where an SBML is passed to add the heterologous pathway
     #
@@ -457,7 +457,7 @@ class rpSBML:
     ## Export a libSBML model to file
     #
     # Export the libSBML model to an SBML file
-    # 
+    #
     # @param model libSBML model to be saved to file
     # @param model_id model id, note that the name of the file will be that
     # @param path Non required parameter that will define the path where the model will be saved
@@ -505,7 +505,7 @@ class rpSBML:
                 self.logger.warning('The specified objective id ('+str(objective_id)+') already exists')
                 return objective_id
             if not set([i.getReaction() for i in objective.getListOfFluxObjectives()])-set(reactions):
-                #TODO: consider setting changing the name of the objective 
+                #TODO: consider setting changing the name of the objective
                 self.logger.warning('The specified objective id ('+str(objective_id)+') has another objective with the same reactions: '+str(objective.getId()))
                 return objective.getId()
         #If cannot find a valid objective create it
@@ -548,7 +548,7 @@ class rpSBML:
         return toRet
 
 
-    ## Return the species annitations 
+    ## Return the species annitations
     #
     #
     def readRPspecies(self, pathway_id='rp_pathway'):
@@ -798,7 +798,7 @@ class rpSBML:
     #########################################################################
 
 
-    ## Really used to complete the monocomponent reactions   
+    ## Really used to complete the monocomponent reactions
     #{'rule_id': 'RR-01-503dbb54cf91-49-F', 'right': {'TARGET_0000000001': 1}, 'left': {'MNXM2': 1, 'MNXM376': 1}, 'pathway_id': 1, 'step': 1, 'sub_step': 1, 'transformation_id': 'TRS_0_0_17'}
     #
     def outPathsDict(self, pathway_id='rp_pathway'):
@@ -829,10 +829,10 @@ class rpSBML:
 
     ## Find out if two libSBML Species or Reactions come from the same species
     #
-    # Compare two dictionnaries and if any of the values of any of the same keys are the same then the 
+    # Compare two dictionnaries and if any of the values of any of the same keys are the same then the
     # function return True, and if none are found then return False
     #
-    # @param libSBML Annotation object for one of the 
+    # @param libSBML Annotation object for one of the
     # @return Boolean to determine if they are the same
     def compareBRSYNTHAnnotations(self, source_annot, target_annot):
         source_dict = self.readBRSYNTHAnnotation(source_annot)
@@ -856,17 +856,17 @@ class rpSBML:
 
     ## Find out if two libSBML Species or Reactions come from the same species
     #
-    # Compare two dictionnaries and if any of the values of any of the same keys are the same then the 
+    # Compare two dictionnaries and if any of the values of any of the same keys are the same then the
     # function return True, and if none are found then return False
     #
-    # @param libSBML Annotation object for one of the 
+    # @param libSBML Annotation object for one of the
     # @return Boolean to determine if they are the same
     def compareMIRIAMAnnotations(self, source_annot, target_annot):
         source_dict = self.readMIRIAMAnnotation(source_annot)
         target_dict = self.readMIRIAMAnnotation(target_annot)
         #list the common keys between the two
         for com_key in set(list(source_dict.keys()))-(set(list(source_dict.keys()))-set(list(target_dict.keys()))):
-            #compare the keys and if same is non-empty means that there 
+            #compare the keys and if same is non-empty means that there
             #are at least one instance of the key that is the same
             if bool(set(source_dict[com_key]) & set(target_dict[com_key])):
                 return True
@@ -880,7 +880,7 @@ class rpSBML:
         source_dict = self.readMIRIAMAnnotation(source_annot)
         #list the common keys between the two
         for com_key in set(list(source_dict.keys()))-(set(list(source_dict.keys()))-set(list(target_dict.keys()))):
-            #compare the keys and if same is non-empty means that there 
+            #compare the keys and if same is non-empty means that there
             #are at least one instance of the key that is the same
             if bool(set(source_dict[com_key]) & set(target_dict[com_key])):
                 return True
@@ -893,7 +893,7 @@ class rpSBML:
     def compareAnnotations_dict_dict(self, source_dict, target_dict):
         #list the common keys between the two
         for com_key in set(list(source_dict.keys()))-(set(list(source_dict.keys()))-set(list(target_dict.keys()))):
-            #compare the keys and if same is non-empty means that there 
+            #compare the keys and if same is non-empty means that there
             #are at least one instance of the key that is the same
             if bool(set(source_dict[com_key]) & set(target_dict[com_key])):
                 return True
@@ -1021,14 +1021,14 @@ class rpSBML:
 
 
     ##### ADD SOURCE FROM ORPHAN #####
-    #if the heterologous pathway from the self.model contains a sink molecule that is not included in the 
+    #if the heterologous pathway from the self.model contains a sink molecule that is not included in the
     # original model (we call orhpan species) then add another reaction that creates it
     #TODO: that transports the reactions that creates the species in the
     # extracellular matrix and another reaction that transports it from the extracellular matrix to the cytoplasm
     #TODO: does not work
-    def fillOrphan(self, 
-            rpsbml=None, 
-            pathway_id='rp_pathway', 
+    def fillOrphan(self,
+            rpsbml=None,
+            pathway_id='rp_pathway',
             compartment_id='MNXC3',
             upper_flux_bound=999999,
             lower_flux_bound=10):
@@ -1058,7 +1058,7 @@ class rpSBML:
                               'transformation_id': None,
                               'rule_score': None,
                               'mnxr': None}
-                #create the model in the 
+                #create the model in the
                 if rpsbml==None:
                     self.createReaction('create_'+species_id,
                                         upper_flux_bound,
@@ -1079,7 +1079,7 @@ class rpSBML:
     # The source model has to have both the GROUPS and FBC packages enabled in its SBML. The course must have a groups
     #called rp_pathway. If not use the readSBML() function to create a model
     # We add the reactions and species from the rpsbml to the target_model
-    # 
+    #
     # @param target_model input libsbml model object where we will add the reactions and species from self.model
     # @param pathway_id String default is rp_pathway, name of the pathway id of the groups object
     # @param addOrphanSpecies Boolean Default False
@@ -1449,14 +1449,14 @@ class rpSBML:
         self._checklibSBML(self.model.setSubstanceUnits('mole'), 'setting model substance unit')
 
 
-    ## Create libSBML compartment 
+    ## Create libSBML compartment
     #
     # cytoplasm compartment TODO: consider seperating it in another function if another compartment is to be created
     #
     # @param model libSBML model object to add the compartment
     # @param size Set the compartement size
     # @return boolean Execution success
-    #TODO: set the compName as None by default. To do that you need to regenerate the compXref to 
+    #TODO: set the compName as None by default. To do that you need to regenerate the compXref to
     #use MNX ids as keys instead of the string names
     def createCompartment(self, size, compId, compName, compXref, meta_id=None):
         comp = self.model.createCompartment()
@@ -1501,7 +1501,7 @@ class rpSBML:
     # @param unitDef libSBML unit definition
     # @param libsmlunit libSBML unit parameter
     # @param exponent Value for the exponent (ex 10^5 mol/sec)
-    # @param scale Value for the scale 
+    # @param scale Value for the scale
     # @param multiplier Value for the multiplie
     # @return Unit
     def createUnit(self, unitDef, libsbmlunit, exponent, scale, multiplier):
@@ -1522,9 +1522,9 @@ class rpSBML:
     # @param unit libSBML unit parameter
     # @param meta_id String Optional parameter for SBML meta_id
     # @return libSBML parameter object
-    def createReturnFluxParameter(self, 
-            value, 
-            unit='mmol_per_gDW_per_hr', 
+    def createReturnFluxParameter(self,
+            value,
+            unit='mmol_per_gDW_per_hr',
             is_constant=True,
             parameter_id=None,
             meta_id=None):
@@ -1665,7 +1665,7 @@ class rpSBML:
     # @param charge Optional parameter describing the charge of the molecule of interest
     # @param chemForm Optional chemical formulae of the substrate (not SMILES or InChI)
     # @param dG Optinal Thermodynamics constant for this species
-    # @param dG_uncert Optional Uncertainty associated with the thermodynamics of the reaction 
+    # @param dG_uncert Optional Uncertainty associated with the thermodynamics of the reaction
     def createSpecies(self,
             species_id,
             compartment_id,
@@ -1684,7 +1684,7 @@ class rpSBML:
         ##### FBC #####
         spe_fbc = spe.getPlugin('fbc')
         self._checklibSBML(spe_fbc, 'creating this species as an instance of FBC')
-        #spe_fbc.setCharge(charge) #### These are not required for FBA 
+        #spe_fbc.setCharge(charge) #### These are not required for FBA
         #spe_fbc.setChemicalFormula(chemForm) #### These are not required for FBA
         #if compartment_id:
         self._checklibSBML(spe.setCompartment(compartment_id), 'set species spe compartment')
@@ -1732,7 +1732,7 @@ class rpSBML:
             else:
                 newM = hetero_group.createMember()
                 self._checklibSBML(newM, 'Creating a new groups member')
-                self._checklibSBML(newM.setIdRef(str(species_id)+'__64__'+str(compartment_id)), 'Setting name to the groups member') 
+                self._checklibSBML(newM.setIdRef(str(species_id)+'__64__'+str(compartment_id)), 'Setting name to the groups member')
 
 
     ## Create libSBML pathway
@@ -1764,7 +1764,7 @@ class rpSBML:
     #
     # @param model libSBML model to add the unit definition
     # @param reac libSBML reaction object
-    # @param step_id The step for the number of 
+    # @param step_id The step for the number of
     # @return libSBML gene object
     def createGene(self, reac, step_id, meta_id=None):
         #TODO: pass this function to Pablo for him to fill with parameters that are appropriate for his needs
@@ -1782,7 +1782,7 @@ class rpSBML:
         #gp.setAnnotation(self._defaultBothAnnot(meta_id))
 
 
-    ## Create libSBML flux objective 
+    ## Create libSBML flux objective
     # WARNING DEPRECATED -- use the createMultiFluxObj() with lists of size one to define an objective function
     # with a single reaction
     # Using the FBC package one can add the FBA flux objective directly to the model. This function sets a particular reaction as objective with maximization or minimization objectives
@@ -1790,7 +1790,7 @@ class rpSBML:
     # @param model libSBML model to add the unit definition
     # @param fluxobj_id The id given to this particular objective
     # @param reactionName The name or id of the reaction that we are setting a flux objective
-    # @param coefficient FBA coefficient 
+    # @param coefficient FBA coefficient
     # @param isMax Boolean to determine if we are maximizing or minimizing the objective
     # @param meta_id Set the meta_id
     # @return Boolean exit code
@@ -1814,14 +1814,14 @@ class rpSBML:
         target_flux_obj.setAnnotation(self._defaultBRSynthAnnot(meta_id))
 
 
-    ## Create libSBML flux objective 
+    ## Create libSBML flux objective
     #
     # Using the FBC package one can add the FBA flux objective directly to the model. This function sets a particular reaction as objective with maximization or minimization objectives
     #
     # @param model libSBML model to add the unit definition
     # @param fluxobj_id The id given to this particular objective
     # @param reactionName The name or id of the reaction that we are setting a flux objective
-    # @param coefficient FBA coefficient 
+    # @param coefficient FBA coefficient
     # @param isMax Boolean to determine if we are maximizing or minimizing the objective
     # @param meta_id Set the meta_id
     # @return Boolean exit code
@@ -1853,17 +1853,17 @@ class rpSBML:
     ##############################################################################################
 
 
-    ## Generate a generic model 
+    ## Generate a generic model
     #
     # Since we will be using the same type of parameters for the RetroPath model, this function
     # generates a libSBML model with parameters that will be mostly used
     #
     #
     #
-    def genericModel(self, 
-            modelName, 
-            model_id, 
-            compXref, 
+    def genericModel(self,
+            modelName,
+            model_id,
+            compXref,
             compartment_id,
             upper_flux_bound=999999,
             lower_flux_bound=0):
@@ -1881,7 +1881,7 @@ class rpSBML:
         upBound = self.createReturnFluxParameter(upper_flux_bound)
         lowBound = self.createReturnFluxParameter(lower_flux_bound)
         #compartment
-        #TODO: create a new compartment 
+        #TODO: create a new compartment
         #self.createCompartment(1, 'MNXC3', 'cytoplasm', compXref)
         #try to recover the name from the Xref
         try:
@@ -1889,4 +1889,3 @@ class rpSBML:
         except KeyError:
             name = compartment_id+'_name'
         self.createCompartment(1, compartment_id, name, compXref)
-
