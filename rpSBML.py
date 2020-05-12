@@ -481,7 +481,10 @@ class rpSBML:
         ########## check and create folder #####
         if not os.path.exists(p):
             os.makedirs(p)
-        libsbml.writeSBMLToFile(self.document, p+'/'+str(self.modelName)+'_sbml.xml')
+        ext = ''
+        if not str(self.modelName).endswith('_sbml'):
+            ext = '_sbml'
+        libsbml.writeSBMLToFile(self.document, p+'/'+str(self.modelName)+ext+'.xml')
         return True
 
 
