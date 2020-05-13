@@ -487,6 +487,9 @@ class rpSBML:
         libsbml.writeSBMLToFile(self.document, p+'/'+str(self.modelName)+ext+'.xml')
         return True
 
+    def writeSBMLToFile(self, filename):
+        libsbml.writeSBMLToFile(self.document, filename)
+
 
     #####################################################################
     ########################## FindCreate ###############################
