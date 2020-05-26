@@ -51,6 +51,54 @@ class rpSBML:
         self.miriam_header = {'compartment': {'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'mnx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/', 'uniprot': 'uniprot/'}, 'species': {'pubchem': 'pubchem.compound/','mnx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
         self.header_miriam = {'compartment': {'metanetx.compartment': 'mnx', 'bigg.compartment': 'bigg', 'seed': 'seed', 'name': 'name'}, 'reaction': {'metanetx.reaction': 'mnx', 'rhea': 'rhea', 'reactome': 'reactome', 'bigg.reaction': 'bigg', 'sabiork.reaction': 'sabiork', 'ec-code': 'ec', 'biocyc': 'biocyc', 'lipidmaps': 'lipidmaps', 'uniprot': 'uniprot'}, 'species': {'pubchem.compound': 'pubchem', 'metanetx.chemical': 'mnx', 'chebi': 'chebi', 'bigg.metabolite': 'bigg', 'hmdb': 'hmdb', 'kegg.compound': 'kegg_c', 'kegg.drug': 'kegg_d', 'biocyc': 'biocyc', 'seed.compound': 'seed', 'metacyc.compound': 'metacyc', 'sabiork.compound': 'sabiork', 'reactome': 'reactome'}}
 
+    ## Put species in a dictionnary for further comparison
+    #
+    # @param pathway rpSBML object
+    # @return dict object with species in it
+    @staticmethod
+    def _normalize_pathway(pathway):
+
+        model = pathway.document.getModel()
+
+        # Get Reactions
+        reactions = {}
+        for pathway_id in pathway.readRPpathwayIDs('rp_pathway'):
+            object = model.getReaction(pathway_id)
+            reactions[pathway_id] = rpSBML.readBRSYNTHAnnotation(object.getAnnotation())
+
+        # Get Species
+        species = {}
+        for specie in model.getListOfSpecies():
+            species[specie.getId()] = rpSBML.readBRSYNTHAnnotation(specie.getAnnotation())
+
+        # Pathways dict
+        norm_pathway = {}
+
+        # Select Reactions already loaded (w/o Sink one then)
+        for reaction in reactions:
+
+            norm_pathway[reactions[reaction]['smiles']] = {}
+
+            # Fill the reactants in a dedicated dict
+            d_reactants = {}
+            for reactant in model.getReaction(reaction).getListOfReactants():#inchikey / inchi sinon miriam sinon IDs
+                # Il faut enregistrer toutes les infos (inchi, miriam, ids)
+                d_reactants[species[reactant.getSpecies()]['inchikey']] = reactant.getStoichiometry()
+            # Put all reactants dicts in reactions dict for which smiles notations are the keys
+            norm_pathway[reactions[reaction]['smiles']]['Reactants'] = d_reactants
+
+            # Fill the products in a dedicated dict
+            d_products = {}
+            for product in model.getReaction(reaction).getListOfProducts():
+                d_products[species[product.getSpecies()]['inchikey']] = product.getStoichiometry()
+            # Put all products dicts in reactions dict for which smiles notations are the keys
+            norm_pathway[reactions[reaction]['smiles']]['Products'] = d_products
+
+        return norm_pathway
+
+    def __eq__(self, other):
+        return rpSBML._normalize_pathway(self) == rpSBML._normalize_pathway(other)
+
     #######################################################################
     ############################# PRIVATE FUNCTIONS #######################
     #######################################################################
@@ -478,6 +526,7 @@ class rpSBML:
                 p = path
         else:
             p = self.path
+
         ########## check and create folder #####
         if not os.path.exists(p):
             os.makedirs(p)
@@ -486,9 +535,6 @@ class rpSBML:
             ext = '_sbml'
         libsbml.writeSBMLToFile(self.document, p+'/'+str(self.modelName)+ext+'.xml')
         return True
-
-    def writeSBMLToFile(self, filename):
-        libsbml.writeSBMLToFile(self.document, filename)
 
 
     #####################################################################
@@ -639,7 +685,8 @@ class rpSBML:
 
     ## Takes for input a libSBML annotatio object and returns a dictionnary of the annotations
     #
-    def readBRSYNTHAnnotation(self, annot):
+    @staticmethod
+    def readBRSYNTHAnnotation(annot):
         toRet = {'dfG_prime_m': {},
                  'dfG_uncert': {},
                  'dfG_prime_o': {},
@@ -659,7 +706,8 @@ class rpSBML:
         for i in range(bag.getNumChildren()):
             ann = bag.getChild(i)
             if ann=='':
-                self.logger.warning('This contains no attributes: '+str(ann.toXMLString()))
+                # self.logger.warning('This contains no attributes: '+str(ann.toXMLString()))
+                print('This contains no attributes: '+str(ann.toXMLString()))
                 continue
             if ann.getName()=='dfG_prime_m' or ann.getName()=='dfG_uncert' or ann.getName()=='dfG_prime_o' or ann.getName()[0:4]=='fba_' or ann.getName()=='flux_value':
                 try:
@@ -667,7 +715,8 @@ class rpSBML:
                             'units': ann.getAttrValue('units'),
                             'value': float(ann.getAttrValue('value'))}
                 except ValueError:
-                    self.logger.warning('Cannot interpret '+str(ann.getName())+': '+str(ann.getAttrValue('value')+' - '+str(ann.getAttrValue('units'))))
+                    # self.logger.warning('Cannot interpret '+str(ann.getName())+': '+str(ann.getAttrValue('value')+' - '+str(ann.getAttrValue('units'))))
+                    print('Cannot interpret '+str(ann.getName())+': '+str(ann.getAttrValue('value')+' - '+str(ann.getAttrValue('units'))))
                     toRet[ann.getName()] = {
                             'units': None,
                             'value': None}
