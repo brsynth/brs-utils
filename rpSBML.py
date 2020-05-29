@@ -44,12 +44,21 @@ class rpSBML:
         else:
             self.model = self.document.getModel()
         self.path = path
+        self.rules_scores = (-1, 0)
         #More complete with
         #self.miriam_header = {'compartment': {'go': 'go/GO:', 'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'mnx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/', 'uniprot': 'uniprot/'}, 'species': {'mnx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
         #self.header_miriam = {'compartment': {'go': 'go', 'metanetx.compartment': 'mnx', 'bigg.compartment': 'bigg', 'seed': 'seed', 'name': 'name'}, 'reaction': {'metanetx.reaction': 'mnx', 'rhea': 'rhea', 'reactome': 'reactome', 'bigg.reaction': 'bigg', 'sabiork.reaction': 'sabiork', 'ec-code': 'ec', 'biocyc': 'biocyc', 'lipidmaps': 'lipidmaps', 'uniprot': 'uniprot'}, 'species': {'metanetx.chemical': 'mnx', 'chebi': 'chebi', 'bigg.metabolite': 'bigg', 'hmdb': 'hmdb', 'kegg.compound': 'kegg_c', 'kegg.drug': 'kegg_d', 'biocyc': 'biocyc', 'seed.compound': 'seed', 'metacyc.compound': 'metacyc', 'sabiork.compound': 'sabiork', 'reactome': 'reactome'}}
         #removed GO
         self.miriam_header = {'compartment': {'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'mnx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/', 'uniprot': 'uniprot/'}, 'species': {'pubchem': 'pubchem.compound/','mnx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
         self.header_miriam = {'compartment': {'metanetx.compartment': 'mnx', 'bigg.compartment': 'bigg', 'seed': 'seed', 'name': 'name'}, 'reaction': {'metanetx.reaction': 'mnx', 'rhea': 'rhea', 'reactome': 'reactome', 'bigg.reaction': 'bigg', 'sabiork.reaction': 'sabiork', 'ec-code': 'ec', 'biocyc': 'biocyc', 'lipidmaps': 'lipidmaps', 'uniprot': 'uniprot'}, 'species': {'pubchem.compound': 'pubchem', 'metanetx.chemical': 'mnx', 'chebi': 'chebi', 'bigg.metabolite': 'bigg', 'hmdb': 'hmdb', 'kegg.compound': 'kegg_c', 'kegg.drug': 'kegg_d', 'biocyc': 'biocyc', 'seed.compound': 'seed', 'metacyc.compound': 'metacyc', 'sabiork.compound': 'sabiork', 'reactome': 'reactome'}}
+
+
+    @staticmethod
+    def _search_key(keys, dict):
+        for key in keys:
+            if key in dict:
+                return key
+
 
     ## Put species in a dictionnary for further comparison
     #
@@ -63,8 +72,8 @@ class rpSBML:
         # Get Reactions
         reactions = {}
         for pathway_id in pathway.readRPpathwayIDs('rp_pathway'):
-            object = model.getReaction(pathway_id)
-            reactions[pathway_id] = rpSBML.readBRSYNTHAnnotation(object.getAnnotation())
+            reaction = model.getReaction(pathway_id)
+            reactions[pathway_id] = rpSBML.readBRSYNTHAnnotation(reaction.getAnnotation())
 
         # Get Species
         species = {}
@@ -72,32 +81,46 @@ class rpSBML:
             species[specie.getId()] = rpSBML.readBRSYNTHAnnotation(specie.getAnnotation())
 
         # Pathways dict
-        norm_pathway = {}
+        d_reactions = {}
 
+        keys = ['inchikey', 'inchi', 'smiles']
         # Select Reactions already loaded (w/o Sink one then)
         for reaction in reactions:
 
-            norm_pathway[reactions[reaction]['smiles']] = {}
+            d_reactions[reactions[reaction]['smiles']] = {}
 
             # Fill the reactants in a dedicated dict
             d_reactants = {}
             for reactant in model.getReaction(reaction).getListOfReactants():#inchikey / inchi sinon miriam sinon IDs
-                # Il faut enregistrer toutes les infos (inchi, miriam, ids)
-                d_reactants[species[reactant.getSpecies()]['inchikey']] = reactant.getStoichiometry()
+                # Il faut enregistrer toutes les infos (inchi, smiles, id)
+                key = rpSBML._search_key(keys, species[reactant.getSpecies()])
+                if key: key = species[reactant.getSpecies()][key]
+                else:
+                    key = reactant.getSpecies()
+                d_reactants[key] = reactant.getStoichiometry()
             # Put all reactants dicts in reactions dict for which smiles notations are the keys
-            norm_pathway[reactions[reaction]['smiles']]['Reactants'] = d_reactants
+            d_reactions[reactions[reaction]['smiles']]['Reactants'] = d_reactants
 
             # Fill the products in a dedicated dict
             d_products = {}
             for product in model.getReaction(reaction).getListOfProducts():
-                d_products[species[product.getSpecies()]['inchikey']] = product.getStoichiometry()
+                key = rpSBML._search_key(keys, species[product.getSpecies()])
+                if key: key = species[product.getSpecies()][key]
+                else:
+                    key = product.getSpecies()
+                d_products[key] = product.getStoichiometry()
             # Put all products dicts in reactions dict for which smiles notations are the keys
-            norm_pathway[reactions[reaction]['smiles']]['Products'] = d_products
+            d_reactions[reactions[reaction]['smiles']]['Products'] = d_products
 
-        return norm_pathway
+        return d_reactions
 
     def __eq__(self, other):
-        return rpSBML._normalize_pathway(self) == rpSBML._normalize_pathway(other)
+        return \
+            len(self.model.getListOfReactions())==len(other.model.getListOfReactions()) \
+        and rpSBML._normalize_pathway(self)==rpSBML._normalize_pathway(other)
+
+    def getScore(self):
+        return self.rules_scores[0] / self.rules_scores[1]
 
     #######################################################################
     ############################# PRIVATE FUNCTIONS #######################
@@ -693,7 +716,6 @@ class rpSBML:
                  'path_id': None,
                  'step_id': None,
                  'sub_step_id': None,
-                 'rule_score': None,
                  'smiles': None,
                  'inchi': None,
                  'inchikey': None,
@@ -1691,6 +1713,7 @@ class rpSBML:
             self.addUpdateBRSynth(reac, 'rule_ori_reac', step['rule_ori_reac'], None, False, True, False, meta_id)
             #sbase_obj, annot_header, value, units=None, isAlone=False, isList=False, isSort=True, meta_id=None)
         if step['rule_score']:
+            self.rules_scores = (self.rules_scores[0]+step['rule_score'], self.rules_scores[1]+1)
             self.addUpdateBRSynth(reac, 'rule_score', step['rule_score'], None, False, False, False, meta_id)
         if step['path_id']:
             self.addUpdateBRSynth(reac, 'path_id', step['path_id'], None, False, False, False, meta_id)
