@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="rplibs",
-    version="0.0.1",
+    version="0.0.2",
     author="Melchior du Lac, Joan Hérisson",
     author_email="joan.herisson@univ-evry.fr",
     description="SBML structure with RetroPath2 fields",
