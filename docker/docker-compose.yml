@@ -1,0 +1,19 @@
+version: '2.4'
+
+services:
+
+  pkg:
+    image: brsynth/twine
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        HOME: ${HOMEDIR}
+    volumes:
+      - ../src/${COMPOSE_PROJECT_NAME}:${HOMEDIR}/${COMPOSE_PROJECT_NAME}:ro
+      - ../src/setup.py:${HOMEDIR}/setup.py:ro
+      - ../LICENSE:${HOMEDIR}/LICENSE:ro
+      - ../README.md:${HOMEDIR}/README.md:ro
+    command: sh -c "
+                python3 setup.py sdist bdist_wheel
+             && python3 -m twine upload --repository ${TEST}pypi dist/*"
