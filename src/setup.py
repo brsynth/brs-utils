@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="rplibs",
-    version="0.0.2",
+    version="0.0.3",
     author="Melchior du Lac, Joan Hérisson",
     author_email="joan.herisson@univ-evry.fr",
     description="SBML structure with RetroPath2 fields",
@@ -13,6 +13,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/brsynth/rpUtils",
     packages=setuptools.find_packages(),
+    install_requires=[
+        'python-libsbml',
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
