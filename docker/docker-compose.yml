@@ -12,13 +12,14 @@ services:
 
   pkg-publish:
     <<: *default-pkg
-    image: brsynth/twine
+    image: brsynth/${PUBLISH}
     build:
-      context: ..
+      context: .
       args:
         HOME: ${HOMEDIR}
         IMAGE: ${BASE_IMAGE}
-      dockerfile: docker/twine.dockerfile
+        FILE: ${PUBLISH}
+      dockerfile: ${PUBLISH}.dockerfile
     command: sh -c "
                 python3 setup.py sdist bdist_wheel
              && python3 -m twine upload --repository pypi dist/*"
@@ -26,9 +27,10 @@ services:
   pkg-test:
     <<: *default-pkg
     build:
-      context: ..
+      context: .
       args:
         HOME: ${HOMEDIR}
         IMAGE: ${BASE_IMAGE}
-      dockerfile: docker/tests.dockerfile
+        FILE: ${TESTS}
+      dockerfile: ${TESTS}.dockerfile
     command: pytest
