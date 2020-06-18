@@ -7,7 +7,7 @@ RUN apk update \
       musl-dev libffi-dev libressl-dev
 
 RUN python3 -m pip install --upgrade pip \
- && python3 -m pip install --user --upgrade setuptools wheel \
+ && python3 -m pip install --user --upgrade setuptools wheel --no-warn-script-location \
  && python3 -m pip install --user --upgrade twine
 
 ARG HOME
