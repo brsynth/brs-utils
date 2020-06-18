@@ -1,4 +1,5 @@
-FROM python:3-alpine
+ARG IMAGE
+FROM ${IMAGE}
 
 RUN apk update \
  && apk add \
