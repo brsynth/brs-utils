@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="rplibs",
-    version="0.0.5",
+    version="0.0.6",
     author="Joan Hérisson, Melchior du Lac",
     author_email="joan.herisson@univ-evry.fr",
     description="Utilities dedicated for RetroPath2 suite",
