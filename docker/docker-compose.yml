@@ -21,7 +21,7 @@ services:
       dockerfile: docker/twine.dockerfile
     command: sh -c "
                 python3 setup.py sdist bdist_wheel
-             && python3 -m twine upload --repository ${TEST}pypi dist/*"
+             && python3 -m twine upload --repository pypi dist/*"
 
   pkg-test:
     <<: *default-pkg
