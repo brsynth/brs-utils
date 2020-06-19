@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="brs_utils",
-    version="0.0.7",
+    version="0.0.8",
     author="Joan Hérisson, Melchior du Lac",
     author_email="joan.herisson@univ-evry.fr",
     description="Utilities",
