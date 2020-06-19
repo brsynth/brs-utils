@@ -50,3 +50,10 @@ def total_size(o, handlers={}, verbose=False):
         return s
 
     return sizeof(o)
+
+def check_nb_args(*args, f_name, nb_args):
+    if len(args) < nb_args:
+        raise TypeError(f_name+' missing '+str(nb_args)+' required positional argument')
+    elif len(args) > nb_args:
+        raise TypeError(f_name+' takes '+str(nb_args)+' positional arguments but '+str(len(args))+' were given')
+    return True
