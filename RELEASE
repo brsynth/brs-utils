@@ -1,6 +1,7 @@
 0.0.9 - Jul 09, 2020
     - refactor
     - add publication to Anaconda cloud
+    - change md5 to sha256 in rpSBML._genMetaID method
 
 0.0.8 - Jul 02, 2020
     - first version
