@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cd docker
-TEST=$1 docker-compose run --rm pkg-publish
