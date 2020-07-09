@@ -8,7 +8,7 @@ on:
   push:
     branches: [ master ]
     paths:
-      - .github/workflows/test-full.yml
+      - .github/workflows/test.yml
       - 'brs_utils/**.py'
       - 'tests/**.py'
       - '!RELEASE'
