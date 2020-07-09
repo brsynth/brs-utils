@@ -504,7 +504,7 @@ class rpSBML:
                 self.logger.warning('libSBML reading warning: '+str(err.getShortMessage()))
         model = document.getModel()
         if not model:
-            loging.error('Either the file was not read correctly or the SBML is empty')
+            self.logger.error('Either the file was not read correctly or the SBML is empty')
             raise FileNotFoundError
         self.document = document
         self.model = model

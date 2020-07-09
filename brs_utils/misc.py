@@ -4,8 +4,9 @@ Created on June 16 2020
 @author: Joan Hérisson
 """
 
-from sys import getsizeof
+from sys import getsizeof, stderr
 from collections import deque
+from itertools import chain
 try:
     from reprlib import repr
 except ImportError:
