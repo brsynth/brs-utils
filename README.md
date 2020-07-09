@@ -19,6 +19,7 @@ Defines some fancy print functions
 ## Authors
 
 * **Melchior du Lac**
+* **Joan Hérisson**
 
 
 ## Licence

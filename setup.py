@@ -28,7 +28,7 @@ with open(_release, 'r') as f:
 setup(
     name=_package,
     version=_version,
-    author='Joan Hérisson',
+    author='Melchior du Lac, Joan Hérisson',
     author_email='joan.herisson@univ-evry.fr',
     description='BRSynth Utilities',
     long_description=long_description,
