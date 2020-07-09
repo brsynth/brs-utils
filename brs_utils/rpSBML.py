@@ -1,5 +1,5 @@
 import libsbml
-from hashlib import md5
+from hashlib import sha256
 import os
 import logging
 import copy
@@ -180,7 +180,7 @@ class rpSBML:
     #
     # @param input string
     def _genMetaID(self, name):
-        return self._nameToSbmlId(md5(str(name).encode('utf-8')).hexdigest())
+        return self._nameToSbmlId(sha256(str(name).encode('utf-8')).hexdigest())
 
 
     ## compare two dictionarry of lists and return the
