@@ -45,6 +45,7 @@ jobs:
         python setup.py bdist_conda
     - name: Upload
       env:
+        CONDA_USERNAME: ${{ secrets.CONDA_USERNAME }}
         CONDA_TOKEN: ${{ secrets.CONDA_TOKEN }}
       run: |
-        anaconda --token ${CONDA_TOKEN} upload --user brsynth /opt/conda/conda-bld/linux-64/*.tar.bz2
+        anaconda --token ${CONDA_TOKEN} upload --user ${CONDA_USERNAME} /opt/conda/conda-bld/linux-64/*.tar.bz2
