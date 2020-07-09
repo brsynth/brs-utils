@@ -12,6 +12,7 @@ import copy
 # Here we also define our own annotations that are used internally in that we call BRSYNTH nodes.
 # The object holds an SBML object and a series of methods to write and access BRSYNTH related annotations
 
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
