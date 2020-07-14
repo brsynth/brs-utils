@@ -11,6 +11,9 @@ Computes the deep size of an object.
 ## print functions
 Defines some fancy print functions
 
+## download, extract_gz, download_and_extract_gz
+Functions to handle download and extract files
+
 ## Prerequisites
 
 * Python 3 with the following modules:

@@ -1,3 +1,6 @@
+0.1.2 - Jul 09, 2020
+    - add download, extract_gz, download_and_extract_gz functions
+
 0.1.1 - Jul 09, 2020
     - for test
 
