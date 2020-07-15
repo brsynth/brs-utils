@@ -23,7 +23,7 @@ class Test_Download(TestCase):
                      tempf.name)
             self.assertEqual(
                 sha256(Path(tempf.name).read_bytes()).hexdigest(),
-                '1acb965e153a64e96f550ae8fbacf592e56ce7e3d01956e7343cb0e08b34602e'
+                'b524d5ea71c4e3f8a98f0a40c25d085897ecadcbb660a88770f1f6947a4403b7'
                             )
 
     def test_extract_gz(self):
@@ -38,6 +38,6 @@ class Test_Download(TestCase):
         with TemporaryDirectory() as tempd:
             download_and_extract_gz(self._url, tempd)
             self.assertEqual(
-                sha256(Path(tempd+'/cache/mnxm_strc.pickle').read_bytes()).hexdigest(),
+                sha256(Path(tempd+'/mnxm_strc.pickle').read_bytes()).hexdigest(),
                 'd7c32032677ea4e5caa586a563c68c132e6e3afdc616c4ed8af2b6659a8fbca5'
                             )
