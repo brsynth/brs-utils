@@ -5,7 +5,8 @@ Created on June 16 2020
 """
 
 from .rpSBML import rpSBML
-from .misc   import total_size, check_nb_args, download, extract_gz, download_and_extract_gz
+from .misc   import total_size, check_nb_args, download, extract_gz, download_and_extract_gz, file_length
 from .print  import print_OK, print_FAILED
 
-__all__ = ('rpSBML', 'total_size', 'check_nb_args', 'print_OK', 'print_FAILED', 'download', 'extract_gz', 'download_and_extract_gz')
+__all__ = ('rpSBML', 'total_size', 'check_nb_args', 'file_length', 'download', 'extract_gz', 'download_and_extract_gz',
+           'print_OK', 'print_FAILED')

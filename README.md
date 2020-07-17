@@ -14,6 +14,9 @@ Defines some fancy print functions
 ## download, extract_gz, download_and_extract_gz
 Functions to handle download and extract files
 
+## file_length
+Returns the number of lines of the given file
+
 ## Prerequisites
 
 * Python 3 with the following modules:

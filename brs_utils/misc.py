@@ -78,3 +78,8 @@ def download_and_extract_gz(url, path):
     with NamedTemporaryFile() as tempf:
         download(url, tempf.name)
         extract_gz(tempf.name, path)
+
+def file_length(filename):
+    with open(filename, 'rb') as f:
+        n = sum(1 for line in f)
+    return n
