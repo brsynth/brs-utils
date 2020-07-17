@@ -15,7 +15,7 @@ from os import path as os_path
 class Test_Download(TestCase):
 
     def setUp(self):
-        self._url = 'https://github.com/brsynth/rpCache-data/raw/master/cache.tar.gz'
+        self._url = 'https://github.com/brsynth/rpCache-data/raw/master/deprecatedMNXM_mnxm.pickle.tar.gz'
 
     def test_download(self):
         with NamedTemporaryFile() as tempf:
@@ -23,7 +23,7 @@ class Test_Download(TestCase):
                      tempf.name)
             self.assertEqual(
                 sha256(Path(tempf.name).read_bytes()).hexdigest(),
-                'b524d5ea71c4e3f8a98f0a40c25d085897ecadcbb660a88770f1f6947a4403b7'
+                '6803e0611c3890807351cacf3e02a38082bfe95d0c3ee3d23071fdae0b8bced6'
                             )
 
     def test_extract_gz(self):
@@ -38,6 +38,6 @@ class Test_Download(TestCase):
         with TemporaryDirectory() as tempd:
             download_and_extract_gz(self._url, tempd)
             self.assertEqual(
-                sha256(Path(tempd+'/mnxm_strc.pickle').read_bytes()).hexdigest(),
-                'd7c32032677ea4e5caa586a563c68c132e6e3afdc616c4ed8af2b6659a8fbca5'
+                sha256(Path(tempd+'/deprecatedMNXM_mnxm.pickle').read_bytes()).hexdigest(),
+                '45d90e3da807f464a02cc0cea8a2544b3cce5e476d370fedbfade981f2273308'
                             )

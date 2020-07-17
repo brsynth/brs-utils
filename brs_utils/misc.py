@@ -69,6 +69,7 @@ def download(url, file):
     open(file, 'wb').write(r.content)
 
 def extract_gz(file, path):
+    print(path)
     makedirs(path, exist_ok=True)
     tar = tf_open(file, mode="r:gz")
     tar.extractall(path)
