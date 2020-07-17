@@ -6,13 +6,10 @@ Created on Jul 14 2020
 
 from unittest import TestCase
 
-from brs_utils import download, extract_gz, download_and_extract_gz, file_length
-from tempfile import NamedTemporaryFile, TemporaryDirectory
-from hashlib import sha256
+from brs_utils import file_length
 from pathlib import Path
-from os import path as os_path
 
-class Test_FileLength(TestCase):
+class Test_File(TestCase):
 
     def test_empty_file(self):
         self.assertEqual(file_length('data/empty_file.txt'), 0)

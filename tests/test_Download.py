@@ -10,7 +10,6 @@ from brs_utils import download, extract_gz, download_and_extract_gz
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from hashlib import sha256
 from pathlib import Path
-from os import path as os_path
 
 class Test_Download(TestCase):
 
