@@ -43,7 +43,7 @@ jobs:
     - name: Get module from PyPi
       run: |
         sleep 30
-        conda skeleton brs_utils
+        conda skeleton pypi brs_utils
     - name: Build
       run: |
         conda-build brs_utils
