@@ -21,7 +21,7 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
-        pip install setuptools wheel twine
+        python -m pip install setuptools wheel twine
     - name: Build
       run: |
         python setup.py sdist bdist_wheel
@@ -34,12 +34,18 @@ jobs:
 
   Conda:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.5, 3.6, 3.7, 3.8]
     container: docker://continuumio/anaconda3
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: |
         conda config --add channels sbmlteam
+    - name: Build for Python ${{ matrix.python-version }}
+      run: |
+        python${{ matrix.python-version }} setup.py bdist_conda
     - name: Build
       run: |
         python setup.py bdist_conda
