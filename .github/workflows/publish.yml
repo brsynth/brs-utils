@@ -34,8 +34,8 @@ jobs:
 
   Conda:
     runs-on: ubuntu-latest
-    steps:
     container: docker://continuumio/anaconda3
+    steps:
     - name: Install dependencies
       run: |
         conda config --add channels sbmlteam
