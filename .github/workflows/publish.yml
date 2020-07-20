@@ -46,9 +46,13 @@ jobs:
     - name: Build for Python ${{ matrix.python-version }}
       run: |
         python${{ matrix.python-version }} setup.py bdist_conda
+    - name: Get module from PyPi
+      run: |
+        sleep 30
+        conda skeleton brs_utils
     - name: Build
       run: |
-        python setup.py bdist_conda
+        conda-build brs_utils
     - name: Upload
       env:
         CONDA_USERNAME: ${{ secrets.CONDA_USERNAME }}
