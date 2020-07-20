@@ -34,6 +34,7 @@ jobs:
 
   Conda:
     runs-on: ubuntu-latest
+    steps:
     container: docker://continuumio/anaconda3
     - name: Install dependencies
       run: |
