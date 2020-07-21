@@ -33,19 +33,26 @@ jobs:
         twine upload dist/*
 
   Conda:
+
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.5, 3.6, 3.7]
+
     container: docker://continuumio/anaconda3
+
     steps:
-    - name: Install dependencies
-      run: |
-        conda config --add channels sbmlteam
     - name: Get module from PyPi
       run: |
         sleep 30
         conda skeleton pypi brs_utils
-    - name: Build
+    - name: Add channels
       run: |
-        conda-build brs_utils
+        conda config --add channels sbmlteam
+    - name: Build for Python ${{ matrix.python-version }}
+      run: |
+        conda-build --python ${{ matrix.python-version }} brs_utils
     - name: Upload
       env:
         CONDA_USERNAME: ${{ secrets.CONDA_USERNAME }}
