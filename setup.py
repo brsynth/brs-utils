@@ -55,8 +55,6 @@ setup(
     include_package_data=True,
     install_requires=required,
     test_suite='discover_tests',
-    # package_data={_package: ['requirements.txt']},
-#    data_files=[v for v in extra_files.values()],
     license='MIT',
     classifiers=[
         'Programming Language :: Python :: 3',
