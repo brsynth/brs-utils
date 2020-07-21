@@ -18,26 +18,7 @@ with open(_extras_path+'/requirements.txt', 'r') as f:
     required = [line[:-1] for line in f]
 
 _release = 'RELEASE'
-# extra_files={
-#     'release': (_package, [_package+'/doc/'+_release])
-# }
 
-# _extras_path = 'extras'
-# extras = [
-#     _package+'/{}'.format(p).replace('/', '.')
-#     for p
-#     in Path(_extras_path).glob('**')
-# ]
-# print(extras)
-# print([_package] + extras)
-# print({_package: _package,
-#              extras[0]: _extras_path})
-# extras = [
-#     _package+'/requirements.txt',
-#     './.env'
-#     ]
-
-# with open(extra_files['release'][1][0], 'r') as f:
 with open(_release, 'r') as f:
     _version = f.readline().split()[0]
 
