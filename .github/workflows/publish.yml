@@ -43,9 +43,11 @@ jobs:
     container: docker://continuumio/anaconda3
 
     steps:
-    - name: Get module from PyPi
+    - name: Waiting for module availablity on PyPi...
       run: |
         sleep 30
+    - name: Get module from PyPi
+      run: |
         conda skeleton pypi brs_utils
     - name: Add channels
       run: |
