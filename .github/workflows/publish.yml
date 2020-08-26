@@ -21,7 +21,7 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
-        pip install setuptools wheel twine
+        python -m pip install setuptools wheel twine
     - name: Build
       run: |
         python setup.py sdist bdist_wheel
@@ -33,15 +33,31 @@ jobs:
         twine upload dist/*
 
   Conda:
+
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.5, 3.6, 3.7]
+
     container: docker://continuumio/anaconda3
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
+    - name: Waiting for module availablity on PyPi...
       run: |
-        python setup.py bdist_conda
+        sleep 30
+    - name: Get module from PyPi
+      run: |
+        conda skeleton pypi brs_utils
+    - name: Add channels
+      run: |
+        conda config --add channels sbmlteam
+    - name: Build for Python ${{ matrix.python-version }}
+      run: |
+        conda-build --python ${{ matrix.python-version }} brs_utils
     - name: Upload
       env:
+        CONDA_USERNAME: ${{ secrets.CONDA_USERNAME }}
         CONDA_TOKEN: ${{ secrets.CONDA_TOKEN }}
       run: |
-        anaconda --token ${CONDA_TOKEN} upload --user brsynth /opt/conda/conda-bld/linux-64/*.tar.bz2
+        anaconda --token ${CONDA_TOKEN} upload --user ${CONDA_USERNAME} /opt/conda/conda-bld/linux-64/*.tar.bz2

@@ -1,5 +1,5 @@
 import libsbml
-from hashlib import md5
+from hashlib import sha256
 import os
 import logging
 import copy
@@ -11,6 +11,7 @@ import copy
 # implies using the libSBML library to create the standard definitions of species, reactions, etc...
 # Here we also define our own annotations that are used internally in that we call BRSYNTH nodes.
 # The object holds an SBML object and a series of methods to write and access BRSYNTH related annotations
+
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -180,7 +181,7 @@ class rpSBML:
     #
     # @param input string
     def _genMetaID(self, name):
-        return self._nameToSbmlId(md5(str(name).encode('utf-8')).hexdigest())
+        return self._nameToSbmlId(sha256(str(name).encode('utf-8')).hexdigest())
 
 
     ## compare two dictionarry of lists and return the
@@ -504,7 +505,7 @@ class rpSBML:
                 self.logger.warning('libSBML reading warning: '+str(err.getShortMessage()))
         model = document.getModel()
         if not model:
-            loging.error('Either the file was not read correctly or the SBML is empty')
+            self.logger.error('Either the file was not read correctly or the SBML is empty')
             raise FileNotFoundError
         self.document = document
         self.model = model

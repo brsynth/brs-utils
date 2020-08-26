@@ -1,0 +1,2 @@
+python-libsbml==5.18.0
+requests==2.24.0

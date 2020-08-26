@@ -1,15 +1,21 @@
 # brs-utils
 
-## Content
+[![Anaconda-Server Badge](https://anaconda.org/brsynth/brs_utils/badges/latest_release_date.svg)](https://anaconda.org/brsynth/brs_utils) [![Anaconda-Server Badge](https://anaconda.org/brsynth/brs_utils/badges/version.svg)](https://anaconda.org/brsynth/brs_utils)
 
-### rpSBML
+## rpSBML
 Defines SBML structure with additional fields relative to [RetroPath2](https://github.com/brsynth/RetroPath2-wrapper) objects.
 
-### total_size
+## total_size
 Computes the deep size of an object.
 
-### print functions
+## print functions
 Defines some fancy print functions
+
+## download, extract_gz, download_and_extract_gz
+Functions to handle download and extract files
+
+## file_length
+Returns the number of lines of the given file
 
 ## Prerequisites
 
@@ -19,6 +25,7 @@ Defines some fancy print functions
 ## Authors
 
 * **Melchior du Lac**
+* **Joan Hérisson**
 
 
 ## Licence
