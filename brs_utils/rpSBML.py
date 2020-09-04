@@ -1138,6 +1138,7 @@ class rpSBML:
     #
     # @sbase_obj libSBML object that may be compartment, reaction or species
     #
+    @staticmethod
     def addUpdateBRSynth(self, sbase_obj, annot_header, value, units=None, isAlone=False, isList=False, isSort=True, meta_id=None):
         logging.debug('############### '+str(annot_header)+' ################')
         if isList:
@@ -1154,7 +1155,7 @@ class rpSBML:
                         if units:
                             annotation += '<brsynth:'+str(name)+' units="'+str(units)+'" value="'+str(value[name])+'" />'
                         else:
-                            annotation += '<brsynth:'+str(name)+' value="'+str(value[name])+'" />'
+
             else:
                 for name in value:
                     if isAlone:
