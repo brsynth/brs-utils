@@ -6,13 +6,13 @@ name: Test (full)
 on:
 
   push:
-    branches: [ master ]
+    branches: [ dev ]
     paths:
       - '**'
       - '!RELEASE'
       - '!LICENSE'
   pull_request:
-    branches: [ master ]
+    branches: [ dev ]
 
 jobs:
 
