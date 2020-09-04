@@ -13,6 +13,7 @@ import copy
 # The object holds an SBML object and a series of methods to write and access BRSYNTH related annotations
 
 
+# logging = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
@@ -35,7 +36,6 @@ class rpSBML:
     # @param docModel libSBML Document object
     # @param nameSpaceModel libSBML name space (not required)
     def __init__(self, modelName, document=None, path=None):
-        logging = logging.getLogger(__name__)
         #WARNING: change this to reflect the different debugging levels
 #        logging.info('Started instance of rpSBML')
         #logging.setLevel(logging.INFO)
