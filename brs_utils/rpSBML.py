@@ -1008,7 +1008,7 @@ class rpSBML:
     # @param value The SBML call
     # @param message The string that describes the call
     @staticmethod
-    def _checklibSBML(self, value, message):
+    def _checklibSBML(value, message):
         if value is None:
             logging.error('LibSBML returned a null value trying to ' + message + '.')
             raise AttributeError
