@@ -1138,9 +1138,8 @@ class rpSBML:
     #
     # @sbase_obj libSBML object that may be compartment, reaction or species
     #
-    @staticmethod
     def addUpdateBRSynth(self, sbase_obj, annot_header, value, units=None, isAlone=False, isList=False, isSort=True, meta_id=None):
-        logging.debug('############### '+str(annot_header)+' ################')
+        self.logger.debug('############### '+str(annot_header)+' ################')
         if isList:
             annotation = '''<annotation>
       <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
@@ -1155,7 +1154,7 @@ class rpSBML:
                         if units:
                             annotation += '<brsynth:'+str(name)+' units="'+str(units)+'" value="'+str(value[name])+'" />'
                         else:
-
+                            annotation += '<brsynth:'+str(name)+' value="'+str(value[name])+'" />'
             else:
                 for name in value:
                     if isAlone:
@@ -1191,7 +1190,7 @@ class rpSBML:
     </annotation>'''
         annot_obj = libsbml.XMLNode.convertStringToXMLNode(annotation)
         if annot_obj==None:
-            logging.error('Cannot conver this string to annotation object: '+str(annotation))
+            self.logger.error('Cannot conver this string to annotation object: '+str(annotation))
             return False
         #### retreive the annotation object
         brsynth_annot = None
@@ -1200,86 +1199,85 @@ class rpSBML:
             sbase_obj.setAnnotation(libsbml.XMLNode.convertStringToXMLNode(self._defaultBRSynthAnnot(meta_id)))
             obj_annot = sbase_obj.getAnnotation()
             if not obj_annot:
-                logging.error('Cannot update BRSynth annotation')
+                self.logger.error('Cannot update BRSynth annotation')
                 return False
         brsynth_annot = obj_annot.getChild('RDF').getChild('BRSynth').getChild('brsynth')
         if not brsynth_annot:
-             logging.error('Cannot find the BRSynth annotation')
+             self.logger.error('Cannot find the BRSynth annotation')
              return False
         #add the annotation and replace if it exists
         isfound_target = False
-        #logging.debug(brsynth_annot.toXMLString())
+        #self.logger.debug(brsynth_annot.toXMLString())
         for i in range(brsynth_annot.getNumChildren()):
-            logging.debug(annot_header+' -- '+str(brsynth_annot.getChild(i).getName()))
+            self.logger.debug(annot_header+' -- '+str(brsynth_annot.getChild(i).getName()))
             if annot_header==brsynth_annot.getChild(i).getName():
                 isfound_target = True
                 '''
-                rpSBML._checklibSBML(brsynth_annot.removeChild(brsynth_annot.getIndex(i)),
+                self._checklibSBML(brsynth_annot.removeChild(brsynth_annot.getIndex(i)),
                     'Removing annotation '+str(annot_header))
                 '''
-                rpSBML._checklibSBML(brsynth_annot.removeChild(i), 'Removing annotation '+str(annot_header))
+                self._checklibSBML(brsynth_annot.removeChild(i), 'Removing annotation '+str(annot_header))
                 isfound_source = False
                 source_brsynth_annot = annot_obj.getChild('RDF').getChild('BRSynth').getChild('brsynth')
                 for y in range(source_brsynth_annot.getNumChildren()):
-                    logging.debug('\t'+annot_header+' -- '+str(source_brsynth_annot.getChild(y).getName()))
+                    self.logger.debug('\t'+annot_header+' -- '+str(source_brsynth_annot.getChild(y).getName()))
                     if str(annot_header)==str(source_brsynth_annot.getChild(y).getName()):
                         isfound_source = True
-                        logging.debug('Adding annotation to the brsynth annotation: '+str(source_brsynth_annot.getChild(y).toXMLString()))
+                        self.logger.debug('Adding annotation to the brsynth annotation: '+str(source_brsynth_annot.getChild(y).toXMLString()))
                         towrite_annot = source_brsynth_annot.getChild(y)
-                        logging.debug(brsynth_annot.toXMLString())
-                        rpSBML._checklibSBML(brsynth_annot.addChild(towrite_annot), ' 1 - Adding annotation to the brsynth annotation')
-                        logging.debug(brsynth_annot.toXMLString())
+                        self.logger.debug(brsynth_annot.toXMLString())
+                        self._checklibSBML(brsynth_annot.addChild(towrite_annot), ' 1 - Adding annotation to the brsynth annotation')
+                        self.logger.debug(brsynth_annot.toXMLString())
                         break
                 if not isfound_source:
-                    logging.error('Cannot find '+str(annot_header)+' in source annotation')
+                    self.logger.error('Cannot find '+str(annot_header)+' in source annotation')
         if not isfound_target:
-            logging.debug('Cannot find '+str(annot_header)+' in target annotation')
+            self.logger.debug('Cannot find '+str(annot_header)+' in target annotation')
             isfound_source = False
             source_brsynth_annot = annot_obj.getChild('RDF').getChild('BRSynth').getChild('brsynth')
             for y in range(source_brsynth_annot.getNumChildren()):
-                logging.debug('\t'+annot_header+' -- '+str(source_brsynth_annot.getChild(y).getName()))
+                self.logger.debug('\t'+annot_header+' -- '+str(source_brsynth_annot.getChild(y).getName()))
                 if str(annot_header)==str(source_brsynth_annot.getChild(y).getName()):
                     isfound_source = True
-                    logging.debug('Adding annotation to the brsynth annotation: '+str(source_brsynth_annot.getChild(y).toXMLString()))
+                    self.logger.debug('Adding annotation to the brsynth annotation: '+str(source_brsynth_annot.getChild(y).toXMLString()))
                     towrite_annot = source_brsynth_annot.getChild(y)
-                    logging.debug(brsynth_annot.toXMLString())
-                    rpSBML._checklibSBML(brsynth_annot.addChild(towrite_annot), '2 - Adding annotation to the brsynth annotation')
-                    logging.debug(brsynth_annot.toXMLString())
+                    self.logger.debug(brsynth_annot.toXMLString())
+                    self._checklibSBML(brsynth_annot.addChild(towrite_annot), '2 - Adding annotation to the brsynth annotation')
+                    self.logger.debug(brsynth_annot.toXMLString())
                     break
             if not isfound_source:
-                logging.error('Cannot find '+str(annot_header)+' in source annotation')
+                self.logger.error('Cannot find '+str(annot_header)+' in source annotation')
             #toWrite_annot = annot_obj.getChild('RDF').getChild('BRSynth').getChild('brsynth').getChild(annot_header)
-            #rpSBML._checklibSBML(brsynth_annot.addChild(toWrite_annot), 'Adding annotation to the brsynth annotation')
+            #self._checklibSBML(brsynth_annot.addChild(toWrite_annot), 'Adding annotation to the brsynth annotation')
                 return False
         '''
         if brsynth_annot.getChild(annot_header).toXMLString()=='':
             toWrite_annot = annot_obj.getChild('RDF').getChild('BRSynth').getChild('brsynth').getChild(annot_header)
-            rpSBML._checklibSBML(brsynth_annot.addChild(toWrite_annot), 'Adding annotation to the brsynth annotation')
+            self._checklibSBML(brsynth_annot.addChild(toWrite_annot), 'Adding annotation to the brsynth annotation')
         else:
             #try:
-            logging.debug('==============================')
+            self.logger.debug('==============================')
             found_child = False
             for i in range(brsynth_annot.getNumChildren()):
                 if annot_header==brsynth_annot.getChild(i).getName():
-                    logging.debug('Found the same name to remove: '+str(annot_header))
-                    rpSBML._checklibSBML(brsynth_annot.removeChild(brsynth_annot.getIndex(i)),
+                    self.logger.debug('Found the same name to remove: '+str(annot_header))
+                    self._checklibSBML(brsynth_annot.removeChild(brsynth_annot.getIndex(i)),
                         'Removing annotation '+str(annot_header))
                     toWrite_annot = annot_obj.getChild('RDF').getChild('BRSynth').getChild('brsynth').getChild(annot_header)
-                    rpSBML._checklibSBML(brsynth_annot.addChild(toWrite_annot), 'Adding annotation to the brsynth annotation')
+                    self._checklibSBML(brsynth_annot.addChild(toWrite_annot), 'Adding annotation to the brsynth annotation')
                     found_child = True
                     break
             #cause by a bbug with string lookup
             if not found_child:
-                logging.warning('Bug with lookup adding it now: '+str(annot_header))
+                self.logger.warning('Bug with lookup adding it now: '+str(annot_header))
                 toWrite_annot = annot_obj.getChild('RDF').getChild('BRSynth').getChild('brsynth').getChild(annot_header)
-                rpSBML._checklibSBML(brsynth_annot.addChild(toWrite_annot), 'Adding annotation to the brsynth annotation')
+                self._checklibSBML(brsynth_annot.addChild(toWrite_annot), 'Adding annotation to the brsynth annotation')
             #except OverflowError:
-            #    logging.warning('TODO: Overflow error that must be dealt with')
-            #    logging.warning(brsynth_annot.getChild(annot_header).toXMLString())
+            #    self.logger.warning('TODO: Overflow error that must be dealt with')
+            #    self.logger.warning(brsynth_annot.getChild(annot_header).toXMLString())
             #    return False
         '''
         return True
-
 
     ## Function to update or create a MIRIAM annotation for a compartment, reaction or species
     #
