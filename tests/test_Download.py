@@ -14,7 +14,7 @@ from pathlib import Path
 class Test_Download(TestCase):
 
     def setUp(self):
-        self._url = 'https://github.com/brsynth/rpCache-data/raw/master/deprecatedMNXM_mnxm.json.gz'
+        self._url = 'https://gitlab.com/breakthewall/rpcache-data/-/raw/master/deprecatedMNXM_mnxm.json.gz'
 
     def test_download(self):
         with NamedTemporaryFile() as tempf:
