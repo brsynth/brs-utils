@@ -264,7 +264,7 @@ class rpSBML:
         logging.debug('targetObjectiveID: '+str(targetObjectiveID))
         logging.debug('sourceObjectiveID: '+str(sourceObjectiveID))
         ################ SPECIES ####################
-        species_source_target = self.compareSpecies(comp_source_target, source_rpsbml, target_rpsbml)
+        species_source_target = rpSBML.compareSpecies(comp_source_target, source_rpsbml, target_rpsbml)
         logging.debug('species_source_target: '+str(species_source_target))
         for source_species in species_source_target:
             list_target = [i for i in species_source_target[source_species]]
@@ -308,7 +308,7 @@ class rpSBML:
         for source_reaction in source_rpsbml.model.getListOfReactions():
             is_found = False
             for target_reaction in target_rpsbml.model.getListOfReactions():
-                score, match = self.compareReaction(species_source_target, source_reaction, target_reaction)
+                score, match = rpSBML.compareReaction(species_source_target, source_reaction, target_reaction)
                 if match:
                     logging.debug('Source reaction '+str(source_reaction)+' matches with target reaction '+str(target_reaction))
                     #source_reaction[source_reaction.getId()] = target_reaction.getId()
@@ -569,7 +569,7 @@ class rpSBML:
     # We assume that there cannot be two reactions that have the same species and reactants. This is maintained by SBML
     # TODO: need to remove from the list reactions simulated reactions that have matched
     # TODO: Remove. This assumes that reactions can match multiple times, when in fact its impossible
-    def compareReactions(self, species_match, target_rpsbml, source_rpsbml):
+    def compareReactions(species_match, target_rpsbml, source_rpsbml):
         ############## compare the reactions #######################
         #construct sim reactions with species
         logging.debug('------ Comparing reactions --------')
@@ -657,7 +657,7 @@ class rpSBML:
                 target_source[target_reaction.getId()][source_reaction.getId()] = tmp_reaction_match[source_reaction.getId()][target_reaction.getId()]['score']
                 source_target[source_reaction.getId()][target_reaction.getId()] = tmp_reaction_match[source_reaction.getId()][target_reaction.getId()]['score']
         ### matrix compare #####
-        unique = self._findUniqueRowColumn(pd.DataFrame(source_target))
+        unique = rpSBML._findUniqueRowColumn(pd.DataFrame(source_target))
         logging.debug('findUniqueRowColumn')
         logging.debug(unique)
         reaction_match = {}
@@ -739,7 +739,8 @@ class rpSBML:
     # Note that we assure that the match is 1:1 between species using the species match
     #
     #TODO: change this with a flag so that all the reactants and products are the same
-    def compareReaction(self, species_source_target, source_reaction, target_reaction):
+    @staticmethod
+    def compareReaction(species_source_target, source_reaction, target_reaction):
         scores = []
         source_reactants = [i.species for i in source_reaction.getListOfReactants()]
         target_reactants = []
@@ -794,7 +795,8 @@ class rpSBML:
     #
     # TODO: for all the measured species compare with the simualted one. Then find the measured and simulated species that match the best and exclude the
     # simulated species from potentially matching with another
-    def compareSpecies(self, comp_source_target, source_rpsbml, target_rpsbml):
+    @staticmethod
+    def compareSpecies(comp_source_target, source_rpsbml, target_rpsbml):
         ############## compare species ###################
         source_target = {}
         target_source = {}
@@ -863,7 +865,7 @@ class rpSBML:
             source_target_mat[i] = {}
             for y in source_target[i]:
                 source_target_mat[i][y] = source_target[i][y]['score']
-        unique = self._findUniqueRowColumn(pd.DataFrame(source_target_mat))
+        unique = rpSBML._findUniqueRowColumn(pd.DataFrame(source_target_mat))
         logging.debug('findUniqueRowColumn:')
         logging.debug(unique)
         for meas in source_target:
