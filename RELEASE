@@ -1,3 +1,6 @@
+0.1.7 - Sep 4, 2020
+    - remove versions for requirements
+
 0.1.6 - Jul 21, 2020
     - conda build for multiple versions of Python (3.5 -> 3.7), python-libsml (5.18.0) is not available for Python 3.8.
 
