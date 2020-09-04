@@ -447,7 +447,7 @@ class rpSBML:
 
 
     @staticmethod
-    def _findUniqueRowColumn(self, pd_matrix):
+    def _findUniqueRowColumn(pd_matrix):
         logging.debug(pd_matrix)
         to_ret = {}
         ######################## filter by the global top values ################
