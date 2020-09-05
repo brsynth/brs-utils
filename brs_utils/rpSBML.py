@@ -1,8 +1,11 @@
-import libsbml
+             import libsbml
+             import logging
+             import numpy as np
 from hashlib import sha256
-import os
-import logging
-import copy
+from os      import makedirs  as os_mkdirs
+from os      import path      as os_path
+from copy    import deepcopy
+from pandas  import DataFrame as pd_DataFrame
 
 ## @package RetroPath SBML writer
 # Documentation for SBML representation of the different model
@@ -75,10 +78,10 @@ class rpSBML:
                        species_group_id='central_species',
                        sink_species_group_id='rp_sink_species',
                        pathway_id='rp_pathway'):
-        if not os.path.exists(path_source):
+        if not os_path.exists(path_source):
             logging.error('Source SBML file is invalid: '+str(path_source))
             return False
-        if not os.path.exists(path_target):
+        if not os_path.exists(path_target):
             logging.error('Target SBML file is invalid: '+str(path_target))
             return False
         source_rpsbml = rpSBML.rpSBML('source', path=path_source)
@@ -657,7 +660,7 @@ class rpSBML:
                 target_source[target_reaction.getId()][source_reaction.getId()] = tmp_reaction_match[source_reaction.getId()][target_reaction.getId()]['score']
                 source_target[source_reaction.getId()][target_reaction.getId()] = tmp_reaction_match[source_reaction.getId()][target_reaction.getId()]['score']
         ### matrix compare #####
-        unique = rpSBML._findUniqueRowColumn(pd.DataFrame(source_target))
+        unique = rpSBML._findUniqueRowColumn(pd_DataFrame(source_target))
         logging.debug('findUniqueRowColumn')
         logging.debug(unique)
         reaction_match = {}
@@ -865,7 +868,7 @@ class rpSBML:
             source_target_mat[i] = {}
             for y in source_target[i]:
                 source_target_mat[i][y] = source_target[i][y]['score']
-        unique = rpSBML._findUniqueRowColumn(pd.DataFrame(source_target_mat))
+        unique = rpSBML._findUniqueRowColumn(pd_DataFrame(source_target_mat))
         logging.debug('findUniqueRowColumn:')
         logging.debug(unique)
         for meas in source_target:
@@ -1064,7 +1067,7 @@ class rpSBML:
     ## compare two dictionarry of lists and return the
     #
     def _compareXref(self, current, toadd):
-        toadd = copy.deepcopy(toadd)
+        toadd = deepcopy(toadd)
         for database_id in current:
             try:
                 list_diff = [i for i in toadd[database_id] if i not in current[database_id]]
@@ -1430,7 +1433,7 @@ class rpSBML:
     #
     # @param inFile String Path to the input SBML file
     def readSBML(self, inFile):
-        if not os.path.isfile(inFile):
+        if not os_path.isfile(inFile):
             logging.error('Invalid input file')
             raise FileNotFoundError
         document = libsbml.readSBMLFromFile(inFile)
@@ -1481,7 +1484,7 @@ class rpSBML:
         if path:
             if path[-1:]=='/':
                 path = path[:-1]
-            if not os.path.isdir(path):
+            if not os_path.isdir(path):
                 if self.path:
                     p = self.path
                 else:
@@ -1493,8 +1496,8 @@ class rpSBML:
             p = self.path
 
         ########## check and create folder #####
-        if not os.path.exists(p):
-            os.makedirs(p)
+        if not os_path.exists(p):
+            os_mkdirs(p)
         ext = ''
         if not str(self.modelName).endswith('_sbml'):
             ext = '_sbml'

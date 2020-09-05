@@ -20,6 +20,6 @@ class Test_ReadDict(TestCase):
 
     def test_readdict_ok(self):
         filename = 'dict'
-        _create_file_from_dict(filename, d)
+        self._create_file_from_dict(filename, self.d)
         dict = read_dict(filename)
-        self.assertDictEqual(dict, d)
+        self.assertDictEqual(dict, self.d)

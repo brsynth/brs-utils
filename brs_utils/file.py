@@ -33,7 +33,7 @@ def file_length(filename):
 
 def read_dict(filename):
     d = {}
-    with open(fileneme) as f:
+    with open(filename) as f:
         for line in f:
            (key, val) = line.split()
            d[int(key)] = val
