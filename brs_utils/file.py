@@ -31,10 +31,10 @@ def file_length(filename):
         n = sum(1 for line in f)
     return n
 
+from ast import literal_eval
 def read_dict(filename):
     d = {}
-    with open(filename) as f:
-        for line in f:
-           (key, val) = line.split()
-           d[int(key)] = val
+    with open(filename, 'r') as f:
+        s = f.read()
+        d = literal_eval(s)
     return d
