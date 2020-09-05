@@ -275,7 +275,7 @@ class rpSBML:
                 logging.debug('Creating source species '+str(source_species)+' in target rpsbml')
                 source_species = source_rpsbml.model.getSpecies(source_species)
                 if not source_species:
-                    logging.error('Cannot retreive model species: '+str(source_species_id))
+                    logging.error('Cannot retreive model species: '+str(source_species))
                 else:
                     rpSBML._checklibSBML(source_species, 'fetching source species')
                     targetModel_species = target_rpsbml.model.createSpecies()
