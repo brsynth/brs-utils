@@ -84,14 +84,18 @@ class rpSBML:
         if not os_path.exists(path_target):
             logging.error('Target SBML file is invalid: '+str(path_target))
             return False
-        source_rpsbml = rpSBML.rpSBML('source', path=path_source)
-        target_rpsbml = rpSBML.rpSBML('target', path=path_target)
-        rpSBML.mergeModels(source_rpsbml,
-                           target_rpsbml,
-                           species_group_id,
-                           sink_species_group_id,
-                           pathway_id)
-        target_rpsbml.writeSBML(path_merge)
+        source_rpsbml = rpSBML('source', path=path_source)
+        target_rpsbml = rpSBML('target', path=path_target)
+        merge_status = rpSBML.mergeModels(source_rpsbml,
+                                          target_rpsbml,
+                                          species_group_id,
+                                          sink_species_group_id,
+                                          pathway_id)
+        if not merge_status:
+            return False
+        write_status = target_rpsbml.writeSBML(path_merge)
+        if not write_status:
+            return False
         return True
 
     @staticmethod
@@ -400,7 +404,6 @@ class rpSBML:
                     rpSBML._checklibSBML(target_product.setStoichiometry(source_product.getStoichiometry()),
                             'set stoichiometry ('+str(source_product.getStoichiometry)+')')
         #### GROUPS #####
-        #TODO loop through the groups to add them
         if not target_rpsbml.model.isPackageEnabled('groups'):
             rpSBML._checklibSBML(target_rpsbml.model.enablePackage(
                 'http://www.sbml.org/sbml/level3/version1/groups/version1',
@@ -450,6 +453,12 @@ class rpSBML:
 
 
     @staticmethod
+    ## Function that takes a matrix of species to species with the similarity score to determine the most similar one
+    #
+    # TODO: add a threshold score and return None for the species that are not found
+    #
+    # @param pd_matrix Pandas matrix object
+    # @return Dictionnary with of ID to list of ID's
     def _findUniqueRowColumn(pd_matrix):
         logging.debug(pd_matrix)
         to_ret = {}
@@ -567,11 +576,16 @@ class rpSBML:
     #################################### REACTION ############################################
     ##########################################################################################
 
-    ##
+    ## Function that compares the reas
     # Compare that all the measured species of a reactions are found within sim species to match with a reaction.
     # We assume that there cannot be two reactions that have the same species and reactants. This is maintained by SBML
     # TODO: need to remove from the list reactions simulated reactions that have matched
     # TODO: Remove. This assumes that reactions can match multiple times, when in fact its impossible
+    #
+    # @param species_match Dicationnary of the chemical species between the two rpSBML passes (Parameter from compareSpecies())
+    # @param target_rpsbml Target rpSBML object where the species and reactions will be added to
+    # @param source_rpsbml Source rpSBML object where the species and reactions will be read
+    # @return Dictionnary of the reactions that are the same
     def compareReactions(species_match, target_rpsbml, source_rpsbml):
         ############## compare the reactions #######################
         #construct sim reactions with species
@@ -1477,31 +1491,32 @@ class rpSBML:
     # @param model libSBML model to be saved to file
     # @param model_id model id, note that the name of the file will be that
     # @param path Non required parameter that will define the path where the model will be saved
-    def writeSBML(self, path):
-        ####### check the path #########
-        #need to determine where are the path id's coming from
+    def writeSBML(self, path=None):
         p = None
+        fi_name = self.modelName
         if path:
-            if path[-1:]=='/':
-                path = path[:-1]
-            if not os_path.isdir(path):
-                if self.path:
-                    p = self.path
-                else:
-                    logging.error('The output path is not a directory: '+str(path))
-                    return False
-            else:
+            if os_path.isdir(path):
                 p = path
+            else:
+                tmp_fi_name = os_path.basename(path)
+                logging.debug('tmp_fi_name: '+str(tmp_fi_name))
+                if tmp_fi_name=='':
+                    logging.warning('The input path is a directory that does not seem to exist: '+path)
+                    logging.warning('Creating it')
+                    os_mkdirs(path)
+                    p = path
+                else:
+                    fi_name = tmp_fi_name
+                    p = os_path.dirname(path)
         else:
+            logging.warning('Overwriting the input file: '+str(self.path))
             p = self.path
-
-        ########## check and create folder #####
-        if not os_path.exists(p):
-            os_mkdirs(p)
         ext = ''
-        if not str(self.modelName).endswith('_sbml'):
-            ext = '_sbml'
-        libsbml.writeSBMLToFile(self.document, p+'/'+str(self.modelName)+ext+'.xml')
+        if not str(fi_name).endswith('.xml'):
+            fi_name += '.xml'
+        logging.debug(fi_name)
+        logging.debug(p)
+        libsbml.writeSBMLToFile(self.document, os_path.join(p, fi_name))
         return True
 
 
