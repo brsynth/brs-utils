@@ -38,34 +38,34 @@ class rpSBML:
     # @param model libSBML model object
     # @param docModel libSBML Document object
     # @param nameSpaceModel libSBML name space (not required)
-    def __init__(self, modelName, document=None, path=None):
+    def __init__(self, model_name, document=None, path=None):
         #WARNING: change this to reflect the different debugging levels
-#        logging.info('Started instance of rpSBML')
+        #logging.info('Started instance of rpSBML')
         #logging.setLevel(logging.INFO)
-        self.modelName = modelName
+        self.model_name = model_name
         self.document = document
         if self.document==None:
             self.model = None
         else:
             self.model = self.document.getModel()
-        #@Joan I keep this commented since I use the rpSBML(path='') and not sure if you made changes
-        '''
         self.path = path
-        #More complete with
-        #self.miriam_header = {'compartment': {'go': 'go/GO:', 'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'mnx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/', 'uniprot': 'uniprot/'}, 'species': {'mnx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
-        #self.header_miriam = {'compartment': {'go': 'go', 'metanetx.compartment': 'mnx', 'bigg.compartment': 'bigg', 'seed': 'seed', 'name': 'name'}, 'reaction': {'metanetx.reaction': 'mnx', 'rhea': 'rhea', 'reactome': 'reactome', 'bigg.reaction': 'bigg', 'sabiork.reaction': 'sabiork', 'ec-code': 'ec', 'biocyc': 'biocyc', 'lipidmaps': 'lipidmaps', 'uniprot': 'uniprot'}, 'species': {'metanetx.chemical': 'mnx', 'chebi': 'chebi', 'bigg.metabolite': 'bigg', 'hmdb': 'hmdb', 'kegg.compound': 'kegg_c', 'kegg.drug': 'kegg_d', 'biocyc': 'biocyc', 'seed.compound': 'seed', 'metacyc.compound': 'metacyc', 'sabiork.compound': 'sabiork', 'reactome': 'reactome'}}
-        #removed GO
-        self.miriam_header = {'compartment': {'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'mnx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/', 'uniprot': 'uniprot/'}, 'species': {'pubchem': 'pubchem.compound/','mnx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
-        self.header_miriam = {'compartment': {'metanetx.compartment': 'mnx', 'bigg.compartment': 'bigg', 'seed': 'seed', 'name': 'name'}, 'reaction': {'metanetx.reaction': 'mnx', 'rhea': 'rhea', 'reactome': 'reactome', 'bigg.reaction': 'bigg', 'sabiork.reaction': 'sabiork', 'ec-code': 'ec', 'biocyc': 'biocyc', 'lipidmaps': 'lipidmaps', 'uniprot': 'uniprot'}, 'species': {'pubchem.compound': 'pubchem', 'metanetx.chemical': 'mnx', 'chebi': 'chebi', 'bigg.metabolite': 'bigg', 'hmdb': 'hmdb', 'kegg.compound': 'kegg_c', 'kegg.drug': 'kegg_d', 'biocyc': 'biocyc', 'seed.compound': 'seed', 'metacyc.compound': 'metacyc', 'sabiork.compound': 'sabiork', 'reactome': 'reactome'}}
-        '''
         if not path==None:
-            self.path = path
             self.readSBML(path)
-        else:
-            self.path = None
         self.rules_scores = (-1, 0)
         self.miriam_header = {'compartment': {'mnx': 'metanetx.compartment/', 'bigg': 'bigg.compartment/', 'seed': 'seed/', 'name': 'name/'}, 'reaction': {'mnx': 'metanetx.reaction/', 'rhea': 'rhea/', 'reactome': 'reactome/', 'bigg': 'bigg.reaction/', 'sabiork': 'sabiork.reaction/', 'ec': 'ec-code/', 'biocyc': 'biocyc/', 'lipidmaps': 'lipidmaps/', 'uniprot': 'uniprot/'}, 'species': {'inchikey': 'inchikey/', 'pubchem': 'pubchem.compound/','mnx': 'metanetx.chemical/', 'chebi': 'chebi/CHEBI:', 'bigg': 'bigg.metabolite/', 'hmdb': 'hmdb/', 'kegg_c': 'kegg.compound/', 'kegg_d': 'kegg.drug/', 'biocyc': 'biocyc/META:', 'seed': 'seed.compound/', 'metacyc': 'metacyc.compound/', 'sabiork': 'sabiork.compound/', 'reactome': 'reactome/R-ALL-'}}
-        self.header_miriam = {'compartment': {'metanetx.compartment': 'mnx', 'bigg.compartment': 'bigg', 'seed': 'seed', 'name': 'name'}, 'reaction': {'metanetx.reaction': 'mnx', 'rhea': 'rhea', 'reactome': 'reactome', 'bigg.reaction': 'bigg', 'sabiork.reaction': 'sabiork', 'ec-code': 'ec', 'biocyc': 'biocyc', 'lipidmaps': 'lipidmaps', 'uniprot': 'uniprot'}, 'species': {'inchikey': 'inchikey', 'pubchem.compound': 'pubchem', 'metanetx.chemical': 'mnx', 'chebi': 'chebi', 'bigg.metabolite': 'bigg', 'hmdb': 'hmdb', 'kegg.compound': 'kegg_c', 'kegg.drug': 'kegg_d', 'biocyc': 'biocyc', 'seed.compound': 'seed', 'metacyc.compound': 'metacyc', 'sabiork.compound': 'sabiork', 'reactome': 'reactome'}}
+        self.header_miriam = {'compartment': {'metanetx.compartment': 'mnx', 'bigg.compartment': 'bigg', 'seed': 'seed', 'name': 'name'}, 'reaction': {'metanetx.reaction': 'mnx', 'rhea': 'rhea', 'reactome': 'reactome', 'bigg.reaction': 'bigg', 'sabiork.reaction': 'sabiork', 'ec-code': 'ec', 'biocyc': 'biocyc', 'lipidmaps': 'lipidmaps', 'uniprot': 'uniprot'}, 'species': {'inchikey': 'inchikey', 'pubchem.compound': 'pubchem', 'metanetx.chemical': 'mnx', 'chebi': 'chebi', 'bigg.metabolite': 'bigg', 'hmdb': 'hmdb', 'kegg.compound': 'kegg_c', 'kegg.drug': 'kegg_d', 'biocyc': 'biocyc', 'seed.compound': 'seed', 'metacyc.compound': 'metacyc', 'sabiork.compound': 'sabiork', 'reactome': 'reactome'}
+
+    #############################################################################################################
+    #############################################################################################################
+    ############################## HIGHER SBML FUNCTIONS ########################################################
+    #############################################################################################################
+    #############################################################################################################
+
+    """
+    These are a collection of functions that are 'higher up'. That is, take for input rpSBML files and perform
+    some type of operation on it
+    """
+
 
     #############################################################################################################
     ############################################ MERGE ##########################################################
@@ -98,7 +98,6 @@ class rpSBML:
             return False
         return True
 
-    @staticmethod
     ## Merge two models species and reactions using the annotations to recognise the same species and reactions
     #
     # The source model has to have both the GROUPS and FBC packages enabled in its SBML. The course must have a groups
@@ -112,6 +111,7 @@ class rpSBML:
     #
     #TODO: add a confidence in the merge using the score in
     #TODO: seperate the different parts so that others may use it
+    @staticmethod
     def mergeModels(source_rpsbml,
                     target_rpsbml,
                     species_group_id='central_species',
@@ -452,6 +452,10 @@ class rpSBML:
         return species_source_target, reac_replace
 
 
+    #############################################################################################################
+    ############################################ COMPARE ########################################################
+    #############################################################################################################
+
     @staticmethod
     ## Function that takes a matrix of species to species with the similarity score to determine the most similar one
     #
@@ -572,9 +576,7 @@ class rpSBML:
         logging.debug('###################')
         return to_ret
 
-    ##########################################################################################
     #################################### REACTION ############################################
-    ##########################################################################################
 
     ## Function that compares the reas
     # Compare that all the measured species of a reactions are found within sim species to match with a reaction.
@@ -804,9 +806,7 @@ class rpSBML:
             return np.mean(scores), False
 
 
-    ##########################################################################################
     ##################################### SPECIES ############################################
-    ##########################################################################################
 
     ## Match all the measured chemical species to the simulated chemical species between two SBML
     #
@@ -900,12 +900,18 @@ class rpSBML:
 
 
 
-    ######################################################################################################################
     ############################################### EC NUMBER ############################################################
-    ######################################################################################################################
 
 
-
+    ## Function to compare two EC number from a MIRIAM dictionary object
+    #
+    # TODO: rename the meas and sim to source and target to make it more unified
+    # @Joan: should this not be staticmethod?
+    #
+    # @param meas_reac_miriam Measured MIRIAM reaction dictionnary object (TODO: refer to the function that generates it)
+    # @param sim_reac_miriam Measured MIRIAM reaction dictionnary object (TODO: refer to the function)
+    # @return int score
+    @staticmethod
     def compareEC(meas_reac_miriam, sim_reac_miriam):
         #Warning we only match a single reaction at a time -- assume that there cannot be more than one to match at a given time
         if 'ec-code' in meas_reac_miriam and 'ec-code' in sim_reac_miriam:
@@ -945,7 +951,16 @@ class rpSBML:
 
 
 
+    #############################################################################################################
+    #############################################################################################################
+    ############################################ LOWER rpSBML ###################################################
+    #############################################################################################################
+    #############################################################################################################
 
+    """
+    These are a collection of functions that manage 'lower' level rpSBML functionnalities. That is, they provide different types of access to individual 
+    libSBML functionnalities and improve it. Usually denaoted by the fact that 'self' is passed to the functions
+    """
 
     @staticmethod
     def _search_key(keys, dict):
@@ -1016,9 +1031,7 @@ class rpSBML:
     def getScore(self):
         return self.rules_scores[0] / self.rules_scores[1]
 
-    #######################################################################
     ############################# PRIVATE FUNCTIONS #######################
-    #######################################################################
 
     ## Check the libSBML calls
     #
@@ -1406,7 +1419,7 @@ class rpSBML:
         return True
 
     ## Generate in-house json output of the rpSBML model including the annotations for the BRSynth and MIRIAM
-    #
+    # @Joan: This function seems like it should be changed to not have self right?
     #
     # TODO: change the name of the function to: rpJSON
     def genJSON(self, pathway_id='rp_pathway'):
@@ -1437,7 +1450,7 @@ class rpSBML:
 
 
     #####################################################################
-    ########################## INPUT/OUTPUT #############################
+    ########################## rpSBML IO ################################
     #####################################################################
 
 
@@ -1491,12 +1504,20 @@ class rpSBML:
     # @param model libSBML model to be saved to file
     # @param model_id model id, note that the name of the file will be that
     # @param path Non required parameter that will define the path where the model will be saved
-    def writeSBML(self, path=None):
+    def writeSBML(self, path=None, in_fi_name=None):
         p = None
-        fi_name = self.modelName
+        #handle the filename
+        if not in_fi_name:
+            fi_name = self.model_name
+        else:
+            fi_name = in_fi_name
+        if not str(fi_name).endswith('_sbml'):
+            fi_name += '_sbml'
+        #handle the path
         if path:
             if os_path.isdir(path):
                 p = path
+                
             else:
                 tmp_fi_name = os_path.basename(path)
                 logging.debug('tmp_fi_name: '+str(tmp_fi_name))
@@ -1509,6 +1530,9 @@ class rpSBML:
                     fi_name = tmp_fi_name
                     p = os_path.dirname(path)
         else:
+            if self.path==None:
+                logging.error('Both the rpSBML object output path and the passed path are not defined')
+                return False
             logging.warning('Overwriting the input file: '+str(self.path))
             p = self.path
         ext = ''
@@ -1521,7 +1545,7 @@ class rpSBML:
 
 
     #####################################################################
-    ########################## FindCreate ###############################
+    ########################## FIND #####################################
     #####################################################################
 
 
@@ -1867,7 +1891,7 @@ class rpSBML:
 
 
     #########################################################################
-    ############################# COMPARE MODELS ############################
+    ############################# COMPARE ###################################
     #########################################################################
 
 
@@ -2575,7 +2599,7 @@ class rpSBML:
 
 
     ##############################################################################################
-    ############################### Generic Model ################################################
+    ############################### GENERIC MODEL ################################################
     ##############################################################################################
 
 
@@ -2587,13 +2611,13 @@ class rpSBML:
     #
     #
     def genericModel(self,
-                     modelName,
+                     model_name,
                      model_id,
                      compXref,
                      compartment_id,
                      upper_flux_bound=999999,
                      lower_flux_bound=0):
-        self.createModel(modelName, model_id)
+        self.createModel(model_name, model_id)
         # mmol_per_gDW_per_hr -- flux
         unitDef = self.createUnitDefinition('mmol_per_gDW_per_hr')
         self.createUnit(unitDef, libsbml.UNIT_KIND_MOLE, 1, -3, 1)
