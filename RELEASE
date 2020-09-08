@@ -1,3 +1,6 @@
+0.2.0 - Sep 8, 2020
+    - Fix Homepage URL
+
 0.1.9 - Sep 8, 2020
     - Publish to Conda for Python 3.8
 
