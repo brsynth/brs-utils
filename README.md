@@ -2,9 +2,6 @@
 
 [![Anaconda-Server Badge](https://anaconda.org/brsynth/brs_utils/badges/latest_release_date.svg)](https://anaconda.org/brsynth/brs_utils) [![Anaconda-Server Badge](https://anaconda.org/brsynth/brs_utils/badges/version.svg)](https://anaconda.org/brsynth/brs_utils)
 
-## rpSBML
-Defines SBML structure with additional fields relative to [RetroPath2](https://github.com/brsynth/RetroPath2-wrapper) objects.
-
 ## total_size
 Computes the deep size of an object.
 
@@ -17,10 +14,6 @@ Functions to handle download and extract files
 ## file_length
 Returns the number of lines of the given file
 
-## Prerequisites
-
-* Python 3 with the following modules:
-    * python-libsbml
 
 ## Authors
 
