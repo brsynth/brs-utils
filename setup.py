@@ -30,7 +30,7 @@ setup(
     description='BRSynth Utilities',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/brsynth/RRulesParser',
+    url='https://github.com/brsynth/brs-utils',
     packages=[_package],
     package_dir={_package: _package},
     include_package_data=True,
