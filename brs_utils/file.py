@@ -26,7 +26,7 @@ def extract_tar_gz(file, path):
 
 def extract_gz_to_string(file):
     gz = gz_open(file, mode='rb')
-    return gz.read()
+    return gz.read().decode()
 
 def extract_gz(file, path):
     outfile = path+'/'+os_path.basename(file[:-3])

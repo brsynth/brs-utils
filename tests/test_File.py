@@ -57,7 +57,7 @@ class Test_File(TestCase):
     def test_extract_gz_to_string(self):
         s = extract_gz_to_string('data/data.tar.gz')
         self.assertEqual(
-            sha256(s).hexdigest(),
+            sha256(s.encode()).hexdigest(),
             'd3eb1c4b3604e6863fb4c4da930b4df74217fcf95c78439bc721ea83ce280f19'
                         )
 
