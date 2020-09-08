@@ -1,3 +1,9 @@
+0.2.1 - Sep 8, 2020
+  - Rename 'extract_gz' function into 'extract_tar_gz'
+  - Rename 'download_and_extract_gz' function into 'download_and_extract_tar_gz'
+  - Add 'extract_gz_to_string' function
+  - Add 'download_and_extract_gz' function
+
 0.2.0 - Sep 8, 2020
     - Fix Homepage URL
 
