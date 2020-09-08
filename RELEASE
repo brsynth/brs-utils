@@ -1,4 +1,4 @@
-0.2.1 - Sep 9, 2020
+0.2.2 - Sep 9, 2020
   - 'extract_gz_to_string' function returns string instead of bytes
 
 0.2.1 - Sep 8, 2020
