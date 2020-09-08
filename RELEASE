@@ -1,3 +1,6 @@
+0.2.3 - Sep 9, 2020
+  - return outfile from 'extract_gz' function
+
 0.2.2 - Sep 9, 2020
   - 'extract_gz_to_string' function returns string instead of bytes
 
