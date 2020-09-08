@@ -6,7 +6,7 @@ Created on Jul 14 2020
 
 from unittest import TestCase
 
-from brs_utils import file_length, read_dict, download, extract_gz, download_and_extract_gz
+from brs_utils import file_length, read_dict, download, extract_gz, extract_tar_gz, extract_gz_to_string, download_and_extract_tar_gz
 from tempfile  import NamedTemporaryFile, TemporaryDirectory
 from pathlib   import Path
 from hashlib   import sha256
@@ -48,7 +48,22 @@ class Test_File(TestCase):
 
     def test_extract_gz(self):
         with TemporaryDirectory() as tempd:
-            extract_gz('data/data.gz', tempd)
+            extract_gz('data/data.tar.gz', tempd)
+            self.assertEqual(
+                sha256(Path(tempd+'/data.tar').read_bytes()).hexdigest(),
+                'd3eb1c4b3604e6863fb4c4da930b4df74217fcf95c78439bc721ea83ce280f19'
+                            )
+
+    def test_extract_gz_to_string(self):
+        s = extract_gz_to_string('data/data.tar.gz')
+        self.assertEqual(
+            sha256(s).hexdigest(),
+            'd3eb1c4b3604e6863fb4c4da930b4df74217fcf95c78439bc721ea83ce280f19'
+                        )
+
+    def test_extract_tar_gz(self):
+        with TemporaryDirectory() as tempd:
+            extract_tar_gz('data/data.tar.gz', tempd)
             self.assertEqual(
                 sha256(Path(tempd+'/test_Download.py').read_bytes()).hexdigest(),
                 '504676268634b8c340a11e202b4d9c7cc08f9daea749f4c9cf5db9294772bc39'
