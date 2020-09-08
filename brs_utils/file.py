@@ -34,6 +34,7 @@ def extract_gz(file, path):
     with gz_open(file, 'rb') as f_in:
         with open(outfile, 'wb') as f_out:
             shutil_copyfileobj(f_in, f_out)
+    return outfile
 
 def download_and_extract_tar_gz(url, path):
     with NamedTemporaryFile() as tempf:
