@@ -1,3 +1,6 @@
+0.2.4 - Sep 11, 2020
+  - add 'insert_and_or_replace_in_sorted_list' function
+
 0.2.3 - Sep 9, 2020
   - return outfile from 'extract_gz' function
 
