@@ -1,3 +1,6 @@
+0.2.5 - Sep 16, 2020
+  - fix 'insert_and_or_replace_in_sorted_list' function
+
 0.2.4 - Sep 11, 2020
   - add 'insert_and_or_replace_in_sorted_list' function
 
