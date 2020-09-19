@@ -1,3 +1,7 @@
+0.2.6 - Sep 19, 2020
+  - rename src folder
+  - absolute imports
+
 0.2.5 - Sep 16, 2020
   - fix 'insert_and_or_replace_in_sorted_list' function
 
