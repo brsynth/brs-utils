@@ -49,9 +49,9 @@ jobs:
     - name: Get module from PyPi
       run: |
         conda skeleton pypi brs_utils
-    - name: Add channels
-      run: |
-        conda config --add channels sbmlteam
+    # - name: Add channels
+    #   run: |
+    #     conda config --add channels sbmlteam
     - name: Build for Python ${{ matrix.python-version }}
       run: |
         conda-build --python ${{ matrix.python-version }} brs_utils
