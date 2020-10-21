@@ -1,3 +1,7 @@
+1.0.0 - Oct 21, 2020
+  - pure conda packaging
+  - stop pip publishing
+
 0.2.6 - Sep 19, 2020
   - rename src folder
   - absolute imports
