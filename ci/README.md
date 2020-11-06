@@ -62,7 +62,7 @@ ANACONDA_TOKEN=<token>
 ## Development tools
 Conda workflow is heavy and long to perform. For development or debugging purposes, fast testing process is possible by:
 ```bash
-make f-test [env=<conda_env_name>]
+make f-test [env=<conda_env_name>] [<tests_folder_or_filename(s)>]
 ```
 Equivalent to `pytest`, this stage is achieved within a conda environment.
 
