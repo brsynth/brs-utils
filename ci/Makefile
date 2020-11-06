@@ -19,7 +19,6 @@ MAKE_CMD = $(MAKE) -s -C makefiles
 
 # PYTHON VERSION
 ifneq ($(strip $(python)),)
-	PYTHON = python=$(python)
 	PYTHON_ENV = _python$(python)
 endif
 ifeq ($(env),)
