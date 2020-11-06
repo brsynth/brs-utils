@@ -8,7 +8,7 @@ include $(SELF_DIR)/.env
 .PHONY: help test
 
 help: ## Basic help.
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .DEFAULT_GOAL := help
 
@@ -33,23 +33,23 @@ clean: check-conda
 	@$(MAKE_CMD) -f conda-tools.mk clean
 
 # CONDA WORKFLOW
-build: check-conda ## Build (without tests) conda package, if 'python=<version>' cli argument is passed, python=<version> will be installed within the environment
+build: check-conda ## Build (without tests) conda package, if 'python=<version>' (default is latest available) is set then the package will be built for this version of Python
 	@$(MAKE_CMD) -f conda-tools.mk conda-build-only$(PYTHON_ENV)
 
-check: check-conda ## Test conda package, if 'python=<version>' cli argument is passed, python=<version> will be installed within the environment
+check: check-conda ## Test conda package
 	@$(MAKE) check-environment-check env=check
 	@$(MAKE_CMD) -f conda-env.mk conda-run-env env=check cmd="make -f test.mk check"
 
-test: check-conda ## Test conda package, if 'python=<version>' cli argument is passed, python=<version> will be installed within the environment
+test: check-conda ## Test conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be tested
 	@$(MAKE_CMD) -f conda-tools.mk conda-test-only$(PYTHON_ENV)
 
-convert: check-conda ## Convert conda package towards all platforms, if 'python=<version>' cli argument is passed, python=<version> will be installed within the environment
+convert: check-conda ## Convert conda package towards all platforms, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be converted
 	@$(MAKE_CMD) -f conda-tools.mk conda-convert$(PYTHON_ENV)
 
-publish: check-conda ## Publish conda package, if 'python=<version>' cli argument is passed, python=<version> will be installed within the environment
+publish: check-conda ## Publish conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be published
 	@$(MAKE_CMD) -f conda-tools.mk conda-publish$(PYTHON_ENV)
 
-check-recipe: check-conda ## Check recipe
+check-recipe: check-conda ## Check conda recipe
 	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-check
 
 
@@ -77,9 +77,9 @@ else
 endif
 check-environment-%: check-conda
 ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
-		@echo ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..."
+		@echo ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..." > /dev/null
 else
-		@echo ">>> '$(env)' folder is missing in $(ENV_DIR). Installing ..."
+		@echo ">>> '$(env)' folder is missing in $(ENV_DIR). Installing ..." > /dev/null
 		@$(MAKE_CMD) -f conda-env.mk conda-create-env-$* env=$(env)
 endif
 
