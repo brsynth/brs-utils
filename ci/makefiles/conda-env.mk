@@ -30,7 +30,8 @@ conda-create-env-check: ## conda-create-env: Create conda environment named by '
 
 conda-create-env-test: ## conda-create-env: Create conda environment named by 'env=<name>' cli argument. If 'python=<version>' cli argument is passed, python=<version> will be installed within the environment.
 	@echo -n "Creating 'test' environment... "
-	@$(MAKE_CMD) -f conda-env.mk conda-create-env-check env=$(env)
+	# @$(MAKE_CMD) -f conda-env.mk conda-create-env-check env=$(env)
+	@conda create -y -n $(env) $(PYTHON) > /dev/null
 	@$(MAKE_CMD) -f conda-tools.mk conda-install-pyyaml
 	@python ../$(TEST_PATH)/parse_recipe.py > /dev/null
 	@conda env update -n $(env) --file ../$(TEST_PATH)/test-environment.yml > /dev/null
@@ -39,10 +40,10 @@ conda-create-env-test: ## conda-create-env: Create conda environment named by 'e
 
 conda-run-env:
 ifneq ($(strip $(cmd)),)
-	@conda run --name $(env) $(cmd)
+	@conda run --name $(env) $(cmd) $(args)
 else
 	@conda run --name $(env) \
-		$(MAKE_CMD) -f conda-tools.mk $(target)
+		$(MAKE_CMD) -f conda-tools.mk $(target) args=$(args)
 endif
 
 

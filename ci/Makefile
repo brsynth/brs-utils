@@ -55,14 +55,15 @@ check-recipe: check-conda ## Check recipe
 
 # FAST TESTING
 test-pytest:
-	   @$(MAKE_CMD) -f test.mk
+	   @$(MAKE_CMD) -f test.mk test args=$(args)
 f-test: check-conda ## Test code with 'pytest' within a conda environment, this is the fastest way to test the code
 ifneq ($(strip $(env)),)
 	$(eval env=test)
 endif
 		 @$(MAKE) check-environment-test env=$(env)
 	   @$(MAKE_CMD) -f conda-env.mk conda-run-env env=$(env) \
-																					      cmd="make test-pytest"
+																					      cmd="make -C .. test-pytest" \
+																								args=$(ARGS)
 
 
 # ENVIRONMENT CHECKING
