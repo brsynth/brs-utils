@@ -30,10 +30,11 @@ class Test_File(TestCase):
             f.write(json_dumps(dict))
 
     def test_readdict_ok(self):
-        filename = 'dict'
-        self._create_file_from_dict(filename, self._d)
-        dict = read_dict(filename)
-        self.assertDictEqual(dict, self._d)
+        with TemporaryDirectory() as tempd:
+            filename = tempd+'/dict'
+            self._create_file_from_dict(filename, self._d)
+            dict = read_dict(filename)
+            self.assertDictEqual(dict, self._d)
 
     _url = 'https://gitlab.com/breakthewall/rpcache-data/-/raw/master/metanetx/comp_xref.tsv.gz'
 
