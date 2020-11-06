@@ -1,38 +1,52 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Test suite
+name: Test
 
 on:
 
   push:
-    branches: [ master, main ]
-    paths:
-      - 'brs_utils/*'
+    branches: [ master, dev ]
+    paths-ignore:
+      - 'RELEASE*'
+      - 'README*'
+      - 'LICENSE*'
+      - 'recipe'
+      - 'docs'
+      - '.github'
+      - '!.github/workflows/test*'
   pull_request:
     branches: [ master ]
 
 jobs:
 
-  Functional:
+  Check:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
+    env:
+      ANACONDA_TOKEN: ${{secrets.ANACONDA_TOKEN}}
+      ANACONDA_USER: ${{secrets.ANACONDA_USER}}
 
     steps:
-
     - uses: actions/checkout@v2
+    - uses: docker://continuumio/miniconda3
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+    - name: Updating conda
+      run: conda update --all -y
 
-    - name: Test
+    - name: Installing conda-build
+      run: conda install -y conda-build
+
+    - name: Installing make
+      run: conda install -y make
+
+    - name: Building package
       run: |
-        cd tests
-        bash ./test-in-docker.sh
-#        pytest --verbose
+        cd ci
+        make build
+
+    - name: Testing package
+      run: |
+        cd ci
+        make test

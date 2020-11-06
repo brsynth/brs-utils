@@ -10,58 +10,35 @@ jobs:
   Conda:
     runs-on: ubuntu-latest
 
-    env:
-      ANACONDA_TOKEN: ${{secrets.ANACONDA_TOKEN}}
-      ANACONDA_USER: ${{secrets.ANACONDA_USER}}
-      ANACONDA_LABEL: main
-      CONDA_BLD_PATH: /tmp/conda-bld
-
     steps:
     - uses: actions/checkout@v2
-    - uses: conda-incubator/setup-miniconda@v1
-      with:
-        activate-environment: build_env
-        auto-update-conda: true
-        environment-file: recipe/conda_build_env.yaml
-        miniconda-version: "latest"
-        auto-activate-base: false
+    - uses: docker://continuumio/miniconda3
 
-    - name: Set up output folder
-      run: |
-        mkdir -p ${CONDA_BLD_PATH}
+    - name: Updating conda
+      run: conda update --all -y
 
-    - name: Build conda package
-      shell: bash -l {0}
-      run: |
-        conda build --no-test \
-          -c brsynth \
-          -c conda-forge \
-          --output-folder ${CONDA_BLD_PATH} recipe
+    - name: Installing conda-build
+      run: conda install -y conda-build
 
-    - name: Test conda package
-      shell: bash -l {0}
-      run: |
-        conda build --test \
-          -c brsynth \
-          -c conda-forge \
-          ${CONDA_BLD_PATH}/*/brs_utils-*.tar.bz2
+    - name: Installing make
+      run: conda install -y make
 
-    - name: Convert to other platforms
-      shell: bash -l {0}
+    - name: Building package
       run: |
-        conda convert \
-          --platform osx-64 \
-          --platform linux-64 \
-          --platform win-64 \
-          --output-dir ${CONDA_BLD_PATH} \
-          ${CONDA_BLD_PATH}/*/brs_utils-*
+        cd ci
+        make build
 
-    - name: Upload to anaconda
-      shell: bash -l {0}
+    - name: Testing package
       run: |
-        anaconda \
-          --token ${ANACONDA_TOKEN} \
-          upload \
-          --user ${ANACONDA_USER} \
-          --label ${ANACONDA_LABEL} \
-          ${CONDA_BLD_PATH}/*/brs_utils-*.tar.bz2
+        cd ci
+        make test
+
+    - name: Converting to other platforms
+      run: |
+        cd ci
+        make convert
+
+    - name: Uploading to anaconda
+      run: |
+        cd ci
+        make publish
