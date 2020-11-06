@@ -25,6 +25,8 @@ MAKE_CMD = $(MAKE) -s
 
 clean: conda-recipe-clean conda-clean-build
 
+
+
 # CONDA
 
 ## CONDA BASICS
@@ -56,27 +58,31 @@ conda-add-channels:
 	  conda config --quiet --add channels $$channel > /dev/null ; \
 	done
 
+
 ## CONDA BUILD
+
 ### build only
 conda-build-only_python%:
 	@echo -n "Building conda package... "
 	@conda build --no-test $(CONDA_BUILD_ARGS) --python=$* --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null
 	@echo OK
 conda-build-only: conda-install-pyyaml
-	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
+	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk 'BEGIN {FS = "="} ; {print $2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-build-only_python$$pyver ; \
 	done
-	@rm -f ../${TEST_PATH}/environment.yml
+	@$(MAKE) conda-recipe-clean
+
 ### test only
 conda-test-only_python%: conda-add-channels
 	@echo -n "Testing conda package for python$*... "
 	@conda build --test $(CONDA_BUILD_ARGS) ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2 > /dev/null
 	@echo OK
 conda-test-only: conda-add-channels conda-install-pyyaml
-	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
+	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$1}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-test-only_python$$pyver ;\
 	done
-	@rm -f ${TEST_PATH}/environment.yml
+	@$(MAKE) conda-recipe-clean
+
 ### build+test
 conda-build: conda-build-test
 conda-build-test_python%:
@@ -87,22 +93,34 @@ conda-build-test: conda-install-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-build-test_python$$pyver ;\
 	done
-	@rm -f ../${TEST_PATH}/environment.yml
+	@$(MAKE) conda-recipe-clean
+
 ### convert
-conda-convert:
-	@echo -n "Converting conda package from ${PLATFORM} to osx-64, linux-64 and win-64... "
+conda-convert_python%:
+	@echo -n "Converting conda package (python$*) from ${PLATFORM} to osx-64, linux-64 and win-64... "
 	@conda convert \
 	        --platform osx-64 \
 	        --platform linux-64 \
 	        --platform win-64 \
 	        --output-dir ${CONDA_BLD_PATH} \
-	        ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py$(pyver)*.tar.bz2
+	        ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
 	@echo OK
+conda-convert:
+	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
+		$(MAKE_CMD) -f conda-tools.mk conda-convert_python$$pyver ;\
+	done
+	@$(MAKE) conda-recipe-clean
+
 ### publish
-conda-publish:
-	anaconda \
-		--token ${ANACONDA_TOKEN} \
+conda-publish_python%:
+	@anaconda \
+		--token `cat ../.secrets | grep ANACONDA_TOKEN | awk 'BEGIN {FS = "="} ; {print $$2}'` \
 		upload \
-		--user ${ANACONDA_USER} \
+		--user `cat ../.secrets | grep ANACONDA_USER | awk 'BEGIN {FS = "="} ; {print $$2}'` \
 		--label ${ANACONDA_LABEL} \
-		${CONDA_BLD_PATH}/*/${PACKAGE}-*py$(pyver)*.tar.bz2
+		${CONDA_BLD_PATH}/*/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
+conda-publish:
+	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
+		$(MAKE_CMD) -f conda-tools.mk conda-publish_python$$pyver ;\
+	done
+	@$(MAKE) conda-recipe-clean
