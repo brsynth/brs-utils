@@ -8,7 +8,7 @@ This Continuous Integration toolkit provides tools to build and publish Conda pa
 
 Requirements can be provided by a docker container by running the following commands (at package root folder):
 ```bash
-docker run -it --rm -v $PWD:$PWD -w $PWD continuumio/anaconda3 bash
+docker run -it --rm -v $PWD:$PWD -w $PWD continuumio/miniconda3 bash
 conda update --all -y
 apt-get update
 apt-get install -y make
@@ -45,9 +45,13 @@ Equivalent to `conda convert`, the conversion is performed for all plaforms (`li
 If `python` option is set then this stage is only performed for the version `<ver>` of Python. By default, the Python version will be the latest available within the building environment.
 
 ### Publish
+
+#### Requirements
+* anaconda-client
+
 The publishing stage of conda package can be performed by:
 ```bash
-source .secrets
+conda install -y anaconda-client
 make publish [python=<ver>] [env=<conda_env_name>]
 ```
 Equivalent to `anaconda upload`.
