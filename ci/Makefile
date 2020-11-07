@@ -7,7 +7,7 @@ include $(SELF_DIR)/.env
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help test
 
-help: ## Basic help.
+help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .DEFAULT_GOAL := help
@@ -26,43 +26,51 @@ ifeq ($(env),)
 endif
 
 
-all: build test convert publish ## (default) Perform all conda process (build, test, convert, publish)
+all: conda-build conda-test conda-convert conda-publish ## (default) Perform all conda process (build, test, convert, publish)
 
 clean: check-conda
 	@$(MAKE_CMD) -f conda-tools.mk clean
 
-# CONDA WORKFLOW
-build: check-conda ## Build (without tests) conda package, if 'python=<version>' (default is latest available) is set then the package will be built for this version of Python
-	@$(MAKE_CMD) -f conda-tools.mk conda-build-only$(PYTHON_ENV)
-
-check: check-conda ## Test conda package
-	@$(MAKE) check-environment-check env=check
-	@$(MAKE_CMD) -f conda-env.mk conda-run-env env=check cmd="make -f test.mk check"
-
-test: check-conda ## Test conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be tested
-	@$(MAKE_CMD) -f conda-tools.mk conda-test-only$(PYTHON_ENV)
-
-convert: check-conda ## Convert conda package towards all platforms, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be converted
-	@$(MAKE_CMD) -f conda-tools.mk conda-convert$(PYTHON_ENV)
-
-publish: check-conda ## Publish conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be published
-	@$(MAKE_CMD) -f conda-tools.mk conda-publish$(PYTHON_ENV)
-
-check-recipe: check-conda ## Check conda recipe
-	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-check
-
-
 # FAST TESTING
-test-pytest:
+check: ## Test code with 'pytest', this is the fastest way to test the code
+	   @$(MAKE_CMD) -f test.mk check
+
+test: ## Test code with 'pytest', this is the fastest way to test the code
 	   @$(MAKE_CMD) -f test.mk test args=$(args)
-f-test: check-conda ## Test code with 'pytest' within a conda environment, this is the fastest way to test the code
+
+check-inconda: check-conda ## Test conda package
+ifneq ($(strip $(env)),)
+	$(eval env=check)
+endif
+	@$(MAKE) check-environment-check env=$(env)
+	@$(MAKE_CMD) -f conda-env.mk conda-run-env env=check cmd="make -C .. check"
+
+test-inconda: check-conda ## Test code with 'pytest' within a conda environment, this is the fastest way to test the code
 ifneq ($(strip $(env)),)
 	$(eval env=test)
 endif
 		 @$(MAKE) check-environment-test env=$(env)
 	   @$(MAKE_CMD) -f conda-env.mk conda-run-env env=$(env) \
-																					      cmd="make -C .. test-pytest" \
+																					      cmd="make -C .. test" \
 																								args=$(ARGS)
+
+# CONDA WORKFLOW
+conda-build: check-conda ## Build (without tests) conda package, if 'python=<version>' (default is latest available) is set then the package will be built for this version of Python
+	@$(MAKE_CMD) -f conda-tools.mk conda-build-only$(PYTHON_ENV)
+
+conda-test: check-conda ## Test conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be tested
+	@$(MAKE_CMD) -f conda-tools.mk conda-test-only$(PYTHON_ENV)
+
+conda-convert: check-conda ## Convert conda package towards all platforms, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be converted
+	@$(MAKE_CMD) -f conda-tools.mk conda-convert$(PYTHON_ENV)
+
+conda-publish: check-conda ## Publish conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be published
+	@$(MAKE_CMD) -f conda-tools.mk conda-publish$(PYTHON_ENV)
+
+conda-check-recipe: check-conda ## Check conda recipe
+	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-check
+
+
 
 
 # ENVIRONMENT CHECKING
