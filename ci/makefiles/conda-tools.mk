@@ -70,7 +70,7 @@ conda-build-only: conda-install-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk 'BEGIN {FS = "="} ; {print $2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-build-only_python$$pyver ; \
 	done
-	@$(MAKE) conda-recipe-clean
+	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
 
 ### test only
 conda-test-only_python%: conda-add-channels
@@ -81,7 +81,7 @@ conda-test-only: conda-add-channels conda-install-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$1}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-test-only_python$$pyver ;\
 	done
-	@$(MAKE) conda-recipe-clean
+	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
 
 ### build+test
 conda-build: conda-build-test
@@ -93,7 +93,7 @@ conda-build-test: conda-install-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-build-test_python$$pyver ;\
 	done
-	@$(MAKE) conda-recipe-clean
+	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
 
 ### convert
 conda-convert_python%:
@@ -109,7 +109,7 @@ conda-convert:
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-convert_python$$pyver ;\
 	done
-	@$(MAKE) conda-recipe-clean
+	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
 
 ### publish
 conda-publish_python%:
@@ -123,4 +123,4 @@ conda-publish:
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-publish_python$$pyver ;\
 	done
-	@$(MAKE) conda-recipe-clean
+	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
