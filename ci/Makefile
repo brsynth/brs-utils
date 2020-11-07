@@ -38,14 +38,14 @@ check: ## Test code with 'pytest', this is the fastest way to test the code
 test: ## Test code with 'pytest', this is the fastest way to test the code
 	   @$(MAKE_CMD) -f test.mk test args=$(args)
 
-check-inconda: check-conda ## Test conda package
+check-inconda: ## Test conda package
 ifneq ($(strip $(env)),)
 	$(eval env=check)
 endif
 	@$(MAKE) check-environment-check env=$(env)
 	@$(MAKE_CMD) -f conda-env.mk conda-run-env env=check cmd="make -C .. check"
 
-test-inconda: check-conda ## Test code with 'pytest' within a conda environment, this is the fastest way to test the code
+test-inconda: ## Test code with 'pytest' within a conda environment, this is the fastest way to test the code
 ifneq ($(strip $(env)),)
 	$(eval env=test)
 endif
@@ -55,42 +55,17 @@ endif
 																								args=$(ARGS)
 
 # CONDA WORKFLOW
-conda-build: check-conda ## Build (without tests) conda package, if 'python=<version>' (default is latest available) is set then the package will be built for this version of Python
+conda-build: ## Build (without tests) conda package, if 'python=<version>' (default is latest available) is set then the package will be built for this version of Python
 	@$(MAKE_CMD) -f conda-tools.mk conda-build-only$(PYTHON_ENV)
 
-conda-test: check-conda ## Test conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be tested
+conda-test: ## Test conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be tested
 	@$(MAKE_CMD) -f conda-tools.mk conda-test-only$(PYTHON_ENV)
 
-conda-convert: check-conda ## Convert conda package towards all platforms, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be converted
+conda-convert: ## Convert conda package towards all platforms, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be converted
 	@$(MAKE_CMD) -f conda-tools.mk conda-convert$(PYTHON_ENV)
 
-conda-publish: check-conda ## Publish conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be published
+conda-publish: ## Publish conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be published
 	@$(MAKE_CMD) -f conda-tools.mk conda-publish$(PYTHON_ENV)
 
-conda-check-recipe: check-conda ## Check conda recipe
+conda-check-recipe: ## Check conda recipe
 	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-check
-
-
-
-
-# ENVIRONMENT CHECKING
-ifeq (,$(shell which conda))
-    HAS_CONDA=False
-else
-    HAS_CONDA=True
-    ENV_DIR=$(shell conda info --base)
-    MY_ENV_DIR=$(ENV_DIR)/envs/$(env)
-    CONDA_ACTIVATE=source $$(conda info --base)/etc/profile.d/conda.sh ; conda activate ; conda activate
-endif
-check-environment-%: check-conda
-ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
-		@echo ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..." > /dev/null
-else
-		@echo ">>> '$(env)' folder is missing in $(ENV_DIR). Installing ..." > /dev/null
-		@$(MAKE_CMD) -f conda-env.mk conda-create-env-$* env=$(env)
-endif
-
-check-conda:
-ifeq (False,$(HAS_CONDA))
-	$(error >>> Install conda first.)
-endif

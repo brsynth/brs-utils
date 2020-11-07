@@ -62,41 +62,41 @@ conda-add-channels:
 ## CONDA BUILD
 
 ### build only
-conda-build-only_python%:
+conda-build-only_python%: check-conda-build
 	@echo -n "Building conda package... "
 	@conda build --no-test $(CONDA_BUILD_ARGS) --python=$* --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null
 	@echo OK
-conda-build-only: conda-install-pyyaml
+conda-build-only: check-conda-build conda-install-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk 'BEGIN {FS = "="} ; {print $2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-build-only_python$$pyver ; \
 	done
 	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
 
 ### test only
-conda-test-only_python%: conda-add-channels
+conda-test-only_python%: check-conda-build conda-add-channels
 	@echo -n "Testing conda package for python$*... "
 	@conda build --test $(CONDA_BUILD_ARGS) ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2 > /dev/null
 	@echo OK
-conda-test-only: conda-add-channels conda-install-pyyaml
+conda-test-only: check-conda-build conda-add-channels conda-install-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$1}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-test-only_python$$pyver ;\
 	done
 	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
 
 ### build+test
-conda-build: conda-build-test
-conda-build-test_python%:
+conda-build: check-conda-build conda-build-test
+conda-build-test_python%: check-conda-build
 	@echo -n "Building and Testing conda package... "
 	@conda build $(CONDA_BUILD_ARGS) --python=$* --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null
 	@echo OK
-conda-build-test: conda-install-pyyaml
+conda-build-test: check-conda-build conda-install-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-build-test_python$$pyver ;\
 	done
 	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
 
 ### convert
-conda-convert_python%:
+conda-convert_python%: check-conda
 	@echo -n "Converting conda package (python$*) from ${PLATFORM} to osx-64, linux-64 and win-64... "
 	@conda convert \
 	        --platform osx-64 \
@@ -105,22 +105,68 @@ conda-convert_python%:
 	        --output-dir ${CONDA_BLD_PATH} \
 	        ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
 	@echo OK
-conda-convert:
+conda-convert: check-conda
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-convert_python$$pyver ;\
 	done
 	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
 
 ### publish
-conda-publish_python%:
+conda-publish_python%: check-anaconda-client
 	@anaconda \
 		--token `cat ../.secrets | grep ANACONDA_TOKEN | awk 'BEGIN {FS = "="} ; {print $$2}'` \
 		upload \
 		--user `cat ../.secrets | grep ANACONDA_USER | awk 'BEGIN {FS = "="} ; {print $$2}'` \
 		--label ${ANACONDA_LABEL} \
 		${CONDA_BLD_PATH}/*/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
-conda-publish:
+conda-publish: check-anaconda-client
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-publish_python$$pyver ;\
 	done
 	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
+
+
+# ENVIRONMENT CHECKING
+## Check conda
+ifeq (,$(shell which conda))
+    HAS_CONDA=False
+else
+    HAS_CONDA=True
+    ENV_DIR=$(shell conda info --base)
+    MY_ENV_DIR=$(ENV_DIR)/envs/$(env)
+    CONDA_ACTIVATE=source $$(conda info --base)/etc/profile.d/conda.sh ; conda activate ; conda activate
+endif
+check-conda:
+ifeq (False,$(HAS_CONDA))
+	$(error >>> Install conda first.)
+endif
+
+## Check conda-build
+ifeq (,$(shell which conda-build))
+    HAS_CONDA_BUILD=False
+else
+    HAS_CONDA_BUILD=True
+endif
+check-conda-build:
+ifeq (False,$(HAS_CONDA_BUILD))
+	$(error >>> Install conda-build first.)
+endif
+
+## Check anaconda-client
+ifeq (,$(shell which anaconda))
+    HAS_ANACONDA_CLIENT=False
+else
+    HAS_ANACONDA_CLIENT=True
+endif
+check-anaconda-client:
+ifeq (False,$(HAS_ANACONDA_CLIENT))
+	$(error >>> Install anaconda-client first.)
+endif
+
+check-environment-%: check-conda
+ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
+		@echo ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..." > /dev/null
+else
+		@echo ">>> '$(env)' folder is missing in $(ENV_DIR). Installing ..." > /dev/null
+		@$(MAKE_CMD) -f conda-env.mk conda-create-env-$* env=$(env)
+endif
