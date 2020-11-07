@@ -26,9 +26,7 @@ ifeq ($(env),)
 endif
 
 
-all: conda-build conda-test conda-convert conda-publish ## (default) Perform all conda process (build, test, convert, publish)
-
-clean: check-conda
+clean:
 	@$(MAKE_CMD) -f conda-tools.mk clean
 
 # FAST TESTING
@@ -42,17 +40,19 @@ check-inconda: ## Test conda package
 ifneq ($(strip $(env)),)
 	$(eval env=check)
 endif
-	@$(MAKE) check-environment-check env=$(env)
+	@$(MAKE_CMD) -f conda-tools.mk check-environment-check env=$(env)
 	@$(MAKE_CMD) -f conda-env.mk conda-run-env env=check cmd="make -C .. check"
 
 test-inconda: ## Test code with 'pytest' within a conda environment, this is the fastest way to test the code
 ifneq ($(strip $(env)),)
 	$(eval env=test)
 endif
-		 @$(MAKE) check-environment-test env=$(env)
+		 @$(MAKE_CMD) -f conda-tools.mk check-environment-test env=$(env)
 	   @$(MAKE_CMD) -f conda-env.mk conda-run-env env=$(env) \
 																					      cmd="make -C .. test" \
 																								args=$(ARGS)
+
+conda-all: conda-build conda-test conda-convert conda-publish ## (default) Perform all conda process (build, test, convert, publish)
 
 # CONDA WORKFLOW
 conda-build: ## Build (without tests) conda package, if 'python=<version>' (default is latest available) is set then the package will be built for this version of Python
