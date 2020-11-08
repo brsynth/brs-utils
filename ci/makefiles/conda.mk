@@ -21,10 +21,13 @@ ARGS = $(filter-out $@,$(MAKECMDGOALS))
 
 CONDA_BUILD_ARGS = --quiet --numpy 1.11
 
-MAKE_CMD = $(MAKE) -s
+MAKE_CMD = $(MAKE) -s --no-print-directory
 
 clean: conda-recipe-clean conda-clean-build
 
+python_versions = $(shell python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}')
+recipe_channels = $(shell cat ../../recipe/conda_channels.txt)
+conda_channels  = $(shell conda config --show channels | awk '{print $2}')
 
 
 # CONDA
@@ -59,11 +62,13 @@ conda-recipe-clean:
 conda-clean-build:
 	@rm -rf ${CONDA_BLD_PATH}/*
 ### Add channels specified in recipe
+conda-add-channel-%:
+	@conda config --quiet --add channels $* > /dev/null
+## Check channels
 conda-add-channels:
-	@for channel in `cat ../../recipe/conda_channels.txt`; do \
-	  conda config --quiet --add channels $$channel > /dev/null ; \
+	@for channel in $(recipe_channels) ; do \
+		$(MAKE_CMD) -f conda.mk conda-add-channel-$$channel ; \
 	done
-
 
 ## CONDA BUILD
 
@@ -73,19 +78,19 @@ conda-build-only_python%: check-conda-build
 	@conda build --no-test $(CONDA_BUILD_ARGS) --python=$* --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null
 	@echo OK
 conda-build-only: check-conda-build check-pyyaml
-	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk 'BEGIN {FS = "="} ; {print $2}'` ; do \
-		$(MAKE_CMD) -f conda.mk conda-build-only_python$$pyver ; \
+	@for python_version in $(python_versions) ; do \
+		$(MAKE_CMD) -f conda.mk conda-build-only_python$$python_version ; \
 	done
 	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
 ### test only
 conda-test-only_python%: check-conda-build conda-add-channels
 	@echo -n "Testing conda package for python$*... "
-	@conda build --test $(CONDA_BUILD_ARGS) ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2 > /dev/null
+	conda build --test $(CONDA_BUILD_ARGS) ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
 	@echo OK
 conda-test-only: check-conda-build conda-add-channels check-pyyaml
-	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$1}'` ; do \
-		$(MAKE_CMD) -f conda.mk conda-test-only_python$$pyver ;\
+	@for python_version in $(python_versions) ; do \
+		$(MAKE_CMD) -f conda.mk conda-test-only_python$$python_version ;\
 	done
 	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
@@ -96,8 +101,8 @@ conda-build-test_python%: check-conda-build
 	@conda build $(CONDA_BUILD_ARGS) --python=$* --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null
 	@echo OK
 conda-build-test: check-conda-build check-pyyaml
-	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
-		$(MAKE_CMD) -f conda.mk conda-build-test_python$$pyver ;\
+	@for python_version in $(python_versions) ; do \
+		$(MAKE_CMD) -f conda.mk conda-build-test_python$$python_version ;\
 	done
 	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
@@ -112,8 +117,8 @@ conda-convert_python%: check-conda
 	        ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2 > /dev/null
 	@echo OK
 conda-convert: check-conda
-	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
-		$(MAKE_CMD) -f conda.mk conda-convert_python$$pyver ;\
+	@for python_version in $(python_versions) ; do \
+		$(MAKE_CMD) -f conda.mk conda-convert_python$$python_version ;\
 	done
 	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
@@ -127,8 +132,8 @@ conda-publish_python%: check-anaconda-client
 		--skip-existing \
 		${CONDA_BLD_PATH}/*/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
 conda-publish: check-anaconda-client
-	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
-		$(MAKE_CMD) -f conda.mk conda-publish_python$$pyver ;\
+	@for python_version in $(python_versions) ; do \
+		$(MAKE_CMD) -f conda.mk conda-publish_python$$python_version ;\
 	done
 	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 

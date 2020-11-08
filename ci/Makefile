@@ -15,7 +15,7 @@ help:
 # cli args
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
 
-MAKE_CMD = $(MAKE) -s -C makefiles
+MAKE_CMD = $(MAKE) -s  --no-print-directory -C makefiles
 
 # PYTHON VERSION
 ifneq ($(strip $(python)),)
