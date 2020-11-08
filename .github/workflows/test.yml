@@ -35,18 +35,10 @@ jobs:
     - name: Updating conda
       run: conda update --all -y
 
-    - name: Installing conda-build
-      run: conda install -y conda-build
-
     - name: Installing make
       run: conda install -y make
-
-    - name: Building package
-      run: |
-        cd ci
-        make build
 
     - name: Testing package
       run: |
         cd ci
-        make test
+        make test-inconda
