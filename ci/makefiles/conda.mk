@@ -124,6 +124,7 @@ conda-publish_python%: check-anaconda-client
 		upload \
 		--user `cat ../.secrets | grep ANACONDA_USER | awk 'BEGIN {FS = "="} ; {print $$2}'` \
 		--label ${ANACONDA_LABEL} \
+		--skip-existing \
 		${CONDA_BLD_PATH}/*/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
 conda-publish: check-anaconda-client
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
