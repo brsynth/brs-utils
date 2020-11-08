@@ -27,7 +27,7 @@ endif
 
 
 clean:
-	@$(MAKE_CMD) -f conda-tools.mk clean
+	@$(MAKE_CMD) -f conda.mk clean
 
 # FAST TESTING
 check: ## Test code with 'pytest', this is the fastest way to test the code
@@ -40,32 +40,32 @@ check-inconda: ## Test conda package
 ifneq ($(strip $(env)),)
 	$(eval env=check)
 endif
-	@$(MAKE_CMD) -f conda-tools.mk check-environment-check env=$(env)
-	@$(MAKE_CMD) -f conda-env.mk conda-run-env env=check cmd="make -C .. check"
+	@$(MAKE_CMD) -f conda.mk check-environment-check env=$(env)
+	@$(MAKE_CMD) -f conda.mk conda-run-env env=check cmd="make -C .. check"
 
 test-inconda: ## Test code with 'pytest' within a conda environment, this is the fastest way to test the code
 ifneq ($(strip $(env)),)
 	$(eval env=test)
 endif
-		 @$(MAKE_CMD) -f conda-tools.mk check-environment-test env=$(env)
-	   @$(MAKE_CMD) -f conda-env.mk conda-run-env env=$(env) \
-																					      cmd="make -C .. test" \
-																								args=$(ARGS)
+		 @$(MAKE_CMD) -f conda.mk check-environment-test env=$(env)
+	   @$(MAKE_CMD) -f conda.mk conda-run-env env=$(env) \
+																					  cmd="make -C .. test" \
+																						args=$(ARGS)
 
 conda-all: conda-build conda-test conda-convert conda-publish ## (default) Perform all conda process (build, test, convert, publish)
 
 # CONDA WORKFLOW
 conda-build: ## Build (without tests) conda package, if 'python=<version>' (default is latest available) is set then the package will be built for this version of Python
-	@$(MAKE_CMD) -f conda-tools.mk conda-build-only$(PYTHON_ENV)
+	@$(MAKE_CMD) -f conda.mk conda-build-only$(PYTHON_ENV)
 
 conda-test: ## Test conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be tested
-	@$(MAKE_CMD) -f conda-tools.mk conda-test-only$(PYTHON_ENV)
+	@$(MAKE_CMD) -f conda.mk conda-test-only$(PYTHON_ENV)
 
 conda-convert: ## Convert conda package towards all platforms, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be converted
-	@$(MAKE_CMD) -f conda-tools.mk conda-convert$(PYTHON_ENV)
+	@$(MAKE_CMD) -f conda.mk conda-convert$(PYTHON_ENV)
 
 conda-publish: ## Publish conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be published
-	@$(MAKE_CMD) -f conda-tools.mk conda-publish$(PYTHON_ENV)
+	@$(MAKE_CMD) -f conda.mk conda-publish$(PYTHON_ENV)
 
 conda-check-recipe: ## Check conda recipe
-	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-check
+	@$(MAKE_CMD) -f conda.mk conda-recipe-check

@@ -74,9 +74,9 @@ conda-build-only_python%: check-conda-build
 	@echo OK
 conda-build-only: check-conda-build check-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk 'BEGIN {FS = "="} ; {print $2}'` ; do \
-		$(MAKE_CMD) -f conda-tools.mk conda-build-only_python$$pyver ; \
+		$(MAKE_CMD) -f conda.mk conda-build-only_python$$pyver ; \
 	done
-	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
+	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
 ### test only
 conda-test-only_python%: check-conda-build conda-add-channels
@@ -85,9 +85,9 @@ conda-test-only_python%: check-conda-build conda-add-channels
 	@echo OK
 conda-test-only: check-conda-build conda-add-channels check-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$1}'` ; do \
-		$(MAKE_CMD) -f conda-tools.mk conda-test-only_python$$pyver ;\
+		$(MAKE_CMD) -f conda.mk conda-test-only_python$$pyver ;\
 	done
-	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
+	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
 ### build+test
 conda-build: check-conda-build conda-build-test
@@ -97,9 +97,9 @@ conda-build-test_python%: check-conda-build
 	@echo OK
 conda-build-test: check-conda-build check-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
-		$(MAKE_CMD) -f conda-tools.mk conda-build-test_python$$pyver ;\
+		$(MAKE_CMD) -f conda.mk conda-build-test_python$$pyver ;\
 	done
-	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
+	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
 ### convert
 conda-convert_python%: check-conda
@@ -113,9 +113,9 @@ conda-convert_python%: check-conda
 	@echo OK
 conda-convert: check-conda
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
-		$(MAKE_CMD) -f conda-tools.mk conda-convert_python$$pyver ;\
+		$(MAKE_CMD) -f conda.mk conda-convert_python$$pyver ;\
 	done
-	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
+	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
 ### publish
 conda-publish_python%: check-anaconda-client
@@ -127,9 +127,9 @@ conda-publish_python%: check-anaconda-client
 		${CONDA_BLD_PATH}/*/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
 conda-publish: check-anaconda-client
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
-		$(MAKE_CMD) -f conda-tools.mk conda-publish_python$$pyver ;\
+		$(MAKE_CMD) -f conda.mk conda-publish_python$$pyver ;\
 	done
-	@$(MAKE_CMD) -f conda-tools.mk conda-recipe-clean
+	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
 
 # ENVIRONMENT CHECKING
@@ -155,7 +155,7 @@ else
 endif
 check-conda-build:
 ifeq (False,$(HAS_CONDA_BUILD))
-	@$(MAKE_CMD) -f conda-tools.mk conda-install-conda-build conda-install-conda-verify
+	@$(MAKE_CMD) -f conda.mk conda-install-conda-build conda-install-conda-verify
 endif
 # $(error >>> Install conda-build first.)
 
@@ -167,7 +167,7 @@ else
 endif
 check-anaconda-client:
 ifeq (False,$(HAS_ANACONDA_CLIENT))
-	@$(MAKE_CMD) -f conda-tools.mk conda-install-anaconda-client channel=conda-forge
+	@$(MAKE_CMD) -f conda.mk conda-install-anaconda-client channel=conda-forge
 endif
 
 ifeq (,$(shell conda list | grep pyyaml))
@@ -178,7 +178,7 @@ endif
 ## Check pyyaml
 check-pyyaml:
 ifeq (False,$(HAS_PYYAML))
-	@$(MAKE_CMD) -f conda-tools.mk conda-install-pyyaml channel=conda-forge
+	@$(MAKE_CMD) -f conda.mk conda-install-pyyaml channel=conda-forge
 endif
 
 check-environment-%: check-conda
@@ -186,5 +186,29 @@ ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
 		@echo -n ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..."
 else
 		@echo -n ">>> '$(env)' folder is missing in $(ENV_DIR). Installing ..."
-		@$(MAKE_CMD) -f conda-env.mk conda-create-env-$* env=$(env)
+		@$(MAKE_CMD) -f conda.mk conda-create-env-$* env=$(env)
+endif
+
+conda-create-env-check: ## conda-create-env: Create conda environment named by 'env=<name>' cli argument. If 'python=<version>' cli argument is passed, python=<version> will be installed within the environment.
+	@echo -n "Creating 'check' environment... "
+	@conda create -y -n $(env) $(PYTHON) > /dev/null
+	@conda env update -n $(env) --file ../$(CHECK_PATH)/check-environment.yml > /dev/null
+	@echo OK
+
+conda-create-env-test: ## conda-create-env: Create conda environment named by 'env=<name>' cli argument. If 'python=<version>' cli argument is passed, python=<version> will be installed within the environment.
+	@echo -n "Creating 'test' environment... "
+	# @$(MAKE_CMD) -f conda.mk conda-create-env-check env=$(env)
+	@conda create -y -n $(env) $(PYTHON) > /dev/null
+	@$(MAKE_CMD) -f conda.mk conda-install-pyyaml
+	@python ../$(TEST_PATH)/parse_recipe.py > /dev/null
+	@conda env update -n $(env) --file ../$(TEST_PATH)/test-environment.yml > /dev/null
+	@rm -f ../$(TEST_PATH)/environment.yml
+	@echo OK
+
+conda-run-env:
+ifneq ($(strip $(cmd)),)
+	@conda run --name $(env) $(cmd) $(args)
+else
+	@conda run --name $(env) \
+		$(MAKE_CMD) -f conda.mk $(target) args=$(args)
 endif
