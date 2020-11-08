@@ -36,11 +36,17 @@ conda-update:
 	@conda update -q -y -n base -c defaults conda > /dev/null
 	@echo OK
 ### install package
-conda-install-%: conda-update
-	@conda install -y -c conda-forge pyyaml
+conda-install-%:
+	@echo -n ">>> Installing $*... "
+ifeq (,$(channel))
+	@conda install -y $* > /dev/null
+else
+	@conda install -y -c $(channel) $* > /dev/null
+endif
+	@echo OK
 ### check recipe
 conda-recipe-check:
-	@echo -n "Checking the recipe..."
+	@echo -n "Checking the recipe... "
 	@conda build --check $(CONDA_BUILD_ARGS) ../../recipe > /dev/null
 	@echo OK
 ### parse recipe
@@ -66,7 +72,7 @@ conda-build-only_python%: check-conda-build
 	@echo -n "Building conda package... "
 	@conda build --no-test $(CONDA_BUILD_ARGS) --python=$* --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null
 	@echo OK
-conda-build-only: check-conda-build conda-install-pyyaml
+conda-build-only: check-conda-build check-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk 'BEGIN {FS = "="} ; {print $2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-build-only_python$$pyver ; \
 	done
@@ -77,7 +83,7 @@ conda-test-only_python%: check-conda-build conda-add-channels
 	@echo -n "Testing conda package for python$*... "
 	@conda build --test $(CONDA_BUILD_ARGS) ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2 > /dev/null
 	@echo OK
-conda-test-only: check-conda-build conda-add-channels conda-install-pyyaml
+conda-test-only: check-conda-build conda-add-channels check-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$1}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-test-only_python$$pyver ;\
 	done
@@ -89,7 +95,7 @@ conda-build-test_python%: check-conda-build
 	@echo -n "Building and Testing conda package... "
 	@conda build $(CONDA_BUILD_ARGS) --python=$* --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null
 	@echo OK
-conda-build-test: check-conda-build conda-install-pyyaml
+conda-build-test: check-conda-build check-pyyaml
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
 		$(MAKE_CMD) -f conda-tools.mk conda-build-test_python$$pyver ;\
 	done
@@ -103,7 +109,7 @@ conda-convert_python%: check-conda
 	        --platform linux-64 \
 	        --platform win-64 \
 	        --output-dir ${CONDA_BLD_PATH} \
-	        ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
+	        ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2 > /dev/null
 	@echo OK
 conda-convert: check-conda
 	@for pyver in `python ../${TEST_PATH}/parse_recipe.py | grep python | awk '{print $$2}'` ; do \
@@ -149,8 +155,9 @@ else
 endif
 check-conda-build:
 ifeq (False,$(HAS_CONDA_BUILD))
-	$(error >>> Install conda-build first.)
+	@$(MAKE_CMD) -f conda-tools.mk conda-install-conda-build conda-install-conda-verify
 endif
+# $(error >>> Install conda-build first.)
 
 ## Check anaconda-client
 ifeq (,$(shell which anaconda))
@@ -160,13 +167,24 @@ else
 endif
 check-anaconda-client:
 ifeq (False,$(HAS_ANACONDA_CLIENT))
-	$(error >>> Install anaconda-client first.)
+	@$(MAKE_CMD) -f conda-tools.mk conda-install-anaconda-client channel=conda-forge
+endif
+
+ifeq (,$(shell conda list | grep pyyaml))
+    HAS_PYYAML=False
+else
+    HAS_PYYAML=True
+endif
+## Check pyyaml
+check-pyyaml:
+ifeq (False,$(HAS_PYYAML))
+	@$(MAKE_CMD) -f conda-tools.mk conda-install-pyyaml channel=conda-forge
 endif
 
 check-environment-%: check-conda
 ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
-		@echo ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..." > /dev/null
+		@echo -n ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..."
 else
-		@echo ">>> '$(env)' folder is missing in $(ENV_DIR). Installing ..." > /dev/null
+		@echo -n ">>> '$(env)' folder is missing in $(ENV_DIR). Installing ..."
 		@$(MAKE_CMD) -f conda-env.mk conda-create-env-$* env=$(env)
 endif
