@@ -1,6 +1,7 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 include $(SELF_DIR)/.env
+include $(SELF_DIR)/../extras/.env
 
 # HELP
 # This will output the help for each task
@@ -17,10 +18,7 @@ ARGS = $(filter-out $@,$(MAKECMDGOALS))
 
 MAKE_CMD = $(MAKE) -s  --no-print-directory -C makefiles
 
-# PYTHON VERSION
-ifneq ($(strip $(python)),)
-	PYTHON_ENV = _python$(python)
-endif
+# Default environment
 ifeq ($(env),)
 	env = build
 endif
@@ -55,17 +53,17 @@ endif
 conda-all: conda-build conda-test conda-convert conda-publish ## (default) Perform all conda process (build, test, convert, publish)
 
 # CONDA WORKFLOW
-conda-build: ## Build (without tests) conda package, if 'python=<version>' (default is latest available) is set then the package will be built for this version of Python
-	@$(MAKE_CMD) -f conda.mk conda-build-only$(PYTHON_ENV)
+conda-build: ## Build (without tests) conda package, 'variants=<variants>' option can be passed (format must be fully compliant with '--variants' option of conda-build)
+	@$(MAKE_CMD) -f conda.mk conda-build-only env=${PACKAGE}_build variants="$(variants)"
 
-conda-test: ## Test conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be tested
-	@$(MAKE_CMD) -f conda.mk conda-test-only$(PYTHON_ENV)
+conda-test: ## Test conda package
+	@$(MAKE_CMD) -f conda.mk conda-test-only env=${PACKAGE}_build
 
 conda-convert: ## Convert conda package towards all platforms, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be converted
-	@$(MAKE_CMD) -f conda.mk conda-convert$(PYTHON_ENV)
+	@$(MAKE_CMD) -f conda.mk conda-convert env=${PACKAGE}_build
 
 conda-publish: ## Publish conda package, if 'python=<version>' (default is all variants of package built) is set then the package built for this version of Python will be published
-	@$(MAKE_CMD) -f conda.mk conda-publish$(PYTHON_ENV)
+	@$(MAKE_CMD) -f conda.mk conda-publish env=${PACKAGE}_build
 
 conda-check-recipe: ## Check conda recipe
 	@$(MAKE_CMD) -f conda.mk conda-recipe-check
