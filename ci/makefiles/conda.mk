@@ -222,13 +222,14 @@ endif
 
 build_env_file = ../../recipe/conda_build_env.yaml
 test_env_file  = $(shell python ../$(TEST_PATH)/parse_recipe.py)
-check-environment-%: check-conda
+check_env_file = ../test/check-environment.yml
+check-environment-%: check-conda check-pyyaml
 ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
 		@echo ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..."
 else
 		@echo ">>> '$(env)' folder is missing in $(ENV_DIR)."
 		@echo -n "Creating '$(env)' environment... "
-		@conda env create -n $(env) -f $($*_env_file) > /dev/null
+		@conda env create -n $(env) -f $($(*)_env_file) > /dev/null
 		@echo OK
 endif
 
