@@ -2,7 +2,7 @@ from setuptools import setup
 
 _readme = 'README.md'
 
-with open(_readme, 'r') as f:
+with open(_readme, 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 _release = 'RELEASE'
@@ -11,7 +11,7 @@ with open(_release, 'r') as f:
     _version = f.readline().split()[0]
 
 _extras_path = 'extras'
-with open(_extras_path+'/.env', 'r') as f:
+with open(_extras_path+'/.env', 'r', encoding='utf-8') as f:
     for line in f:
         if line.startswith('PACKAGE='):
             _package = line.splitlines()[0].split('=')[1].lower()
