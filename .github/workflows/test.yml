@@ -20,7 +20,7 @@ on:
 
 jobs:
 
-  Check:
+  Test:
 
     runs-on: ubuntu-latest
 

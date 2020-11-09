@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  Conda:
+  Publish:
     runs-on: ubuntu-latest
 
     steps:
