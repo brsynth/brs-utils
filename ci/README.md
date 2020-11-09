@@ -43,6 +43,7 @@ Equivalent to `conda convert`, the conversion is performed for all plaforms (`li
 
 If `python` option is set then this stage is only performed for the version `<ver>` of Python. By default, the Python version will be the latest available within the building environment.
 
+
 ### Publish
 
 #### Requirements
