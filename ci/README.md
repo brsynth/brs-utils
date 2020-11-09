@@ -37,6 +37,10 @@ Equivalent to `conda build --build-only`. Only run the build, without  any  post
 
 If `variants` option is set according to `--variants` `conda-build` option format, then this stage is performed all combinations of `variants`, otherwise combinations are deducted from `recipe/conda_build_config.yaml` file.
 
+Also, `recipe/conda_build_config.yaml` file can be edited to target specific variant(s).
+
+
+
 ### Test
 The testing stage of conda package can be performed by:
 ```bash
