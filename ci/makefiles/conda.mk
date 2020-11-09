@@ -220,38 +220,17 @@ ifeq (False,$(HAS_PYYAML))
 	@$(MAKE_CMD) -f conda.mk conda-install-pyyaml channel=conda-forge
 endif
 
-check-environment-build: check-conda
-ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
-		@echo ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..."
-else
-		@echo ">>> '$(env)' folder is missing in $(ENV_DIR)."
-		@echo -n "Creating '$(env)' environment... "
-		@conda env create -n $(env) -f ../../recipe/conda_build_env.yaml > /dev/null
-		@echo OK
-endif
-
+build_env_file = ../../recipe/conda_build_env.yaml
+test_env_file  = $(shell python ../$(TEST_PATH)/parse_recipe.py)
 check-environment-%: check-conda
 ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
 		@echo ">>> Found '$(env)' environment in $(MY_ENV_DIR). Skipping installation..."
 else
 		@echo ">>> '$(env)' folder is missing in $(ENV_DIR)."
-		@$(MAKE_CMD) -f conda.mk conda-create-env-$* env=$(env)
+		@echo -n "Creating '$(env)' environment... "
+		@conda env create -n $(env) -f $($*_env_file) > /dev/null
+		@echo OK
 endif
-
-conda-create-env-check: ## conda-create-env: Create conda environment named by 'env=<name>' cli argument. If 'python=<version>' cli argument is passed, python=<version> will be installed within the environment.
-	@echo -n "Creating 'check' environment... "
-	@conda create -y -n $(env) $(PYTHON) > /dev/null
-	@conda env update -n $(env) --file ../$(CHECK_PATH)/check-environment.yml > /dev/null
-	@echo OK
-
-test_env_file = $(shell python ../$(TEST_PATH)/parse_recipe.py)
-conda-create-env-test: ## conda-create-env: Create conda environment named by 'env=<name>' cli argument. If 'python=<version>' cli argument is passed, python=<version> will be installed within the environment.
-	@echo -n "Creating 'test' environment... "
-	# @$(MAKE_CMD) -f conda.mk conda-create-env-check env=$(env)
-	@conda create -y -n $(env) $(PYTHON) > /dev/null
-	@$(MAKE_CMD) -f conda.mk conda-install-pyyaml
-	@conda env update -n $(env) --file $(test_env_file) > /dev/null
-	@echo OK
 
 conda-run-env:
 ifneq ($(strip $(cmd)),)

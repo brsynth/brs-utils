@@ -23,7 +23,6 @@ ifeq ($(env),)
 	env = ${PACKAGE}_build
 endif
 
-
 clean:
 	@$(MAKE_CMD) -f conda.mk clean
 
@@ -43,7 +42,7 @@ endif
 
 test-inconda: ## Test code with 'pytest' within a conda environment, this is the fastest way to test the code
 ifneq ($(strip $(env)),)
-	$(eval env=test)
+	$(eval env=${PACKAGE}_test)
 endif
 		 @$(MAKE_CMD) -f conda.mk check-environment-test env=$(env)
 	   @$(MAKE_CMD) -f conda.mk conda-run-env env=$(env) \
