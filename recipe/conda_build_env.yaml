@@ -5,4 +5,5 @@ channels:
 dependencies:
   - python < 3.9  # TD: anaconda upload has troubles with python 3.9 (base64.encodestring alias removed)
   - conda-build
+  - conda-verify
   - anaconda-client
