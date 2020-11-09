@@ -70,6 +70,8 @@ Equivalent to `pytest`, this stage is achieved within a conda environment.
 
 If `env` option is set then this stage is performed in `<conda_env_name>` (default: `test`) conda environment.
 
+## Workflows
+The user will find into `workflows/` folder, several workflows for different CI/CD platform. These worfklows have to be copied into the right folder. For instance, GitHub needs to find workflows into `.github/workflows` to trigger actions.
 
 ## Authors
 
