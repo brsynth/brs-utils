@@ -34,4 +34,4 @@ flake: ## Run flake over code and tests
 test: ## Test code with 'pytest'
 	@export PYTHONPATH=$$PWD/../.. ; \
 	cd ../../tests ; \
-	python -m pytest -v $(args)
+	python -m pytest -v -p no:cacheprovider $(args)
