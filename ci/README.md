@@ -55,7 +55,7 @@ make conda-publish [python=<ver>] [env=<conda_env_name>]
 Equivalent to `anaconda upload`.
 
 If `python` option is set then this stage is only performed for the version `<ver>` of Python. By default, the Python version will be the latest available within the building environment.
-Credentials have to be stored in `.secrets` file with the following syntax:
+Credentials have to be stored in `ci/.secrets` file with the following syntax:
 ```
 ANACONDA_USER=<username>
 ANACONDA_TOKEN=<token>
