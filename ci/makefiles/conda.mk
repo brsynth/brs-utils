@@ -124,10 +124,10 @@ conda-convert: check-conda
 
 
 ### publish
-SECRETS = .secrets
-ifeq (,$(wildcard $(SECRETS)))
-	ANACONDA_TOKEN = $(shell cat ../$(SECRETS) | grep ANACONDA_TOKEN | awk 'BEGIN {FS = "="} ; {print $$2}')
-	ANACONDA_USER  = $(shell cat ../$(SECRETS) | grep ANACONDA_USER | awk 'BEGIN {FS = "="} ; {print $$2}')
+SECRETS = ../.secrets
+ifneq ("","$(wildcard $(SECRETS))")
+	ANACONDA_TOKEN = $(shell cat $(SECRETS) | grep ANACONDA_TOKEN | awk 'BEGIN {FS = "="} ; {print $$2}')
+	ANACONDA_USER  = $(shell cat $(SECRETS) | grep ANACONDA_USER | awk 'BEGIN {FS = "="} ; {print $$2}')
 endif
 conda-publish_python%: check-anaconda-client
 	echo anaconda \
