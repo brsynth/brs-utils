@@ -122,12 +122,18 @@ conda-convert: check-conda
 	done
 	@$(MAKE_CMD) -f conda.mk conda-recipe-clean
 
+
 ### publish
+SECRETS = .secrets
+ifeq (,$(wildcard $(SECRETS)))
+	ANACONDA_TOKEN = $(shell cat ../$(SECRETS) | grep ANACONDA_TOKEN | awk 'BEGIN {FS = "="} ; {print $$2}')
+	ANACONDA_USER  = $(shell cat ../$(SECRETS) | grep ANACONDA_USER | awk 'BEGIN {FS = "="} ; {print $$2}')
+endif
 conda-publish_python%: check-anaconda-client
-	@anaconda \
-		--token `cat ../.secrets | grep ANACONDA_TOKEN | awk 'BEGIN {FS = "="} ; {print $$2}'` \
+	echo anaconda \
+		--token ${ANACONDA_TOKEN} \
 		upload \
-		--user `cat ../.secrets | grep ANACONDA_USER | awk 'BEGIN {FS = "="} ; {print $$2}'` \
+		--user ${ANACONDA_USER} \
 		--label ${ANACONDA_LABEL} \
 		--skip-existing \
 		${CONDA_BLD_PATH}/*/${PACKAGE}-*py`echo $* | sed -e "s/\.//g"`*.tar.bz2
