@@ -1,3 +1,6 @@
+1.1.0 - Nov 10, 2020
+  - open files with 'utf-8' option for compliance with Python3.6 on macOS
+
 1.0.1 - Oct 22, 2020
   - add pure conda environment for testing stage
   - add python3.5 for publication
