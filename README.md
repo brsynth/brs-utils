@@ -14,6 +14,10 @@ Functions to handle download and extract files
 ## file_length
 Returns the number of lines of the given file
 
+# CI/CD
+For further tests and development tools, a CI toolkit is provided in `ci` folder (see [ci/README.md](ci/README.md)).
+
+
 
 ## Authors
 
