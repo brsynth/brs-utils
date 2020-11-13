@@ -62,6 +62,13 @@ class Test_File(TestCase):
             'd3eb1c4b3604e6863fb4c4da930b4df74217fcf95c78439bc721ea83ce280f19'
                         )
 
+    def test_extract_tar_gz_file(self):
+        with TemporaryDirectory() as tempd:
+            extract_tar_gz('data/data.tar.gz', tempd, 'test_rpSBML.py')
+            self.assertEqual(
+                sha256(Path(tempd+'/test_rpSBML.py').read_bytes()).hexdigest(),
+                '2031eefaf7305428e10f5a3c6ab485085d69979b8be6a1e3b2e375349ec7b9bd'
+                            )
     def test_extract_tar_gz(self):
         with TemporaryDirectory() as tempd:
             extract_tar_gz('data/data.tar.gz', tempd)
