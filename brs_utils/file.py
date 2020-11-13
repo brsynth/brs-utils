@@ -18,10 +18,13 @@ def download(url, file):
     r = r_get(url)
     open(file, 'wb').write(r.content)
 
-def extract_tar_gz(file, path):
-    makedirs(path, exist_ok=True)
+def extract_tar_gz(file, dir, member=''):
+    makedirs(dir, exist_ok=True)
     tar = tf_open(file, mode='r:gz')
-    tar.extractall(path)
+    if member=='':
+        tar.extractall(dir)
+    else:
+        tar.extract(member, dir)
     tar.close()
 
 def extract_gz_to_string(file):
