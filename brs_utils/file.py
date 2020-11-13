@@ -19,7 +19,8 @@ def download(url, file):
     open(file, 'wb').write(r.content)
 
 def extract_tar_gz(file, dir, member=''):
-    makedirs(dir, exist_ok=True)
+    if not os_path.exists(dir):
+        makedirs(dir, exist_ok=True)
     tar = tf_open(file, mode='r:gz')
     if member=='':
         tar.extractall(dir)
@@ -39,10 +40,10 @@ def extract_gz(file, path):
             shutil_copyfileobj(f_in, f_out)
     return outfile
 
-def download_and_extract_tar_gz(url, path):
+def download_and_extract_tar_gz(url, dir, member=''):
     with NamedTemporaryFile() as tempf:
         download(url, tempf.name)
-        extract_tar_gz(tempf.name, path)
+        extract_tar_gz(tempf.name, dir, member)
 
 def download_and_extract_gz(url, path):
     with NamedTemporaryFile() as tempf:

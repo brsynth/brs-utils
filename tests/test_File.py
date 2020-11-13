@@ -11,6 +11,7 @@ from tempfile  import NamedTemporaryFile, TemporaryDirectory
 from pathlib   import Path
 from hashlib   import sha256
 from json      import dumps as json_dumps
+from os        import path  as os_path
 
 class Test_File(TestCase):
 
@@ -36,16 +37,38 @@ class Test_File(TestCase):
             dict = read_dict(filename)
             self.assertDictEqual(dict, self._d)
 
-    _url = 'https://gitlab.com/breakthewall/rpcache-data/-/raw/master/metanetx/comp_xref.tsv.gz'
+    DOWNLOAD_URL    = 'https://github.com/brsynth/brs-utils/raw/master/tests/data/data.tar.gz'
+    DOWNLOAD_HASH   = '451f23622ee6df7b96648039db374e7baa8c41495e4dbf91dbf232950db65a13'
+    DOWNLOAD_HASHES = {'test_rpSBML.py':    '2031eefaf7305428e10f5a3c6ab485085d69979b8be6a1e3b2e375349ec7b9bd',
+                       'test_TotalSize.py': '6a81f09015f516b8cfed8f39badbac3380e758df625c0ce3b9c87a79745813e2',
+                       'test_Download.py':  '504676268634b8c340a11e202b4d9c7cc08f9daea749f4c9cf5db9294772bc39'}
 
     def test_download(self):
         with NamedTemporaryFile() as tempf:
-            download(self._url,
+            download(Test_File.DOWNLOAD_URL,
                      tempf.name)
             self.assertEqual(
                 sha256(Path(tempf.name).read_bytes()).hexdigest(),
-                '7b9a3931d850821b7d5b443767f8c5282fd879ab71eb455c8809c009f8ca7dd7'
-                            )
+                       Test_File.DOWNLOAD_HASH)
+
+    def test_download_and_extract_tar_gz(self):
+        with TemporaryDirectory() as tempd:
+            download_and_extract_tar_gz(Test_File.DOWNLOAD_URL, tempd)
+            for member in Test_File.DOWNLOAD_HASHES:
+                self.assertEqual(Test_File.DOWNLOAD_HASHES[member],
+                                 sha256(Path(tempd+'/'+member).read_bytes()).hexdigest())
+
+    def test_download_and_extract_tar_gz_member(self):
+        _member = 'test_rpSBML.py'
+        with TemporaryDirectory() as tempd:
+            download_and_extract_tar_gz(Test_File.DOWNLOAD_URL, tempd, _member)
+            for member in Test_File.DOWNLOAD_HASHES:
+                m = tempd+'/'+member
+                if member == _member:
+                    self.assertEqual(Test_File.DOWNLOAD_HASHES[_member],
+                                     sha256(Path(m).read_bytes()).hexdigest())
+                else:
+                    self.assertFalse(Path(m).exists())
 
     def test_extract_gz(self):
         with TemporaryDirectory() as tempd:
@@ -69,6 +92,8 @@ class Test_File(TestCase):
                 sha256(Path(tempd+'/test_rpSBML.py').read_bytes()).hexdigest(),
                 '2031eefaf7305428e10f5a3c6ab485085d69979b8be6a1e3b2e375349ec7b9bd'
                             )
+            self.assertFalse(Path(tempd+'/test_Download.py').exists())
+
     def test_extract_tar_gz(self):
         with TemporaryDirectory() as tempd:
             extract_tar_gz('data/data.tar.gz', tempd)
