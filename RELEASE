@@ -1,3 +1,6 @@
+1.2.0 - Nov 13, 2020
+  - possibility to add a file to extract from '.tar.gz' archive
+
 1.1.0 - Nov 10, 2020
   - open files with 'utf-8' option for compliance with Python3.6 on macOS
 
