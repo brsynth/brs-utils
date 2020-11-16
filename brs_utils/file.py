@@ -69,7 +69,7 @@ def extract_gz_to_string(file):
     return gz.read().decode()
 
 def extract_gz(file, path):
-    outfile = path+'/'+os_path.basename(file[:-3])
+    outfile = os_path.join(path, os_path.basename(file[:-3]))
     makedirs(path, exist_ok=True)
     with gz_open(file, 'rb') as f_in:
         with open(outfile, 'wb') as f_out:
