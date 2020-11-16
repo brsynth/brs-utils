@@ -18,8 +18,10 @@ from pathlib   import Path
 from hashlib   import sha256
 from json      import dumps as json_dumps
 from os        import path  as os_path
-from os        import remove
+from os        import remove, mkdir
 from shutil    import copyfile
+from random import choice
+from string import ascii_uppercase, digits
 
 class Test_File(TestCase):
 
@@ -120,17 +122,20 @@ class Test_File(TestCase):
         remove(oufile)
 
     def test_compress_tar_gz_dir_delete(self):
-        # Create a temporary folder
+        # Create a persistent temporary folder
         with TemporaryDirectory() as tempd:
-            # Create a temporay file inside the temporary folder
-            temp_file = NamedTemporaryFile(dir=tempd, delete=False)
-            # Compress the temporary folder into a temporary tar.gz file
-            oufile = compress_tar_gz(tempd,
-                                     NamedTemporaryFile().name+'.tar.gz',
-                                     delete=True)
-            # Check if the original folder does not exist anymore
-            self.assertFalse(os_path.isdir(tempd))
-        remove(oufile)
+            tempdir = os_path.join(os_path.dirname(tempd), ''.join(choice(ascii_uppercase + digits) for _ in range(6)))
+            mkdir(tempdir)
+
+        # Create a temporay file inside the temporary folder
+        temp_file = NamedTemporaryFile(dir=tempdir, delete=False)
+        # Compress the temporary folder into a temporary tar.gz file
+        outfile = compress_tar_gz(tempdir,
+                                  NamedTemporaryFile().name+'.tar.gz',
+                                  delete=True)
+        # Check if the original folder does not exist anymore
+        self.assertFalse(os_path.exists(tempdir))
+        remove(outfile)
 
     def test_download_and_extract_tar_gz(self):
         with TemporaryDirectory() as tempd:
