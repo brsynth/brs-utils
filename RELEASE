@@ -1,3 +1,6 @@
+1.3.0 - Nov 16, 2020
+  - add 'compress_tar_gz' function
+
 1.2.0 - Nov 13, 2020
   - possibility to add a file to extract from '.tar.gz' archive
 
