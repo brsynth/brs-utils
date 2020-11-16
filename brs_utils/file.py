@@ -4,19 +4,31 @@ Created on June 16 2020
 @author: Joan Hérisson
 """
 
-from os       import makedirs
-from os       import path as os_path
+from os       import makedirs, remove, rmdir
+from os       import path        as os_path
 from requests import get         as r_get
 from tempfile import NamedTemporaryFile
 from tarfile  import open        as tf_open
 from gzip     import open        as gz_open
 from gzip     import decompress  as gz_decompress
-from shutil   import copyfileobj as shutil_copyfileobj
+from shutil   import copyfileobj, rmtree
 
 
-def download(url, file):
+def download(url: str, file: str="") -> str:
+    """Download a file from 'url' and save it as 'file'.
+
+    Parameters:
+    url  -- URL the file is downloaded from
+    file -- (Optional) filename the downloaded file is saved into (default: "")
+
+    Returns:
+    A filename where the downloaded file has stored into
+    """
     r = r_get(url)
+    if not file:
+        file = NamedTemporaryFile().name
     open(file, 'wb').write(r.content)
+    return file
 
 def extract_tar_gz(file, dir, member=''):
     if not os_path.exists(dir):
@@ -28,6 +40,30 @@ def extract_tar_gz(file, dir, member=''):
         tar.extract(member, dir)
     tar.close()
 
+def compress_tar_gz(path: str, outFile: str="", delete: bool=False) -> str:
+    """Compress 'path' into tar.gz format.
+
+    Parameters:
+    path    -- file or folder to compress
+    outFile -- (Optional) path of compressed file (default: ""), otherwise file is compressed in place
+    delete  -- (Optional) the original path is deleted after compression (default: False)
+
+    Returns:
+    The archive filename
+    """
+    if not outFile:
+        outFile = os_path.join(os_path.dirname(path),
+                               os_path.basename(path)+'.tar.gz')
+    with tf_open(outFile, "w:gz") as tar:
+        tar.add(path, arcname=os_path.basename(path))
+    if delete:
+        if os_path.isfile(path):
+            remove(path)
+        else:
+            rmtree(path)
+
+    return outFile
+
 def extract_gz_to_string(file):
     gz = gz_open(file, mode='rb')
     return gz.read().decode()
@@ -37,7 +73,7 @@ def extract_gz(file, path):
     makedirs(path, exist_ok=True)
     with gz_open(file, 'rb') as f_in:
         with open(outfile, 'wb') as f_out:
-            shutil_copyfileobj(f_in, f_out)
+            copyfileobj(f_in, f_out)
     return outfile
 
 def download_and_extract_tar_gz(url, dir, member=''):
