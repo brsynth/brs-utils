@@ -64,6 +64,26 @@ def compress_tar_gz(path: str, outFile: str="", delete: bool=False) -> str:
 
     return outFile
 
+def compress_gz(inFile: str, outFile: str="", delete: bool=False) -> str:
+    """Compress 'inFile' into gzip format.
+
+    Parameters:
+    inFile  -- file to compress
+    outFile -- (Optional) path of compressed file (default: ""), otherwise file is compressed in place
+    delete  -- (Optional) the original path is deleted after compression (default: False)
+
+    Returns:
+    The archive filename
+    """
+    if not outFile:
+        outFile = inFile+'.gz'
+    with open(inFile, 'rb') as f_in, gz_open(outFile, 'wb') as f_out:
+        f_out.writelines(f_in)
+    if delete:
+        remove(inFile)
+
+    return outFile
+
 def extract_gz_to_string(file):
     gz = gz_open(file, mode='rb')
     return gz.read().decode()

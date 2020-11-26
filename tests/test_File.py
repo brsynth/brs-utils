@@ -9,7 +9,7 @@ from unittest import TestCase
 from brs_utils import file_length, \
                       read_dict, \
                       download, \
-                      compress_tar_gz, \
+                      compress_tar_gz, compress_gz, \
                       extract_gz, extract_tar_gz, extract_gz_to_string, \
                       download_and_extract_tar_gz
 from tempfile  import NamedTemporaryFile, TemporaryDirectory
@@ -69,7 +69,8 @@ class Test_File(TestCase):
                    Test_File.DOWNLOAD_HASH)
 
     def test_compress_tar_gz_file(self):
-        infile = os_path.join('data', '100l_file.txt')
+        infile_t = '100l_file.txt'
+        infile = os_path.join('data', infile_t)
         oufile = compress_tar_gz(infile,
                                  NamedTemporaryFile().name+'.tar.gz',
                                  delete=False)
@@ -78,7 +79,7 @@ class Test_File(TestCase):
         # Check if extracted file is equal to original one
         with TemporaryDirectory() as tempd:
             extract_tar_gz(oufile, tempd)
-            self.assertTrue(cmp(infile, os_path.join(tempd, '100l_file.txt')))
+            self.assertTrue(cmp(infile, os_path.join(tempd, infile_t)))
         remove(oufile)
 
     def test_compress_tar_gz_file_wo_outfile(self):
@@ -135,6 +136,51 @@ class Test_File(TestCase):
                                   delete=True)
         # Check if the original folder does not exist anymore
         self.assertFalse(os_path.exists(tempdir))
+        remove(outfile)
+
+    def test_compress_gz(self):
+        infile_t    = '100l_file.txt'
+        infile      = os_path.join('data', infile_t)
+        infile_temp = NamedTemporaryFile().name
+        copyfile(infile, infile_temp)
+        outfile     = compress_gz(infile_temp)
+        # Check if the original file still exists
+        self.assertTrue(os_path.isfile(infile_temp))
+        # Check if outfile is well named
+        self.assertEqual(outfile, infile_temp+'.gz')
+        # Check if extracted file is equal to original one
+        with TemporaryDirectory() as tempd:
+            self.assertTrue(cmp(infile, extract_gz(outfile, tempd)))
+        remove(outfile)
+        remove(infile_temp)
+
+    def test_compress_gz_delete(self):
+        infile_t    = '100l_file.txt'
+        infile      = os_path.join('data', infile_t)
+        infile_temp = NamedTemporaryFile().name
+        copyfile(infile, infile_temp)
+        outfile     = compress_gz(infile_temp, delete=True)
+        # Check if the original file does not exist anymore
+        self.assertTrue(not os_path.isfile(infile_temp))
+        # Check if outfile is well named
+        self.assertEqual(outfile, infile_temp+'.gz')
+        # Check if extracted file is equal to original one
+        with TemporaryDirectory() as tempd:
+            self.assertTrue(cmp(infile, extract_gz(outfile, tempd)))
+        remove(outfile)
+
+    def test_compress_gz_with_outFile(self):
+        infile_t     = '100l_file.txt'
+        infile       = os_path.join('data', infile_t)
+        outfile_temp = NamedTemporaryFile().name
+        outfile      = compress_gz(infile, outfile_temp)
+        # Check if the original file still exists
+        self.assertTrue(os_path.isfile(infile))
+        # Check if outfile is well named
+        self.assertEqual(outfile, outfile_temp)
+        # Check if extracted file is equal to original one
+        with TemporaryDirectory() as tempd:
+            self.assertTrue(cmp(infile, extract_gz(outfile, tempd)))
         remove(outfile)
 
     def test_download_and_extract_tar_gz(self):
