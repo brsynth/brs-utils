@@ -17,7 +17,8 @@ requirements:
     - python {{ python }}
   run:
     - python {{ python }}
-    - requests
+    - requests # conda-forge
+    - colorlog # main
 
 test:
   source_files:
