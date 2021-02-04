@@ -14,8 +14,12 @@ from gzip     import decompress  as gz_decompress
 from shutil   import copyfileobj, rmtree
 
 
-def download(url: str, file: str="") -> str:
-    """Download a file from 'url' and save it as 'file'.
+def download(
+     url: str,
+    file: str = ""
+) -> str:
+    """
+    Download a file from 'url' and save it as 'file'.
 
     Parameters:
     url  -- URL the file is downloaded from
@@ -30,18 +34,29 @@ def download(url: str, file: str="") -> str:
     open(file, 'wb').write(r.content)
     return file
 
-def extract_tar_gz(file, dir, member=''):
+
+def extract_tar_gz(
+      file: str,
+       dir: str,
+    member: str = ''
+):
     if not os_path.exists(dir):
         makedirs(dir, exist_ok=True)
     tar = tf_open(file, mode='r:gz')
-    if member=='':
+    if member == '':
         tar.extractall(dir)
     else:
         tar.extract(member, dir)
     tar.close()
 
-def compress_tar_gz(path: str, outFile: str="", delete: bool=False) -> str:
-    """Compress 'path' into tar.gz format.
+
+def compress_tar_gz(
+       path:  str,
+    outFile:  str = '',
+     delete: bool = False
+) -> str:
+    """
+    Compress 'path' into tar.gz format.
 
     Parameters:
     path    -- file or folder to compress
@@ -64,8 +79,13 @@ def compress_tar_gz(path: str, outFile: str="", delete: bool=False) -> str:
 
     return outFile
 
-def compress_gz(inFile: str, outFile: str="", delete: bool=False) -> str:
-    """Compress 'inFile' into gzip format.
+def compress_gz(
+     inFile:  str,
+    outFile:  str = '',
+     delete: bool = False
+) -> str:
+    """
+    Compress 'inFile' into gzip format.
 
     Parameters:
     inFile  -- file to compress
