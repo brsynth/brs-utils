@@ -39,7 +39,7 @@ def extract_tar_gz(
       file: str,
        dir: str,
     member: str = ''
-):
+) -> None:
     if not os_path.exists(dir):
         makedirs(dir, exist_ok=True)
     tar = tf_open(file, mode='r:gz')
