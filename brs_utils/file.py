@@ -4,14 +4,27 @@ Created on June 16 2020
 @author: Joan Hérisson
 """
 
-from os       import makedirs, remove, rmdir
-from os       import path        as os_path
-from requests import get         as r_get
+from os import (
+    makedirs,
+    remove,
+    rmdir,
+    path as os_path
+)
+from requests import get as r_get
 from tempfile import NamedTemporaryFile
-from tarfile  import open        as tf_open
-from gzip     import open        as gz_open
-from gzip     import decompress  as gz_decompress
-from shutil   import copyfileobj, rmtree
+from tarfile  import open as tf_open
+from gzip     import (
+    open        as gz_open,
+    decompress  as gz_decompress
+)
+from shutil import (
+    copyfileobj,
+    rmtree
+)
+from ast import literal_eval
+from typing import (
+    Dict
+)
 
 
 def download(
@@ -79,6 +92,7 @@ def compress_tar_gz(
 
     return outFile
 
+
 def compress_gz(
      inFile:  str,
     outFile:  str = '',
@@ -104,11 +118,16 @@ def compress_gz(
 
     return outFile
 
-def extract_gz_to_string(file):
-    gz = gz_open(file, mode='rb')
+
+def extract_gz_to_string(filename: str) -> str:
+    gz = gz_open(filename, mode='rb')
     return gz.read().decode()
 
-def extract_gz(file, path):
+
+def extract_gz(
+    file: str,
+    path: str
+) -> str:
     outfile = os_path.join(path, os_path.basename(file[:-3]))
     makedirs(path, exist_ok=True)
     with gz_open(file, 'rb') as f_in:
@@ -116,23 +135,33 @@ def extract_gz(file, path):
             copyfileobj(f_in, f_out)
     return outfile
 
-def download_and_extract_tar_gz(url, dir, member=''):
+
+def download_and_extract_tar_gz(
+    url: str,
+    dir: str,
+    member: str = ''
+) -> None:
     with NamedTemporaryFile() as tempf:
         download(url, tempf.name)
         extract_tar_gz(tempf.name, dir, member)
 
-def download_and_extract_gz(url, path):
+
+def download_and_extract_gz(
+    url: str,
+    path: str
+) -> None:
     with NamedTemporaryFile() as tempf:
         download(url, tempf.name)
         extract_gz(tempf.name, path)
 
-def file_length(filename):
+
+def file_length(filename: str) -> int:
     with open(filename, 'rb') as f:
         n = sum(1 for line in f)
     return n
 
-from ast import literal_eval
-def read_dict(filename):
+
+def read_dict(filename: str) -> Dict:
     d = {}
     with open(filename, 'r') as f:
         s = f.read()
