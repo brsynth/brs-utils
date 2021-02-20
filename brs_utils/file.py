@@ -80,10 +80,15 @@ def compress_tar_gz(
     The archive filename
     """
     if not outFile:
-        outFile = os_path.join(os_path.dirname(path),
-                               os_path.basename(path)+'.tar.gz')
+        outFile = os_path.join(
+            os_path.dirname(path),
+            os_path.basename(path) + '.tar.gz'
+        )
     with tf_open(outFile, "w:gz") as tar:
-        tar.add(path, arcname=os_path.basename(path))
+        tar.add(
+            path,
+            arcname = os_path.basename(path)
+        )
     if delete:
         if os_path.isfile(path):
             remove(path)
