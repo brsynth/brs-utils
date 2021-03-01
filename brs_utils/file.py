@@ -8,7 +8,8 @@ from os import (
     makedirs,
     remove,
     rmdir,
-    path as os_path
+    path as os_path,
+    walk
 )
 from requests import get as r_get
 from tempfile import NamedTemporaryFile
@@ -19,12 +20,44 @@ from gzip     import (
 )
 from shutil import (
     copyfileobj,
-    rmtree
+    rmtree,
+    chown
 )
 from ast import literal_eval
 from typing import (
     Dict
 )
+from logging import (
+    Logger,
+    getLogger
+)
+
+
+def chown_r(
+    path: str,
+    user,
+    group = -1,
+    logger: Logger = getLogger(__name__)
+):
+    """
+    Recursively belongs path folder to uid:gid.
+
+    Parameters
+    ----------
+    path: str
+        Path to the folder to own.
+    uid: int
+        User ID.
+    gid: int
+        Group ID.
+    """
+    try:
+        for dirpath, dirnames, filenames in walk(path):
+            chown(dirpath, user, group)
+            for filename in filenames:
+                chown(os_path.join(dirpath, filename), user)
+    except Exception as e:
+        logger.error(e)
 
 
 def download(
