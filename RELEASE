@@ -1,3 +1,6 @@
+1.6.0 - Mar 1, 2021
+  - add chown_r funtion in file.py
+
 1.5.1 - Feb 4, 2021
   - add create_logger in __all__
 
