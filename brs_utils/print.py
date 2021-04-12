@@ -25,6 +25,11 @@ from logging import (
     getLogger,
     StreamHandler
 )
+from colored import (
+    attr as c_attr,
+    fg as c_fg,
+    bg as c_bg
+)
 
 def print_start(
     logger: Logger=getLogger(__name__),

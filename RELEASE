@@ -1,5 +1,5 @@
 1.7.0 - Apr 12, 2021
-  - add printout functions based on logging module
+  - add printout functions based on logging and colored modules
 
 1.6.0 - Mar 1, 2021
   - add chown_r funtion in file.py

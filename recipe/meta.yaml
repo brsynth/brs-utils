@@ -19,6 +19,7 @@ requirements:
     - python {{ python }}
     - requests # conda-forge
     - colorlog # main
+    - colored # conda-forge
 
 test:
   source_files:
