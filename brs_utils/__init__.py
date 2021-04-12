@@ -26,7 +26,7 @@ from brs_utils.print import (
     print_FAILED,
     print_start,
     print_step,
-    print_end()
+    print_end
 )
 from brs_utils.list import (
     insert_and_or_replace_in_sorted_list
