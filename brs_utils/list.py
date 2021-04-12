@@ -7,7 +7,7 @@ Created on Sep 11 2020
 from typing import List
 from bisect import insort as bisect_insort
 
-## Function to insert and/or replace sbml item in sbml items list
+## Function to insert and/or replace item in list
 #
 #  @param item item to insert
 #  @param list sorted list of items to insert item

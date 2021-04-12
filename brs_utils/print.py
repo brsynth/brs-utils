@@ -18,3 +18,49 @@ def print_FAILED():
     print(" Failed")
     sys_stdout.write("\033[0;0m") # Reset
     print()
+
+
+from logging import (
+    Logger,
+    getLogger,
+    StreamHandler
+)
+
+def print_start(
+    logger: Logger=getLogger(__name__),
+    msg: str='Start process',
+) -> None:
+    StreamHandler.terminator = ""
+    logger.info(
+        '{color}{typo}{msg}{rst}'.format(
+            color=c_fg('white'),
+            typo=c_attr('bold'),
+            msg=msg,
+            rst=c_attr('reset')
+        )
+    )
+
+def print_progress(
+    logger: Logger=getLogger(__name__),
+    msg: str='.',
+) -> None:
+    logger.info(
+        '{color}{msg}'.format(
+            color=c_fg('white'),
+            msg=msg
+        )
+    )
+
+def print_end(
+    logger: Logger=getLogger(__name__),
+    msg: str='OK',
+) -> None:
+    StreamHandler.terminator = "\n"
+    logger.info(
+        '{color}{typo} {msg}{rst}'.format(
+            color=c_fg('green'),
+            typo=c_attr('bold'),
+            msg=msg,
+            rst=c_attr('reset')
+        )
+    )
