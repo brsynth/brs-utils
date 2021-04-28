@@ -29,7 +29,8 @@ from brs_utils.print import (
     print_end
 )
 from brs_utils.list import (
-    insert_and_or_replace_in_sorted_list
+    insert_and_or_replace_in_sorted_list,
+    diff
 )
 from brs_utils.logger import (
     create_logger

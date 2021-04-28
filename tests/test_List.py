@@ -5,7 +5,10 @@ Created on Jul 15 2020
 """
 
 from unittest import TestCase
-from brs_utils import insert_and_or_replace_in_sorted_list
+from brs_utils import (
+    insert_and_or_replace_in_sorted_list,
+    diff
+)
 
 class Obj():
     def __init__(self, l):
@@ -92,3 +95,15 @@ class InsertOrReplace(TestCase):
         obj = Object(1, Obj([2,3,5]))
         l2 = insert_and_or_replace_in_sorted_list(obj, l)
         self.assertSequenceEqual(l, l2)
+
+
+class List(TestCase):
+    __test__ = True
+
+    def test_diff(self):
+        l1 = [1, 2, 1, 3, 4]
+        l2 = [1, 2, 3, 3]
+        self.assertSequenceEqual(
+            diff(l1, l2),
+            [1, 4]
+        )

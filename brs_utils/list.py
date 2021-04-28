@@ -36,3 +36,14 @@ def insert_and_or_replace_in_sorted_list(
         bisect_insort(list, item)
 
     return list
+
+
+def diff(first, second):
+   l2 = list(second)
+   l3 = []
+   for el in first:
+      if el in l2:
+         l2.remove(el)
+      else:
+         l3 += [el]
+   return l3
