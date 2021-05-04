@@ -33,7 +33,8 @@ from brs_utils.list import (
     diff
 )
 from brs_utils.logger import (
-    create_logger
+    create_logger,
+    add_arguments as add_logger_args,
 )
 from brs_utils._version import (
     __version__
