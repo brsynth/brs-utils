@@ -1,3 +1,6 @@
+1.8.1 - May 4, 2021
+  - feat(logger): add 'add_arguments' to define standard arguments parsing
+
 1.8.0 - Apr 28, 2021
   - add diff() function in list sub-module
 
