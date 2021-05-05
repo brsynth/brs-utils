@@ -14,6 +14,9 @@ Functions to handle download and extract files
 ## file_length
 Returns the number of lines of the given file
 
+## logger
+Create a logger from name and a log level. Handle argparse with `add_arguments` function which provides standard cli arguments.
+
 # CI/CD
 For further tests and development tools, a CI toolkit is provided in `ci` folder (see [ci/README.md](ci/README.md)).
 
