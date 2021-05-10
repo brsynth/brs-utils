@@ -19,7 +19,8 @@ from brs_utils.file import (
     download_and_extract_tar_gz,
     file_length,
     read_dict,
-    chown_r
+    chown_r,
+    check_sha
 )
 from brs_utils.print import (
     print_OK,
