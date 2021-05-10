@@ -20,7 +20,8 @@ from brs_utils.file import (
     file_length,
     read_dict,
     chown_r,
-    check_sha
+    check_sha,
+    check_file_size
 )
 from brs_utils.print import (
     print_OK,

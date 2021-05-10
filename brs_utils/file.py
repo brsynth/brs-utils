@@ -9,7 +9,8 @@ from os import (
     remove,
     rmdir,
     path as os_path,
-    walk
+    walk,
+    stat as os_stat
 )
 from requests import get as r_get
 from tempfile import NamedTemporaryFile
@@ -32,7 +33,21 @@ from logging import (
     getLogger
 )
 from hashlib import sha512
-from pathlib    import Path
+from pathlib import Path
+
+
+def check_file_size(
+    filename: str,
+    size: int,
+    logger: Logger = getLogger(__name__)
+) -> bool:
+    logger.debug('file: {fname}'.format(fname=filename))
+    logger.debug('-- SIZE')
+    s = os_stat(filename).st_size
+    logger.debug('computed: {size}'.format(size=s))
+    logger.debug('stored: {size}'.format(size=size))
+    logger.debug('--')
+    return s == size
 
 
 def check_sha(
