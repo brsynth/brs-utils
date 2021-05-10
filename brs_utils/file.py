@@ -31,6 +31,19 @@ from logging import (
     Logger,
     getLogger
 )
+from hashlib import sha512
+from pathlib    import Path
+
+
+def check_sha(
+    filename: str,
+    sum: str,
+    logger: Logger = getLogger(__name__)
+) -> bool:
+
+    return sum == sha512(
+        Path(filename).read_bytes()
+    ).hexdigest()
 
 
 def chown_r(
