@@ -1,3 +1,6 @@
+1.9.0 - May 10, 2021
+  - feat(file): add check_sha() function
+
 1.8.1 - May 4, 2021
   - feat(logger): add 'add_arguments' to define standard arguments parsing
 
