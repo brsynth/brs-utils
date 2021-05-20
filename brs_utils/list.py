@@ -7,6 +7,37 @@ Created on Sep 11 2020
 from typing import List
 from bisect import insort as bisect_insort
 
+
+## Class to define a generic item
+#
+#  @param object item
+#  @param score score of the item
+#  @param id id of the item
+class Item:
+
+    def __init__(
+        self,
+        object: TypeVar,
+        score: float,
+    ):
+        self.object = deepcopy(object)
+        self.score = score
+
+    def __eq__(self, item):
+        return self.object == item.object
+
+    def __lt__(self, item):
+        return self.score < item.score
+
+    def __gt__(self, item):
+        return self.score > item.score
+
+    def __str__(self):
+        return 'Item' + '\n' \
+             + '\t' + 'score:  ' + str(self.score)      + '\n' \
+             + '\t' + 'object: ' + str(self.object)      + '\n' \
+
+
 ## Function to insert and/or replace item in list
 #
 #  @param item item to insert

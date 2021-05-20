@@ -1,3 +1,6 @@
+1.11.0 - May 20, 2021
+  - chore(list): add generic Item class
+
 1.10.0 - May 10, 2021
   - feat(file): add check_file_size() function
 
