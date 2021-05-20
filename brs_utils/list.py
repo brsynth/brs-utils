@@ -8,6 +8,7 @@ from typing import (
     List,
     TypeVar
 )
+from copy import deepcopy
 from bisect import insort as bisect_insort
 
 
