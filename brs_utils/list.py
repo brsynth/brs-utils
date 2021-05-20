@@ -4,7 +4,10 @@ Created on Sep 11 2020
 @author: Joan Hérisson
 """
 
-from typing import List
+from typing import (
+    List,
+    TypeVar
+)
 from bisect import insort as bisect_insort
 
 
