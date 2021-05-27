@@ -26,6 +26,8 @@ from brs_utils.file import (
 from brs_utils.print import (
     print_OK,
     print_FAILED,
+    print_OK_adv,
+    print_title_adv,
     print_start,
     print_progress,
     print_end

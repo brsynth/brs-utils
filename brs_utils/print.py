@@ -5,6 +5,41 @@ Created on June 16 2020
 """
 
 from sys import stdout as sys_stdout
+from logging import(
+    Logger,
+    getLogger,
+    StreamHandler
+)
+from colored import fg, bg, attr
+
+
+def print_OK_adv(logger: Logger=getLogger(__name__)) -> None:
+    logger.info(
+        '{color}{typo} OK{rst}'.format(
+            color=fg('green'),
+            typo=attr('bold'),
+            rst=attr('reset')
+        )
+    )
+
+
+def print_title_adv(
+    txt: str,
+    logger: Logger=getLogger(__name__),
+    waiting: bool=False
+) -> None:
+    if waiting:
+        StreamHandler.terminator = ""
+    logger.info(
+        '{color}{typo}{txt}{rst}'.format(
+            color=fg('white'),
+            typo=attr('bold'),
+            rst=attr('reset'),
+            txt=txt
+        )
+    )
+    StreamHandler.terminator = "\n"
+
 
 def print_OK(time=-1):
     sys_stdout.write("\033[0;32m") # Green
