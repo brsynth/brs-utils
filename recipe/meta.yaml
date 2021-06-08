@@ -28,9 +28,10 @@ test:
     - {{ name|lower }}
   requires:
     - pytest
+    - pytest-cov
   commands:
-    - cd tests
-    - pytest -v
+    - python -m {{ name|lower }} --help
+    - cd tests ; pytest -v --cov --cov-report term-missing
 
 about:
   home: https://github.com/brsynth/{{ name|lower }}

@@ -41,6 +41,7 @@ from brs_utils.logger import (
     create_logger,
     add_arguments as add_logger_args,
 )
+from brs_utils.Cache import Cache
 from brs_utils._version import (
     __version__
 )
