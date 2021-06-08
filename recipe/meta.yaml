@@ -30,7 +30,6 @@ test:
     - pytest
     - pytest-cov
   commands:
-    - python -m {{ name|lower }} --help
     - cd tests ; pytest -v --cov --cov-report term-missing
 
 about:
