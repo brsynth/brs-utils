@@ -30,6 +30,26 @@ class Test_Cache(TestCase):
             None
         )
 
+    def test_copy(self):
+        Cache.clean()
+        id = 'd'
+        new_id = 'new_' + id
+        Cache.add(self.__d, id)
+        Cache.copy(id, new_id)
+        self.assertDictEqual(
+            Cache.get(new_id),
+            self.__d
+        )
+
+    def test_copy_non_existent(self):
+        Cache.clean()
+        id = 'd'
+        new_id = 'new_' + id
+        Cache.copy(id, new_id)
+        self.assertFalse(
+            new_id in Cache.get_list_of_objects()
+        )
+
     def test_log_level(self):
         Cache.clean()
         level = 40

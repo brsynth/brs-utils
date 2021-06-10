@@ -107,13 +107,29 @@ class Cache:
         Parameters
         ----------
         id: str
-            ID of the object to add
+            ID of the object to rename from
+        new_id: str
+            ID of the object to rename to
+        '''
+        Cache.copy(id, new_id)
+        Cache.remove_object_by_id(id)
+
+    @staticmethod
+    def copy(id: str, new_id: str) -> None:
+        '''
+        Copy an object of the cache.
+
+        Parameters
+        ----------
+        id: str
+            ID of the object to copy from
+        new_id: str
+            ID of the object to copy to
         '''
         if id not in Cache.get_list_of_objects():
             Cache.__logger.warning(f'Compound {id} already in cache, nothing added.')
         else:
             Cache.__objects[new_id] = deepcopy(Cache.get(id))
-            Cache.remove_object_by_id(id)
 
     @staticmethod
     def remove_object_by_id(id: str) -> None:
