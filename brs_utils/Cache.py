@@ -92,8 +92,7 @@ class Cache:
             Cache.__logger.warning(f'Object passed is None, nothing deleted.')
 
     @staticmethod
-    def clean(
-    ) -> None:
+    def clean() -> None:
         '''
         Remove all objects from the cache.
         '''
@@ -126,9 +125,9 @@ class Cache:
         id: str
             ID of the object to remove
         '''
-        if id in Cache.get_list_of_objects():
+        try:
             del Cache.__objects[id]
-        else:
+        except KeyError:
             Cache.__logger.warning(f'No such object {id} found in cache, nothing deleted.')
 
     @staticmethod
