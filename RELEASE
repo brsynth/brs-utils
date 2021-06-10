@@ -1,3 +1,6 @@
+1.13.1 - Jun 10, 2021
+  - feat(Cache): add copy method
+
 1.13.0 - Jun 8, 2021
   - feat(Cache): add a simple and non-persitent cache of generic objects
 
