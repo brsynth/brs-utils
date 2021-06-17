@@ -87,7 +87,7 @@ class Cache:
                 id = obj.get_id()
             except AttributeError:
                 Cache.__logger.error(f'id is not given and obj has no attribute get_id, nothing added')
-        elif Cache.get(id) is None:
+        if id not in Cache.get_list_of_objects():
             Cache.add(id=id, obj=obj)
 
     @staticmethod

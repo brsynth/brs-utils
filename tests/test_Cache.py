@@ -148,12 +148,17 @@ class Test_Cache(TestCase):
             {}
         )
         Cache.touch(self.__d, 'd')
-        self.assertListEqual(
-            Cache.get_list_of_objects(),
-            ['d']
+        self.assertDictEqual(
+            Cache.get('d'),
+            self.__d
         )
         Cache.touch(None, 'd')
-        self.assertListEqual(
-            Cache.get_list_of_objects(),
-            ['d']
+        self.assertDictEqual(
+            Cache.get('d'),
+            self.__d
+        )
+        Cache.touch({}, 'd')
+        self.assertDictEqual(
+            Cache.get('d'),
+            self.__d
         )
