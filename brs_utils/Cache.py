@@ -82,8 +82,13 @@ class Cache:
         id: str
             ID of the object to add
         '''
-        if Cache.get(id) is None:
-            Cache.add(id=id, obj=None)
+        if id is None:
+            try:
+                id = obj.get_id()
+            except AttributeError:
+                Cache.__logger.error(f'id is not given and obj has no attribute get_id, nothing added')
+        elif Cache.get(id) is None:
+            Cache.add(id=id, obj=obj)
 
     @staticmethod
     def remove(obj: TypeVar) -> None:
