@@ -71,6 +71,21 @@ class Cache:
         Cache.__objects[id] = obj
 
     @staticmethod
+    def touch(obj: TypeVar, id: str = None) -> None:
+        '''
+        Add an object to the cache if does not exist, do nothing otherwise.
+
+        Parameters
+        ----------
+        object: TypeVar
+            The object to add
+        id: str
+            ID of the object to add
+        '''
+        if Cache.get(id) is None:
+            Cache.add(id=id, obj=None)
+
+    @staticmethod
     def remove(obj: TypeVar) -> None:
         '''
         Del an object from the cache.

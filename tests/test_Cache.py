@@ -141,3 +141,19 @@ class Test_Cache(TestCase):
             ['d']
         )
 
+    def test_touch(self):
+        Cache.clean()
+        self.assertDictEqual(
+            Cache.get_objects(),
+            {}
+        )
+        Cache.touch(self.__d, 'd')
+        self.assertListEqual(
+            Cache.get_list_of_objects(),
+            ['d']
+        )
+        Cache.touch(None, 'd')
+        self.assertListEqual(
+            Cache.get_list_of_objects(),
+            ['d']
+        )
