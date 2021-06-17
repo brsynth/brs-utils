@@ -1,3 +1,6 @@
+1.14.2 - Jun 17, 2021
+  - fix(Cache): touch()
+
 1.14.1 - Jun 17, 2021
   - fix(Cache): touch()
 
