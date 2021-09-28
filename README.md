@@ -42,7 +42,7 @@ Create a logger from name and a log level. Handle argparse with `add_arguments` 
 
 ## Tests
 
-You need to install *pytest* *pytest-cov* and  if it's not done yet (`conda install pytest pytest-cov`).
+You need to install *pytest* and *pytest-cov* if it's not done yet (`conda install pytest pytest-cov`).
 
 ```bash
 cd <repository>
