@@ -1,25 +1,57 @@
 # brs-utils
 
+**Python Package: Utilities for synthetic biology**
+
 [![Anaconda-Server Badge](https://anaconda.org/brsynth/brs_utils/badges/latest_release_date.svg)](https://anaconda.org/brsynth/brs_utils) [![Anaconda-Server Badge](https://anaconda.org/brsynth/brs_utils/badges/version.svg)](https://anaconda.org/brsynth/brs_utils)
 
-## total_size
+## Installation
+
+```sh
+conda create --name <myenv>
+conda activate <myenv>
+conda install -c brsynth -c conda-forge brs_utils
+``` 
+
+## Usage
+
+Example: Computes the deep size of an object.
+
+After a git clone:
+
+```python
+from brs_utils import total_size
+total_size('tests/data/1l_file.txt')
+```
+
+## Utilities
+
+### total_size
 Computes the deep size of an object.
 
-## print functions
+### print functions
 Defines some fancy print functions
 
-## download, extract_gz, download_and_extract_gz
+### download, extract_gz, download_and_extract_gz
 Functions to handle download and extract files
 
-## file_length
+### file_length
 Returns the number of lines of the given file
 
-## logger
+### logger
 Create a logger from name and a log level. Handle argparse with `add_arguments` function which provides standard cli arguments.
 
-# CI/CD
-For further tests and development tools, a CI toolkit is provided in `ci` folder (see [ci/README.md](ci/README.md)).
+## Tests
 
+You need to install *pytest* *pytest-cov* and  if it's not done yet (`conda install pytest pytest-cov`).
+
+```bash
+cd <repository>
+cd tests
+pytest -v --cov --cov-report term-missing
+```
+
+## CI/CD
+For further tests and development tools, a CI toolkit is provided in `ci` folder (see [ci/README.md](ci/README.md)).
 
 
 ## Authors
