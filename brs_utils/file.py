@@ -89,7 +89,7 @@ def chown_r(
 
 
 def download(
-     url: str,
+    url: str,
     file: str = ""
 ) -> str:
     """
@@ -105,7 +105,9 @@ def download(
     r = r_get(url)
     if not file:
         file = NamedTemporaryFile().name
-    open(file, 'wb').write(r.content)
+    f = open(file, 'wb')
+    f.write(r.content)
+    f.close()
     return file
 
 
@@ -150,6 +152,7 @@ def compress_tar_gz(
             path,
             arcname = os_path.basename(path)
         )
+        tar.close()
     if delete:
         if os_path.isfile(path):
             remove(path)
@@ -179,6 +182,8 @@ def compress_gz(
         outFile = inFile+'.gz'
     with open(inFile, 'rb') as f_in, gz_open(outFile, 'wb') as f_out:
         f_out.writelines(f_in)
+        f_in.close()
+        f_out.close()
     if delete:
         remove(inFile)
 
@@ -187,7 +192,9 @@ def compress_gz(
 
 def extract_gz_to_string(filename: str) -> str:
     gz = gz_open(filename, mode='rb')
-    return gz.read().decode()
+    decode = gz.read().decode()
+    gz.close()
+    return decode
 
 
 def extract_gz(
@@ -196,9 +203,10 @@ def extract_gz(
 ) -> str:
     outfile = os_path.join(path, os_path.basename(file[:-3]))
     makedirs(path, exist_ok=True)
-    with gz_open(file, 'rb') as f_in:
-        with open(outfile, 'wb') as f_out:
-            copyfileobj(f_in, f_out)
+    with gz_open(file, 'rb') as f_in, open(outfile, 'wb') as f_out:
+        copyfileobj(f_in, f_out)
+        f_in.close()
+        f_out.close()
     return outfile
 
 
@@ -224,6 +232,7 @@ def download_and_extract_gz(
 def file_length(filename: str) -> int:
     with open(filename, 'rb') as f:
         n = sum(1 for line in f)
+        f.close()
     return n
 
 
@@ -231,5 +240,6 @@ def read_dict(filename: str) -> Dict:
     d = {}
     with open(filename, 'r') as f:
         s = f.read()
+        f.close()
         d = literal_eval(s)
     return d
