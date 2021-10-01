@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
 include $(SELF_DIR)/.env
@@ -31,7 +32,7 @@ check: ## Test code with 'pytest', this is the fastest way to test the code
 	   @$(MAKE_CMD) -f test.mk check
 
 test: ## Test code with 'pytest', this is the fastest way to test the code
-	   @$(MAKE_CMD) -f test.mk test args=$(args)
+	   @$(MAKE_CMD) -f test.mk test args="$(args)"
 
 %-inconda: ## Test conda package
 ifneq ($(strip $(env)),)
@@ -39,8 +40,8 @@ ifneq ($(strip $(env)),)
 endif
 	@$(MAKE_CMD) -f conda.mk check-environment-$* env=$(env)
 	@$(MAKE_CMD) -f conda.mk conda-run-env env=$(env) \
-																				 cmd="make -C .. $*" \
-																				 args="$(args)"
+										   cmd="make -C .. $*" \
+										   args="$(args)"
 
 
 conda-all: conda-build conda-test conda-convert conda-publish ## (default) Perform all conda process (build, test, convert, publish)
@@ -63,3 +64,12 @@ conda-check-recipe: ## Check conda recipe
 
 conda-create-run_env: ## Make an conda environment to run program
 	@$(MAKE_CMD) -f conda.mk check-environment-test env=${PACKAGE}_test
+
+doc-pdoc:
+	cd .. ; rm -rf chemlite/__pycache__ ; pdoc --force --html -o docs chemlite
+
+doc-sphinx:
+	cd .. ; sphinx-apidoc -f -o docs/source chemlite
+	
+doc-sphinx-html:
+	cd ../docs ; make html

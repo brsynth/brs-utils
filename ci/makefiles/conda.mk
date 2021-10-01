@@ -1,6 +1,8 @@
 include ../../extras/.env
 include ../.env
 
+SHELL := /bin/bash
+
 tmpfile := $(shell mktemp -u)
 tmpdir  := $(shell dirname $(tmpfile))
 
@@ -23,13 +25,17 @@ help-advanced: ## Advanced help.
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
 CONDA_BUILD_ARGS = --quiet --numpy 1.11
 MAKE_CMD = $(MAKE) -s --no-print-directory
-ECHO = echo -n ">>>"
+ECHO = echo ">>>"
 
 clean: conda-clean-build
 
 #python_versions = $(shell cat ../recipe/conda_build_config.yaml | awk 'NR>1 {print $$2}')
 recipe_channels = $(shell cat ../../recipe/conda_channels.txt)
 conda_channels  = $(shell conda config --show channels | awk '{print $2}')
+
+define check
+	$(1) && echo OK
+endef
 
 
 # CONDA
@@ -38,22 +44,23 @@ conda_channels  = $(shell conda config --show channels | awk '{print $2}')
 ### update
 conda-update:
 	@$(ECHO) "Updating conda... "
-	@conda update -q -y -n base -c defaults conda > /dev/null
-	@echo OK
+	@conda update -q -y -n base -c defaults conda > /dev/null \
+	&& echo OK
 ### install package
 conda-install-%:
 	@$(ECHO) "Installing $*... "
 ifeq (,$(channel))
-	@conda install -y $* > /dev/null
+	@check,conda install -y $* > /dev/null \
+	&& echo OK
 else
-	@conda install -y -c $(channel) $* > /dev/null
+	@conda install -y -c $(channel) $* > /dev/null \
+	&& echo OK
 endif
-	@echo OK
 ### check recipe
 conda-recipe-check:
 	@$(ECHO) "Checking the recipe... "
-	@conda build --check $(CONDA_BUILD_ARGS) ../../recipe > /dev/null
-	@echo OK
+	@conda build --check $(CONDA_BUILD_ARGS) ../../recipe > /dev/null \
+	&& echo OK
 ### clean build products
 conda-clean-build:
 	@rm -rf ${CONDA_BLD_PATH}/*
@@ -75,20 +82,20 @@ endif
 ### build only
 conda-build-only: check-environment-build
 	@$(ECHO) "Building conda package... "
-	@conda run --name ${PACKAGE}_build conda build --no-test $(CONDA_BUILD_ARGS) $(VARIANTS) --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null
-	@echo OK
+	@conda run --name ${PACKAGE}_build conda build --no-test $(CONDA_BUILD_ARGS) $(VARIANTS) --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null \
+	&& echo OK
 
 conda-test-only: check-environment-build conda-add-channels
 	@$(ECHO) "Testing conda package... "
-	@conda run --name ${PACKAGE}_build conda build --test $(CONDA_BUILD_ARGS) ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}*.tar.bz2
-	@echo OK
+	@conda run --name ${PACKAGE}_build conda build --test $(CONDA_BUILD_ARGS) ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}*.tar.bz2 \
+	&& echo OK
 
 ### build+test
 conda-build: conda-build-test
 conda-build: check-environment-build conda-add-channels
 	@$(ECHO) "Building and Testing conda package... "
-	@conda run --name ${PACKAGE}_build conda build $(CONDA_BUILD_ARGS) $(VARIANTS) --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null
-	@echo OK
+	@conda run --name ${PACKAGE}_build conda build $(CONDA_BUILD_ARGS) $(VARIANTS) --output-folder ${CONDA_BLD_PATH} ../../recipe > /dev/null \
+	&& echo OK
 
 conda-convert: check-conda
 	@$(ECHO) "Converting conda package from ${PLATFORM} to osx-64, linux-64 and win-64... "
@@ -98,8 +105,8 @@ conda-convert: check-conda
 		        --platform linux-64 \
 		        --platform win-64 \
 		        --output-dir ${CONDA_BLD_PATH} \
-		        ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*.tar.bz2 > /dev/null
-	@echo OK
+		        ${CONDA_BLD_PATH}/${PLATFORM}/${PACKAGE}-*.tar.bz2 > /dev/null \
+	&& echo OK
 
 
 ### publish
@@ -179,7 +186,7 @@ test_env_file: check-pyyaml
 	@python3 ../$(TEST_PATH)/parse_recipe.py req > $(test_env_file)
 check-environment-%: check-conda %_env_file
 ifneq ("$(wildcard $(MY_ENV_DIR))","") # check if the directory is there
-		@$(ECHO) "'$(env)' environment already exists.\n"
+		@$(ECHO) "'$(env)' environment already exists."
 else
 		@$(ECHO) "Creating '$(env)' environment... "
 		@conda env create -n $(env) -f $($(*)_env_file) > /dev/null
@@ -192,5 +199,5 @@ ifneq ($(strip $(cmd)),)
 	conda run --name $(env) $(cmd) args="$(args)"
 else
 	@conda run --name $(env) \
-		$(MAKE_CMD) -f conda.mk $(target) args=$(args)
+		$(MAKE_CMD) -f conda.mk $(target) args="$(args)"
 endif
