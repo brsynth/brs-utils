@@ -1,3 +1,6 @@
+1.14.4 - Oct 4, 2021
+  - fix(file): handle temp files, remove them after using
+
 1.14.3 - Oct 1, 2021
   - fix(file): close file after opening
 
