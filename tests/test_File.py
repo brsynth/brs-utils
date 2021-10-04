@@ -12,8 +12,16 @@ from brs_utils import file_length, \
                       compress_tar_gz, compress_gz, \
                       extract_gz, extract_tar_gz, extract_gz_to_string, \
                       download_and_extract_tar_gz
-from tempfile  import NamedTemporaryFile, TemporaryDirectory
-from filecmp   import cmp, cmpfiles
+from tempfile  import (
+    NamedTemporaryFile,
+    TemporaryDirectory,
+    mkdtemp
+)
+from filecmp   import (
+    cmp,
+    cmpfiles,
+    dircmp
+)
 from pathlib   import Path
 from hashlib   import sha256
 from json      import dumps as json_dumps
@@ -21,10 +29,9 @@ from os import (
     path as os_path,
     remove
 )
-from os        import remove, mkdir
-from shutil    import copyfile
-from random import choice
-from string import ascii_uppercase, digits
+from shutil import (
+    copyfile
+)
 
 class Test_File(TestCase):
 
@@ -33,7 +40,8 @@ class Test_File(TestCase):
     DOWNLOAD_HASHES = {'test_rpSBML.py':    '2031eefaf7305428e10f5a3c6ab485085d69979b8be6a1e3b2e375349ec7b9bd',
                        'test_TotalSize.py': '6a81f09015f516b8cfed8f39badbac3380e758df625c0ce3b9c87a79745813e2',
                        'test_Download.py':  '504676268634b8c340a11e202b4d9c7cc08f9daea749f4c9cf5db9294772bc39'}
-    TAR_GZ_FILE     = os_path.join('data', 'data.tar.gz')
+    DATA_FOLDER     = 'data'
+    TAR_GZ_FILE     = os_path.join(DATA_FOLDER, 'data.tar.gz')
 
     def test_empty_file(self):
         self.assertEqual(file_length('data/empty_file.txt'), 0)
@@ -58,16 +66,15 @@ class Test_File(TestCase):
             self.assertDictEqual(dict, self._d)
 
     def test_download_with_filename(self):
-        with NamedTemporaryFile() as tempf:
-            download(
-                Test_File.DOWNLOAD_URL,
-                tempf.name
+        download_f = download(
+            Test_File.DOWNLOAD_URL
+        )
+        self.assertEqual(
+            sha256(
+                Path(download_f).read_bytes()).hexdigest(),
+                Test_File.DOWNLOAD_HASH
             )
-            self.assertEqual(
-                sha256(
-                    Path(tempf.name).read_bytes()).hexdigest(),
-                    Test_File.DOWNLOAD_HASH
-                )
+        remove(download_f)
 
     def test_download_without_filename(self):
         outfile = download(Test_File.DOWNLOAD_URL)
@@ -114,43 +121,40 @@ class Test_File(TestCase):
         remove(oufile)
 
     def test_compress_tar_gz_dir(self):
-        # Create a temporary folder
+        oufile = compress_tar_gz(
+            self.DATA_FOLDER,
+            delete=False
+        )
+        # Check if the original folder still exists
+        self.assertTrue(self.DATA_FOLDER)
+        # Check if extracted folder is equal to original one
         with TemporaryDirectory() as tempd:
-            # Create a temporay file inside the temporary folder
-            temp_file = NamedTemporaryFile(dir=tempd, delete=False)
-            # Compress the temporary folder into a temporary tar.gz file
-            oufile = compress_tar_gz(tempd,
-                                     NamedTemporaryFile().name+'.tar.gz',
-                                     delete=False)
-            # Check if the original folder still exists
-            self.assertTrue(os_path.isdir(tempd))
-            # Check if extracted folder is equal to original one
-            with TemporaryDirectory() as tempd_2:
-                # Extract the arcive in a temporary folder
-                extract_tar_gz(oufile, tempd_2)
-                # Set some variables for readness
-                indir        = tempd
-                outdir       = os_path.join(tempd_2, os_path.basename(tempd))
-                files_to_cmp = [os_path.join(outdir, os_path.basename(temp_file.name))]
-                # Compare files within both original and extracted folders
-                cmp_result  = cmpfiles(indir, outdir, files_to_cmp)
-                # The first element is the list of files that match,
-                # so it must be equal to list of files passed to 'cmpfiles()'
-                self.assertEqual(cmp_result[0], files_to_cmp)
+            # Extract the arcive in a temporary folder
+            extract_tar_gz(
+                file=oufile,
+                dir=tempd,
+                delete=False
+            )
+            comp = dircmp(
+                os_path.join(
+                    tempd,
+                    os_path.basename(self.DATA_FOLDER)
+                ),
+                self.DATA_FOLDER
+            )
+            self.assertListEqual(
+                [],
+                comp.diff_files
+            )
         remove(oufile)
 
     def test_compress_tar_gz_dir_delete(self):
-        # Create a persistent temporary folder
-        with TemporaryDirectory() as tempd:
-            tempdir = os_path.join(os_path.dirname(tempd), ''.join(choice(ascii_uppercase + digits) for _ in range(6)))
-            mkdir(tempdir)
-
-        # Create a temporay file inside the temporary folder
-        temp_file = NamedTemporaryFile(dir=tempdir, delete=False)
+        tempdir = mkdtemp()
         # Compress the temporary folder into a temporary tar.gz file
-        outfile = compress_tar_gz(tempdir,
-                                  NamedTemporaryFile().name+'.tar.gz',
-                                  delete=True)
+        outfile = compress_tar_gz(
+            tempdir,
+            delete=True
+        )
         # Check if the original folder does not exist anymore
         self.assertFalse(os_path.exists(tempdir))
         remove(outfile)
@@ -204,8 +208,10 @@ class Test_File(TestCase):
         with TemporaryDirectory() as tempd:
             download_and_extract_tar_gz(Test_File.DOWNLOAD_URL, tempd)
             for member in Test_File.DOWNLOAD_HASHES:
-                self.assertEqual(Test_File.DOWNLOAD_HASHES[member],
-                                 sha256(Path(os_path.join(tempd,member)).read_bytes()).hexdigest())
+                self.assertEqual(
+                    Test_File.DOWNLOAD_HASHES[member],
+                    sha256(Path(os_path.join(tempd,member)).read_bytes()).hexdigest()
+                )
 
     def test_download_and_extract_tar_gz_member(self):
         _member = 'test_rpSBML.py'

@@ -13,7 +13,10 @@ from os import (
     stat as os_stat
 )
 from requests import get as r_get
-from tempfile import NamedTemporaryFile
+from tempfile import (
+    NamedTemporaryFile,
+    mkdtemp
+)
 from tarfile  import open as tf_open
 from gzip     import (
     open        as gz_open,
@@ -119,8 +122,11 @@ def download(
 def extract_tar_gz(
       file: str,
        dir: str,
-    member: str = ''
+    member: str = '',
+    delete: bool = False
 ) -> None:
+    if not dir:
+        dir = mkdtemp()
     if not os_path.exists(dir):
         makedirs(dir, exist_ok=True)
     tar = tf_open(file, mode='r:gz')
@@ -129,6 +135,9 @@ def extract_tar_gz(
     else:
         tar.extract(member, dir)
     tar.close()
+    if delete:
+        rmtree(dir)
+    return dir
 
 
 def compress_tar_gz(
@@ -148,11 +157,14 @@ def compress_tar_gz(
     The archive filename
     """
     if not outFile:
-        outFile = os_path.join(
-            os_path.dirname(path),
-            os_path.basename(path) + '.tar.gz'
+        f = NamedTemporaryFile(
+            mode='wb',
+            delete=False
         )
-    with tf_open(outFile, "w:gz") as tar:
+        outFile = f.name
+    else:
+        f = open(outFile, 'wb')
+    with tf_open(fileobj=f, mode='w:gz') as tar:
         tar.add(
             path,
             arcname = os_path.basename(path)
@@ -163,7 +175,6 @@ def compress_tar_gz(
             remove(path)
         else:
             rmtree(path)
-
     return outFile
 
 
