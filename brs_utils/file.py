@@ -104,8 +104,13 @@ def download(
     """
     r = r_get(url)
     if not file:
-        file = NamedTemporaryFile().name
-    f = open(file, 'wb')
+        f = NamedTemporaryFile(
+            mode='wb',
+            delete=False
+        )
+        file = f.name
+    else:
+        f = open(file, 'wb')
     f.write(r.content)
     f.close()
     return file
@@ -215,18 +220,19 @@ def download_and_extract_tar_gz(
     dir: str,
     member: str = ''
 ) -> None:
-    with NamedTemporaryFile() as tempf:
-        download(url, tempf.name)
-        extract_tar_gz(tempf.name, dir, member)
+    filename = download(url)
+    extract_tar_gz(filename, dir, member)
+    remove(filename)
+
 
 
 def download_and_extract_gz(
     url: str,
     path: str
 ) -> None:
-    with NamedTemporaryFile() as tempf:
-        download(url, tempf.name)
-        extract_gz(tempf.name, path)
+    filename = download(url)
+    extract_gz(filename, path)
+    remove(filename)
 
 
 def file_length(filename: str) -> int:

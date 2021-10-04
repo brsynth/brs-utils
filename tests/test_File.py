@@ -17,7 +17,10 @@ from filecmp   import cmp, cmpfiles
 from pathlib   import Path
 from hashlib   import sha256
 from json      import dumps as json_dumps
-from os        import path  as os_path
+from os import (
+    path as os_path,
+    remove
+)
 from os        import remove, mkdir
 from shutil    import copyfile
 from random import choice
@@ -56,30 +59,44 @@ class Test_File(TestCase):
 
     def test_download_with_filename(self):
         with NamedTemporaryFile() as tempf:
-            download(Test_File.DOWNLOAD_URL,
-                     tempf.name)
+            download(
+                Test_File.DOWNLOAD_URL,
+                tempf.name
+            )
             self.assertEqual(
-                sha256(Path(tempf.name).read_bytes()).hexdigest(),
-                       Test_File.DOWNLOAD_HASH)
+                sha256(
+                    Path(tempf.name).read_bytes()).hexdigest(),
+                    Test_File.DOWNLOAD_HASH
+                )
 
     def test_download_without_filename(self):
-        oufile = download(Test_File.DOWNLOAD_URL)
+        outfile = download(Test_File.DOWNLOAD_URL)
         self.assertEqual(
-            sha256(Path(oufile).read_bytes()).hexdigest(),
-                   Test_File.DOWNLOAD_HASH)
+            sha256(
+                Path(outfile).read_bytes()).hexdigest(),
+                Test_File.DOWNLOAD_HASH
+            )
+        remove(outfile)
 
     def test_compress_tar_gz_file(self):
         infile_t = '100l_file.txt'
         infile = os_path.join('data', infile_t)
-        oufile = compress_tar_gz(infile,
-                                 NamedTemporaryFile().name+'.tar.gz',
-                                 delete=False)
+        oufile = compress_tar_gz(
+            infile,
+            NamedTemporaryFile().name+'.tar.gz',
+            delete=False
+        )
         # Check if the original file still exists
         self.assertTrue(os_path.isfile(infile))
         # Check if extracted file is equal to original one
         with TemporaryDirectory() as tempd:
             extract_tar_gz(oufile, tempd)
-            self.assertTrue(cmp(infile, os_path.join(tempd, infile_t)))
+            self.assertTrue(
+                cmp(
+                    infile,
+                    os_path.join(tempd, infile_t)
+                )
+            )
         remove(oufile)
 
     def test_compress_tar_gz_file_wo_outfile(self):
