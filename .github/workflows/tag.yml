@@ -5,8 +5,8 @@ on:
     branches:
       - stable
     paths:
-      - brs_utils
-      - tests
+      - brs_utils/**
+      - tests/**
 
 jobs:
 
