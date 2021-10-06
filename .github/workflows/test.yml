@@ -7,16 +7,9 @@ on:
 
   push:
     branches: [ main, master, dev ]
-    paths-ignore:
-      - '**/RELEASE*'
-      - '**/README*'
-      - '**/LICENSE*'
-      - 'recipe'
-      - 'docs'
-      - '.gitignore'
-      - '.github'
-      # - '!.github/workflows/test*'
-      - '**/_version.py'
+    paths:
+      - brs_utils
+      - tests
   pull_request:
     branches: [ master ]
 
