@@ -27,3 +27,10 @@ jobs:
           body: ${{ steps.tag_version.outputs.changelog }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate CHANGELOG
+        uses: actions/setup-node@v2
+          with:
+            node-version: '14'
+        run: |
+          npm install generate-changelog -g
+          changelog generate

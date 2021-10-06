@@ -10,7 +10,11 @@ from logging import(
     getLogger,
     StreamHandler
 )
-from colored import fg, bg, attr
+from colored import (
+    fg,
+    bg,
+    attr
+)
 
 
 def print_OK_adv(logger: Logger=getLogger(__name__)) -> None:
