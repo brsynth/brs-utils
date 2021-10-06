@@ -33,6 +33,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Update RELEASE file
+        run: |
+          sed -i '1s/^/${{ github.ref }}\n${{steps.github_release.outputs.changelog}}\n\n/' RELEASE
+
       - name: Create Release
         uses: actions/create-release@v1
         with:
