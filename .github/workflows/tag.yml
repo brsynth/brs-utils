@@ -35,4 +35,4 @@ jobs:
           CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
             gem install github_changelog_generator
-            github_changelog_generator -u brsynth -p brs_utils
+            github_changelog_generator -u brsynth -p brs-utils
