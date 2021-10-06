@@ -69,7 +69,6 @@ from colored import (
     bg as c_bg
 )
 
-
 def print_start(
     logger: Logger=getLogger(__name__),
     msg: str='Start process',
