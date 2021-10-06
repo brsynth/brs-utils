@@ -34,9 +34,17 @@ descr = 'Generic utilities'
 #     m = re_search('"(.+)"', f.readline().split('=')[1])
 #     if m:
 #         version = m.group(1)
-_release = 'RELEASE'
+_release = 'CHANGELOG.md'
 with open(_release, 'r') as f:
-    version = f.readline().split()[0]
+    lines = f.readlines()
+pattern = "\[(.+)\]"
+for line in lines:
+    if line.startswith('##'):
+        import re
+        m = re.search(pattern, line)
+        if m:
+            version = m.group(1)
+        break
 
 
 setup(
