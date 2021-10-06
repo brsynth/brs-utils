@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - stable
+    paths:
+      - brs_utils
+      - tests
 
 jobs:
 
