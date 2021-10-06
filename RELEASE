@@ -1,4 +1,4 @@
-2.0.0 - Oct 6, 2021
+v1.14.8 - Oct 6, 2021
   - refactor: remove conda package building files and ci toolkit
   - build: change github actions
 
