@@ -6,6 +6,7 @@ on:
       - stable
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -15,10 +16,28 @@ jobs:
       uses: mathieudutour/github-tag-action@v5.6
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Create a GitHub release
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
+    # - name: Create a GitHub release
+    #   uses: ncipollo/release-action@v1
+    #   with:
+    #     tag: ${{ steps.tag_version.outputs.new_tag }}
+    #     name: Release ${{ steps.tag_version.outputs.new_tag }}
+    #     body: ${{ steps.tag_version.outputs.changelog }}
 
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: ${{steps.github_release.outputs.changelog}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
