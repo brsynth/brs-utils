@@ -7,10 +7,10 @@ on:
 
 jobs:
 
-  # build:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
   #     - name: Bump version and push tag
   #       id: tag_version
   #       uses: mathieudutour/github-tag-action@v5.6
@@ -27,9 +27,9 @@ jobs:
     # if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - name: Build Changelog
+      - name: Release Changelog Builder
         id: github_release
-        uses: mikepenz/release-changelog-builder-action@v1
+        uses: mikepenz/release-changelog-builder-action@v2.4.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
