@@ -2,7 +2,7 @@
 
 **Generic Utilities**
 
-[![Anaconda-Server Badge](https://anaconda.org/brsynth/brs_utils/badges/latest_release_date.svg)](https://anaconda.org/brsynth/brs_utils) [![Anaconda-Server Badge](https://anaconda.org/brsynth/brs_utils/badges/version.svg)](https://anaconda.org/brsynth/brs_utils)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/brs_utils/badges/latest_release_date.svg)](https://anaconda.org/conda-forge/brs_utils) [![Anaconda-Server Badge](https://anaconda.org/conda-forge/brs_utils/badges/version.svg)](https://anaconda.org/conda-forge/brs_utils)
 
 ## Installation
 
