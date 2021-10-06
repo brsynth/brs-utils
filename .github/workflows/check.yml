@@ -15,7 +15,7 @@ on:
       - 'docs'
       - '.gitignore'
       - '.github'
-      - '!.github/workflows/check*'
+      # - '!.github/workflows/check*'
       - '**/_version.py'
 
 jobs:

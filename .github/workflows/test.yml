@@ -15,7 +15,7 @@ on:
       - 'docs'
       - '.gitignore'
       - '.github'
-      - '!.github/workflows/test*'
+      # - '!.github/workflows/test*'
       - '**/_version.py'
   pull_request:
     branches: [ master ]
