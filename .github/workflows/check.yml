@@ -7,40 +7,42 @@ on: [push]
 
 jobs:
 
-  runs-on: ubuntu-latest
+  Check:
 
-  steps:
-    # 1. Retrieving repository
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        persist-credentials: false
+    runs-on: ubuntu-latest
 
-    # 2. Setting up conda env
-    - name: Set up conda environment
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        miniconda-version: "latest"
-        auto-activate-base: false
-        activate-environment: brs_utils-dev
-        environment-file: environment.yaml
+    steps:
+      # 1. Retrieving repository
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
 
-    # 3. Installing Python dependencies
-    - name: Installing Python dependencies
-      run: |
-        conda install -c conda-forge flake8 bandit
+      # 2. Setting up conda env
+      - name: Set up conda environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          auto-activate-base: false
+          activate-environment: brs_utils-dev
+          environment-file: environment.yaml
 
-    # 4. Run bandit
-    - name: Lint with bandit
-      run: |
-        # -lll to only catch the higher level security issues
-        conda install -c conda-forge flake8 bandit
-        bandit -r -lll .
+      # 3. Installing Python dependencies
+      - name: Installing Python dependencies
+        run: |
+          conda install -c conda-forge flake8 bandit
 
-    # 5. Run flake8
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      # 4. Run bandit
+      - name: Lint with bandit
+        run: |
+          # -lll to only catch the higher level security issues
+          conda install -c conda-forge flake8 bandit
+          bandit -r -lll .
+
+      # 5. Run flake8
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
