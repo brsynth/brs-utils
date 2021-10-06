@@ -18,8 +18,7 @@ from tempfile import (
 )
 from tarfile  import open as tf_open
 from gzip     import (
-    open        as gz_open,
-    decompress  as gz_decompress
+    open        as gz_open
 )
 from shutil import (
     copyfileobj,
