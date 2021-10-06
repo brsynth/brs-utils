@@ -50,7 +50,6 @@ def check_file_size(
     logger.debug('--')
     return s == size
 
-
 def check_sha(
     filename: str,
     sum: str,
