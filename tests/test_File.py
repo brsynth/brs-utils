@@ -40,17 +40,23 @@ class Test_File(TestCase):
     DOWNLOAD_HASHES = {'test_rpSBML.py':    '2031eefaf7305428e10f5a3c6ab485085d69979b8be6a1e3b2e375349ec7b9bd',
                        'test_TotalSize.py': '6a81f09015f516b8cfed8f39badbac3380e758df625c0ce3b9c87a79745813e2',
                        'test_Download.py':  '504676268634b8c340a11e202b4d9c7cc08f9daea749f4c9cf5db9294772bc39'}
-    DATA_FOLDER     = 'data'
+    DATA_FOLDER     = os_path.join(
+        os_path.dirname(os_path.realpath(__file__)),
+        'data'
+    )
     TAR_GZ_FILE     = os_path.join(DATA_FOLDER, 'data.tar.gz')
+    file_0l = os_path.join(DATA_FOLDER, 'empty_file.txt')
+    file_1l = os_path.join(DATA_FOLDER, '1l_file.txt')
+    file_100l = os_path.join(DATA_FOLDER, '100l_file.txt')
 
     def test_empty_file(self):
-        self.assertEqual(file_length('data/empty_file.txt'), 0)
+        self.assertEqual(file_length(self.file_0l), 0)
 
     def test_1l_file(self):
-        self.assertEqual(file_length('data/1l_file.txt'), 1)
+        self.assertEqual(file_length(self.file_1l), 1)
 
     def test_100l_file(self):
-        self.assertEqual(file_length('data/100l_file.txt'), 100)
+        self.assertEqual(file_length(self.file_100l), 100)
 
     _d = {'a': 1, 'b': 2}
 
@@ -60,7 +66,7 @@ class Test_File(TestCase):
 
     def test_readdict_ok(self):
         with TemporaryDirectory() as tempd:
-            filename = tempd+'/dict'
+            filename = os_path.join(tempd, 'dict')
             self._create_file_from_dict(filename, self._d)
             dict = read_dict(filename)
             self.assertDictEqual(dict, self._d)
@@ -86,8 +92,8 @@ class Test_File(TestCase):
         remove(outfile)
 
     def test_compress_tar_gz_file(self):
-        infile_t = '100l_file.txt'
-        infile = os_path.join('data', infile_t)
+        infile = self.file_100l
+        infile_t = os_path.basename(infile)
         oufile = compress_tar_gz(
             infile,
             NamedTemporaryFile().name+'.tar.gz',
@@ -108,15 +114,25 @@ class Test_File(TestCase):
 
     def test_compress_tar_gz_file_wo_outfile(self):
         infile = NamedTemporaryFile().name
-        copyfile(os_path.join('data', '100l_file.txt'), infile)
-        oufile = compress_tar_gz(infile,
-                                 delete=False)
+        copyfile(self.file_100l, infile)
+        oufile = compress_tar_gz(
+            infile,
+            delete=False
+        )
         # Check if the original file still exists
         self.assertTrue(os_path.isfile(infile))
         # Check if extracted file is equal to original one
         with TemporaryDirectory() as tempd:
             extract_tar_gz(oufile, tempd)
-            self.assertTrue(cmp(infile, os_path.join(tempd, os_path.basename(infile))))
+            self.assertTrue(
+                cmp(
+                    infile,
+                    os_path.join(
+                        tempd,
+                        os_path.basename(infile)
+                    )
+                )
+            )
         remove(infile)
         remove(oufile)
 
@@ -160,8 +176,8 @@ class Test_File(TestCase):
         remove(outfile)
 
     def test_compress_gz(self):
-        infile_t    = '100l_file.txt'
-        infile      = os_path.join('data', infile_t)
+        infile = self.file_100l
+        infile_t = os_path.basename(infile)
         infile_temp = NamedTemporaryFile().name
         copyfile(infile, infile_temp)
         outfile     = compress_gz(infile_temp)
@@ -176,8 +192,8 @@ class Test_File(TestCase):
         remove(infile_temp)
 
     def test_compress_gz_delete(self):
-        infile_t    = '100l_file.txt'
-        infile      = os_path.join('data', infile_t)
+        infile = self.file_100l
+        infile_t = os_path.basename(infile)
         infile_temp = NamedTemporaryFile().name
         copyfile(infile, infile_temp)
         outfile     = compress_gz(infile_temp, delete=True)
@@ -191,8 +207,8 @@ class Test_File(TestCase):
         remove(outfile)
 
     def test_compress_gz_with_outFile(self):
-        infile_t     = '100l_file.txt'
-        infile       = os_path.join('data', infile_t)
+        infile = self.file_100l
+        infile_t = os_path.basename(infile)
         outfile_temp = NamedTemporaryFile().name
         outfile      = compress_gz(infile, outfile_temp)
         # Check if the original file still exists
