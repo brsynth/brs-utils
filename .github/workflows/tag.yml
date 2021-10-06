@@ -27,9 +27,9 @@ jobs:
           body: ${{ steps.tag_version.outputs.changelog }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
+      - uses: actions/setup-ruby@v1
+        # with:
+        #   ruby-version: '2.6' # Version range or exact version of a Ruby version to use, using semvers version range syntax.
       - run: |
-          npm install generate-changelog -g
-          changelog generate
+          gem install github_changelog_generator
+          github_changelog_generator -u brsynth -p brs_utils
