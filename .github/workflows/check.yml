@@ -3,7 +3,20 @@
 
 name: Check
 
-on: [push]
+on:
+
+  push:
+    branches: [ main, master, dev ]
+    paths-ignore:
+      - '**/RELEASE*'
+      - '**/README*'
+      - '**/LICENSE*'
+      - 'recipe'
+      - 'docs'
+      - '.gitignore'
+      - '.github'
+      - '!.github/workflows/check*'
+      - '**/_version.py'
 
 jobs:
 
