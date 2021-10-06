@@ -2,10 +2,8 @@ name: Create Tag/Release
 
 on:
   push:
-    # branches:
-    #   - stable
-    tags:
-      - '*'
+    branches:
+      - stable
 
 jobs:
 
