@@ -6,7 +6,6 @@ on:
       - stable
     paths:
       - 'brs_utils/**'
-      - 'tests/**'
 
 jobs:
 
