@@ -1,0 +1,7 @@
+name: brs_utils-dev
+channels:
+  - conda-forge
+dependencies:
+  - requests
+  - colorlog
+  - colored

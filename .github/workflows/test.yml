@@ -6,7 +6,7 @@ name: Test
 on:
 
   push:
-    branches: [ master, dev ]
+    branches: [ main, master, dev ]
     paths-ignore:
       - '**/RELEASE*'
       - '**/README*'
@@ -27,16 +27,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: docker://continuumio/miniconda3
+      # 1. Retrieving repository
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
 
-    - name: Updating conda
-      run: conda update --all -y
+      # 2. Setting up conda env
+      - name: "Set up conda environment"
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          auto-activate-base: false
+          activate-environment: brs_utils-dev
+          environment-file: environment.yaml
 
-    - name: Installing make
-      run: conda install -y make
+      # 3. Installing Python dependencies (test)
+      - name: "Install Python dependencies"
+        run: |
+          conda install -c conda-forge pytest pytest-cov
 
-    - name: Testing package
-      run: |
-        cd ci
-        make test-inconda
+      # 4. Running tests
+      - name: "Running Tests"
+        run: |
+          cd tests
+          pytest -v --cov --cov-report term-missing
