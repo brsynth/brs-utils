@@ -52,5 +52,4 @@ jobs:
       - name: "Running Tests"
         shell: bash -l {0}
         run: |
-          cd tests
-          pytest -v --cov --cov-report term-missing
+          python -m pytest -v --cov --cov-report term-missing
