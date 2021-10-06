@@ -1,0 +1,40 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test
+
+on: [push]
+
+jobs:
+
+  Test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Retrieving repository
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      # 2. Setting up conda env
+      - name: Set up conda environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          auto-activate-base: false
+          activate-environment: brs_utils-dev
+          environment-file: environment.yaml
+
+      # 3. Installing Python dependencies (test)
+      - name: Lint with flake8
+        run: |
+          conda install -c conda-forge flake8
+
+      # 4. Running check
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
