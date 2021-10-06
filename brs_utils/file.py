@@ -7,7 +7,6 @@ Created on June 16 2020
 from os import (
     makedirs,
     remove,
-    rmdir,
     path as os_path,
     walk,
     stat as os_stat
