@@ -37,15 +37,15 @@ jobs:
         env:
           CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            gem install github_changelog_generator
-            github_changelog_generator -u brsynth -p brs-utils
-    - name: Commit files
-      run: |
-        git config --local user.email "joan.herisson@univ-evry.fr"
-        git config --local user.name "brsynth"
-        git commit -m "Add changes" -a
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
+          gem install github_changelog_generator
+          github_changelog_generator -u brsynth -p brs-utils
+      - name: Commit files
+        run: |
+          git config --local user.email "joan.herisson@univ-evry.fr"
+          git config --local user.name "brsynth"
+          git commit -m "Add changes" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
