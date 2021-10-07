@@ -1,11 +1,14 @@
 name: Update CHANGELOG
 
 on:
-  push:
+  # push:
+  #   branches:
+  #     - "*"
+  #   tags:
+  #     - "*"
+  create:
     branches:
-      - "*"
-    tags:
-      - "*"
+      - stable
 
 jobs:
 
