@@ -36,7 +36,6 @@ from logging import (
 from hashlib import sha512
 from pathlib import Path
 
-
 def check_file_size(
     filename: str,
     size: int,

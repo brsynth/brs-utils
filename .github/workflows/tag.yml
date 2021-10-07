@@ -22,6 +22,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: stable
+          tag_prefix:
       - name: Create Release
         uses: actions/create-release@v1
         with:
@@ -43,7 +44,34 @@ jobs:
         run: |
           git config --local user.email "joan.herisson@univ-evry.fr"
           git config --local user.name "brsynth"
-          git commit -m "Add changes" -a
+          git commit -m "doc(CHANGELOG): update" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout conda-forge
+        uses: actions/checkout@v2
+        with:
+          repository: conda-forge/brs_utils-feedstock
+          # token: ${{ secrets.GitHub_PAT }} # `GitHub_PAT` is a secret that contains your PAT
+          # path: my-tools
+      - name: Update recipe
+        run: |
+          wget -O- https://github.com/brsynth/brs-utils/archive/refs/tags/$VERSION.tar.gz | shasum -a 256 > sha.txt
+          sha=`python -c "f = open('sha.txt'); print(f.read().split()[0]); f.close()"`
+          rm -f sha.txt
+          sed -i -E "s/(\{% set version = \")[^>]+(\" %\})/\1somethin\2/" recipe/meta.yaml
+          sed -i -E "s/(sha256: )[^>]+/\1$sha/" recipe/meta.yaml
+          git config --local user.email "joan.herisson@univ-evry.fr"
+          git config --local user.name "brsynth"
+          git commit -m "chore(meta.yml): update version" -a
+        env:
+          VERSION: ${{ steps.tag_version.outputs.new_tag }}
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
