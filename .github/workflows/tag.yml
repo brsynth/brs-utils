@@ -46,7 +46,7 @@ jobs:
           git config --local user.name "$GITHUB_USERNAME"
           git commit -m "doc(CHANGELOG): update" -a
         env:
-          GITHUB_USERNAME: breakthewall
+          GITHUB_USERNAME: brsynth
           GITHUB_EMAIL: joan.herisson@univ-evry.fr
       - name: Push changes
         uses: ad-m/github-push-action@master
