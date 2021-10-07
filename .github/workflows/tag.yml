@@ -81,4 +81,5 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          repository: brsynth/brs_utils-feedstock
+          # branch: ${{ github.ref }}
