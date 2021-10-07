@@ -68,7 +68,7 @@ jobs:
           git config --local user.email "joan.herisson@univ-evry.fr"
           git config --local user.name "breakthewall"
           git commit -m "chore(meta.yml): update version" -a
-          git push
+          git push https://breakthewall:$GITHUB_TOKEN@github.com/conda-forge/brs_utils-feedstock
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
