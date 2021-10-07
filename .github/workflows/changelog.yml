@@ -3,9 +3,9 @@ name: Update CHANGELOG
 on:
   push:
     branches:
-      - stable
+      - "!*"
     tags:
-      - '*'
+      - "*"
 
 jobs:
 
