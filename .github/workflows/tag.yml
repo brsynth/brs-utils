@@ -73,7 +73,7 @@ jobs:
           git commit -m "chore(meta.yml): update version" -a
         env:
           # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: breakthewall
+          GITHUB_USERNAME: brsynth
           GITHUB_EMAIL: joan.herisson@univ-evry.fr
           # DEPLOY_URL: github.com/conda-forge/brs_utils-feedstock
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
