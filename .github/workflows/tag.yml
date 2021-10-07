@@ -42,9 +42,12 @@ jobs:
           github_changelog_generator -u brsynth -p brs-utils
       - name: Commit files
         run: |
-          git config --local user.email "joan.herisson@univ-evry.fr"
-          git config --local user.name "brsynth"
+          git config --local user.email "$GITHUB_EMAIL"
+          git config --local user.name "$GITHUB_USERNAME"
           git commit -m "doc(CHANGELOG): update" -a
+        env:
+          GITHUB_USERNAME: breakthewall
+          GITHUB_EMAIL: joan.herisson@univ-evry.fr
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
@@ -78,4 +81,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          repository: brsynth/brs_utils-feedstock
+          branch: ${{ github.ref }}
