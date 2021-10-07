@@ -68,15 +68,15 @@ jobs:
           git config --local user.email "$GITHUB_EMAIL"
           git config --local user.name "$GITHUB_USERNAME"
           git commit -m "chore(meta.yml): update version" -a
-          git push --force --quiet "https://${{ env.GITHUB_USERNAME }}:${{ secrets.GITHUB_TOKEN }}@${{ env.DEPLOY_URL }}" master
+          # git push --force --quiet "https://${{ env.GITHUB_USERNAME }}:${{ secrets.GITHUB_TOKEN }}@${{ env.DEPLOY_URL }}" master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: breakthewall
           GITHUB_EMAIL: joan.herisson@univ-evry.fr
           DEPLOY_URL: github.com/conda-forge/brs_utils-feedstock
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
-      # - name: Push changes
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     repository: conda-forge/brs_utils-feedstock
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: conda-forge/brs_utils-feedstock
