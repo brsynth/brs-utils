@@ -66,9 +66,9 @@ jobs:
           sed -i -E "s/(\{% set version = \")[^>]+(\" %\})/\1somethin\2/" recipe/meta.yaml
           sed -i -E "s/(sha256: )[^>]+/\1$sha/" recipe/meta.yaml
           git config --local user.email "joan.herisson@univ-evry.fr"
-          git config --local user.name "brsynth"
+          git config --local user.name "breakthewall"
           git commit -m "chore(meta.yml): update version" -a
-          git push https://brsynth:$GITHUB_TOKEN@github.com/conda-forge/brs_utils-feedstock
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
