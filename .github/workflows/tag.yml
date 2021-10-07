@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - stable
-    paths:
-      - 'brs_utils/**'
+    # paths:
+    #   - 'brs_utils/**'
 
 jobs:
 
