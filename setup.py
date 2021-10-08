@@ -1,5 +1,5 @@
 from setuptools import setup
-from brs_utils.__init__ import get_version
+from brs_utils._version import get_version
 
 
 ## INFOS ##
