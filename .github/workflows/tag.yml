@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  tag-chengelog:
+  tag-changelog:
     runs-on: ubuntu-latest
     steps:
 
@@ -93,7 +93,11 @@ jobs:
           directory: feedstock
 
       ## PULL RESQUEST
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+      - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.FEEDSTOCK }}
+          token: ${{ secrets.PAT }}
+          repository: conda-forge/brs_utils-feedstock
+      - name: Create Pull Request
+          uses: peter-evans/create-pull-request@v3
+          with:
+            token: ${{ secrets.FEEDSTOCK }}
