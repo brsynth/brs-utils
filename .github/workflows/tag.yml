@@ -3,7 +3,7 @@ name: Create Tag/Release
 on:
   push:
     branches:
-      - stable
+      - master
     # paths:
     #   - 'brs_utils/**'
 
