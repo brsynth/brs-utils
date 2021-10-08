@@ -91,3 +91,9 @@ jobs:
           github_token: ${{ secrets.FEEDSTOCK }}
           repository: brsynth/brs_utils-feedstock
           directory: feedstock
+
+      ## PULL RESQUEST
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.FEEDSTOCK }}
