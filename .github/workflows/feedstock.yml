@@ -1,0 +1,53 @@
+name: Create Tag/Release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+
+  feedstock:
+    runs-on: ubuntu-latest
+    steps:
+
+      ## UPDATE CONDA-FORGE FEEDSTOCK
+      - name: Checkout feedstock fork
+        uses: actions/checkout@v2
+        with:
+          repository: brsynth/brs_utils-feedstock
+          persist-credentials: false
+          fetch-depth: 0
+          path: feedstock
+      - name: Update recipe
+        run: |
+          cd feedstock
+          wget -O- https://github.com/brsynth/brs-utils/archive/refs/tags/$VERSION.tar.gz | shasum -a 256 > sha.txt
+          sha=`python -c "f = open('sha.txt'); print(f.read().split()[0]); f.close()"`
+          rm -f sha.txt
+          sed -i -E "s/(\{% set version = \")[^>]+(\" %\})/\1$VERSION\2/" recipe/meta.yaml
+          sed -i -E "s/(sha256: )[^>]+/\1$sha/" recipe/meta.yaml
+          git config --local user.email "$GITHUB_EMAIL"
+          git config --local user.name "$GITHUB_USERNAME"
+          git commit -m "chore(meta.yml): update version" -a
+        env:
+          GITHUB_USERNAME: brsynth
+          GITHUB_EMAIL: joan.herisson@univ-evry.fr
+          VERSION: ${{ steps.tag_version.outputs.new_tag }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.FEEDSTOCK }}
+          repository: brsynth/brs_utils-feedstock
+          directory: feedstock
+
+      # ## PULL RESQUEST
+      # - name: Checkout
+      #   uses: actions/checkout@v2
+      #   with:
+      #     token: ${{ secrets.PAT }}
+      #     repository: conda-forge/brs_utils-feedstock
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v3
+      #   with:
+      #     token: ${{ secrets.FEEDSTOCK }}
