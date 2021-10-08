@@ -1,4 +1,4 @@
-name: Create Tag/Release
+name: Update feedstock
 
 on:
   release:
