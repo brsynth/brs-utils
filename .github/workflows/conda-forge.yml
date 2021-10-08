@@ -34,9 +34,9 @@ jobs:
           GITHUB_EMAIL: joan.herisson@univ-evry.fr
           # DEPLOY_URL: github.com/conda-forge/brs_utils-feedstock
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
-      # - name: Push changes
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     repository: brsynth/brs_utils-feedstock
-      #     # branch: ${{ github.ref }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # repository: brsynth/brs_utils-feedstock
+          # branch: ${{ github.ref }}
