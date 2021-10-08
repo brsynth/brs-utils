@@ -46,6 +46,17 @@ from brs_utils.Cache import Cache
 #     __version__
 # )
 
+def get_version(filename: str) -> str:
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+    for line in lines:
+        if line.startswith('##'):
+            import re
+            m = re.search("\[(.+)\]", line)
+            if m:
+                return m.group(1)
+                
+
 
 # __all__ = (
 #     'total_size', 'check_nb_args',
