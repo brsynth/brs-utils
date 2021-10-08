@@ -20,6 +20,7 @@ jobs:
           path: feedstock
       - name: Update recipe
         run: |
+          cd feedstock
           wget -O- https://github.com/brsynth/brs-utils/archive/refs/tags/$VERSION.tar.gz | shasum -a 256 > sha.txt
           sha=`python -c "f = open('sha.txt'); print(f.read().split()[0]); f.close()"`
           rm -f sha.txt
