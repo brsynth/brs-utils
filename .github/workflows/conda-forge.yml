@@ -40,4 +40,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           repository: brsynth/brs_utils-feedstock
+          directory: feedstock
           # branch: ${{ github.ref }}
