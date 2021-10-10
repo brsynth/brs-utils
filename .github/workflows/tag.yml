@@ -91,7 +91,7 @@ jobs:
         env:
           GITHUB_USERNAME: brsynth
           GITHUB_EMAIL: joan.herisson@univ-evry.fr
-          VERSION: ${{ steps.tag_version.outputs.new_tag }}
+          VERSION: ${{ jobs.tag.steps.tag_version.outputs.new_tag }}
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
