@@ -12,6 +12,8 @@ jobs:
   ## CREATE TAG/RELEASE
   tag:
     runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.tag_version.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -91,7 +93,7 @@ jobs:
         env:
           GITHUB_USERNAME: brsynth
           GITHUB_EMAIL: joan.herisson@univ-evry.fr
-          VERSION: ${{ needs.tag.steps.tag_version.outputs.new_tag }}
+          VERSION: ${{ needs.tag.outputs.new_tag }}
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
