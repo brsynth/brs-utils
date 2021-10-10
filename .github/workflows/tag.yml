@@ -69,7 +69,7 @@ jobs:
 
   ## UPDATE CONDA-FORGE FEEDSTOCK
   feedstock:
-    needs: [tag, changelog]
+    needs: [tag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout feedstock fork
