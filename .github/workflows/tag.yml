@@ -75,7 +75,7 @@ jobs:
       - name: Checkout feedstock fork
         uses: actions/checkout@v2
         with:
-          repository: brsynth/brs_utils-feedstock
+          repository: conda-forge/brs_utils-feedstock
           persist-credentials: false
           fetch-depth: 0
           # path: feedstock
