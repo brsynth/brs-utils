@@ -78,10 +78,10 @@ jobs:
           repository: brsynth/brs_utils-feedstock
           persist-credentials: false
           fetch-depth: 0
-          path: feedstock
+          # path: feedstock
       - name: Update recipe
         run: |
-          cd feedstock
+          # cd feedstock
           wget -O- https://github.com/brsynth/brs-utils/archive/refs/tags/$VERSION.tar.gz | shasum -a 256 > sha.txt
           sha=`python -c "f = open('sha.txt'); print(f.read().split()[0]); f.close()"`
           rm -f sha.txt
@@ -94,24 +94,31 @@ jobs:
           GITHUB_USERNAME: brsynth
           GITHUB_EMAIL: joan.herisson@univ-evry.fr
           VERSION: ${{ needs.tag.outputs.new_tag }}
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.FEEDSTOCK }}
-          repository: brsynth/brs_utils-feedstock
-          directory: feedstock
-
-  ## PULL RESQUEST
-  pull_request:
-    needs: [feedstock]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.PAT }}
-          repository: conda-forge/brs_utils-feedstock
+      # - name: Push changes
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     github_token: ${{ secrets.FEEDSTOCK }}
+      #     repository: brsynth/brs_utils-feedstock
+      #     directory: feedstock
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.FEEDSTOCK }}
+          push-to-fork: conda-forge/brs_utils-feedstock
+          directory: feedstock
+
+  # ## PULL RESQUEST
+  # pull_request:
+  #   needs: [feedstock]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         # token: ${{ secrets.PAT }}
+  #         repository: brsynth/brs_utils-feedstock
+  #     - name: Create Pull Request
+  #       uses: peter-evans/create-pull-request@v3
+  #       with:
+  #         token: ${{ secrets.FEEDSTOCK }}
+  #         push-to-fork: conda-forge/brs_utils-feedstock
