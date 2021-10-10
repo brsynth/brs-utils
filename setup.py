@@ -1,5 +1,4 @@
 from setuptools import setup
-from brs_utils._version import get_version
 
 
 ## INFOS ##
@@ -12,6 +11,18 @@ corr_author = 'joan.herisson@univ-evry.fr'
 ## LONG DESCRIPTION
 with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
+
+def get_version(filename: str = None) -> str:
+    if filename is None:
+        filename = 'CHANGELOG.md'
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+    for line in lines:
+        if line.startswith('##'):
+            from re import search
+            m = search("\[(.+)\]", line)
+            if m:
+                return m.group(1)
 
 setup(
     name                          = package,
