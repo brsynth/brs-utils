@@ -105,7 +105,7 @@ jobs:
         with:
           token: ${{ secrets.FEEDSTOCK }}
           push-to-fork: conda-forge/brs_utils-feedstock
-          directory: feedstock
+          # directory: feedstock
 
   # ## PULL RESQUEST
   # pull_request:
