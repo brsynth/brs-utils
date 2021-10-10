@@ -96,3 +96,4 @@ jobs:
         with:
           token: ${{ secrets.FEEDSTOCK }}
           push-to-fork: brsynth/brs_utils-feedstock
+          branch: master
