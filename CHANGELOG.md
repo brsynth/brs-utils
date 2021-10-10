@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.15.4](https://github.com/brsynth/brs-utils/tree/1.15.4) (2021-10-10)
+
+[Full Changelog](https://github.com/brsynth/brs-utils/compare/1.15.3...1.15.4)
+
 ## [1.15.3](https://github.com/brsynth/brs-utils/tree/1.15.3) (2021-10-10)
 
 [Full Changelog](https://github.com/brsynth/brs-utils/compare/1.15.2...1.15.3)
