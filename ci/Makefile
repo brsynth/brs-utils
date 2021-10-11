@@ -4,8 +4,6 @@ PACKAGE = $(shell python ../setup.py --name)
 
 include $(SELF_DIR)/.env
 
-joan:
-	@$(MAKE_CMD) -f conda.mk joan
 
 # HELP
 # This will output the help for each task
