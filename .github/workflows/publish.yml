@@ -74,7 +74,7 @@ jobs:
           CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.tag_version.outputs.new_tag }}
         run: |
-          echo $TAG > ${{ env.PACKAGE }}/_version.py
+          echo "__version__=\"$TAG\"" > ${{ env.PACKAGE }}/_version.py
       - name: Commit files
         run: |
           git config --local user.email "$GITHUB_EMAIL"
