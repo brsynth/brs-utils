@@ -47,7 +47,6 @@ from brs_utils._version import (
 )
 
                 
-
 # __all__ = (
 #     'total_size', 'check_nb_args',
 #     'file_length', 'download', 'read_dict',
