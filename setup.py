@@ -1,4 +1,5 @@
 from setuptools import setup
+from os import path as os_path
 
 
 ## INFOS ##
@@ -9,13 +10,24 @@ authors     = 'Joan Hérisson'
 corr_author = 'joan.herisson@univ-evry.fr'
 
 ## LONG DESCRIPTION
-with open('README.md', 'r', encoding='utf-8') as f:
+with open(
+    os_path.join(
+        os_path.dirname(os_path.realpath(__file__)),
+        'README.md'
+    ),
+    'r',
+    encoding='utf-8'
+) as f:
     long_description = f.read()
 
-def get_version(filename: str = None) -> str:
-    if filename is None:
-        filename = 'CHANGELOG.md'
-    with open(filename, 'r') as f:
+def get_version():
+    with open(
+        os_path.join(
+            os_path.dirname(os_path.realpath(__file__)),
+            'CHANGELOG.md'
+        ),
+        'r'
+    ) as f:
         lines = f.readlines()
     for line in lines:
         if line.startswith('##'):
@@ -26,7 +38,7 @@ def get_version(filename: str = None) -> str:
 
 setup(
     name                          = package,
-    version                       = get_version('CHANGELOG.md'),
+    version                       = get_version(),
     author                        = authors,
     author_email                  = corr_author,
     description                   = descr,
