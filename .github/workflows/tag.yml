@@ -1,11 +1,11 @@
-name: Tag/CHANGELOG/Feedstock
+name: Release
 
 on:
   push:
     branches:
       - stable
-    # paths:
-    #   - 'brs_utils/**'
+    paths:
+      - 'brs_utils/**'
 
 jobs:
 
@@ -96,4 +96,3 @@ jobs:
         with:
           token: ${{ secrets.FEEDSTOCK }}
           push-to-fork: brsynth/brs_utils-feedstock
-          # branch: master
