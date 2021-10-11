@@ -1,0 +1,24 @@
+
+test:
+  source_files:
+    - tests
+  imports:
+    - {{ name|lower }}
+  requires:
+    - pytest
+    - pytest-cov
+    - pytest-mock
+  commands:
+    - cd tests ; pytest -v --cov --cov-report term-missing
+
+about:
+  home: https://github.com/brsynth/{{ name|lower }}
+  summary: {{ data['description'] }}
+  license: {{ data.get('license') }}
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    # GitHub IDs for maintainers of the recipe.
+    # Always check with the people listed below if they are OK becoming maintainers of the recipe. (There will be spam!)
+    - breakthewall
