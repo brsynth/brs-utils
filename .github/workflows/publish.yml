@@ -18,9 +18,13 @@ jobs:
         sudo apt-get update
         sudo apt-get -y install make
     - name: Build conda package
-      run: make conda-build
+      run: |
+        cd ci
+        make conda-build
     - name: Test conda package
-      run: make conda-test
+      run: |
+        cd ci
+        make conda-test
 
   Tag:
     needs: [Conda-Build_Test]
