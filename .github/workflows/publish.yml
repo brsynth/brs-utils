@@ -1,4 +1,4 @@
-name: Release
+name: Publish
 
 on:
   push:
@@ -9,14 +9,25 @@ on:
 
 jobs:
 
-  tag:
+  Conda-Build_Test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Installing make
+      run: |
+        apt-get update
+        apt-get -y install make
+    - name: Build conda package
+      run: make conda-build
+    - name: Test conda package
+      run: make conda-test
 
+  Tag:
+    needs: [Conda-Build_Test]
     runs-on: ubuntu-latest
     outputs: # Create variable usable from another job
       new_tag: ${{ steps.tag_version.outputs.new_tag }}
-
     steps:
-
       ## CREATE TAG/RELEASE
       - uses: actions/checkout@v2
         with:
@@ -37,7 +48,6 @@ jobs:
           body: ${{ steps.tag_version.outputs.changelog }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       ## UPDATE CHANGELOG
       - uses: actions/checkout@v2
         with:
@@ -67,8 +77,8 @@ jobs:
           branch: ${{ github.ref }}
 
   ## UPDATE CONDA-FORGE FEEDSTOCK
-  feedstock:
-    needs: [tag]
+  Feedstock:
+    needs: [Tag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout feedstock fork

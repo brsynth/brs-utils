@@ -11,7 +11,7 @@ on:
       - 'brs_utils/**'
       - 'tests/**'
   pull_request:
-    branches: [ master ]
+    branches: [ main, master ]
 
 jobs:
 
@@ -20,29 +20,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Retrieving repository
-      - name: "Checkout"
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
+    - uses: actions/checkout@v2
+    - uses: docker://continuumio/miniconda3
 
-      # 2. Setting up conda env
-      - name: "Set up conda environment"
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-          auto-activate-base: false
-          activate-environment: brs_utils-dev
-          environment-file: environment.yaml
+    - name: Updating conda
+      run: conda update --all -y
 
-      # 3. Installing Python dependencies (test)
-      - name: "Install Python dependencies"
-        shell: bash -l {0}
-        run: |
-          conda install -c conda-forge pytest pytest-cov pytest-mock
+    - name: Installing make
+      run: conda install -y make
 
-      # 4. Running tests
-      - name: "Running Tests"
-        shell: bash -l {0}
-        run: |
-          python -m pytest -v --cov --cov-report term-missing
+    - name: Testing package
+      run: |
+        cd ci
+        make test-inconda
