@@ -1,11 +1,14 @@
 name: Publish
 
+env:
+  PACKAGE: 'brs_utils'
+
 on:
   push:
     branches:
       - stable
-    paths:
-      - 'brs_utils/**'
+    # paths:
+    #   - '${{ env.PACKAGE }}/**'
 
 jobs:
 
@@ -66,6 +69,12 @@ jobs:
         run: |
           gem install github_changelog_generator
           github_changelog_generator -u brsynth -p brs-utils
+      - name: Update _version.py
+        env:
+          CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag_version.outputs.new_tag }}
+        run: |
+          echo $TAG > ${{ env.PACKAGE }}/_version.py
       - name: Commit files
         run: |
           git config --local user.email "$GITHUB_EMAIL"
