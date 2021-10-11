@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - stable
-    paths:
-      - 'brs_utils/**'
+    # paths:
+    #   - 'brs_utils/**'
 
 jobs:
 
@@ -15,8 +15,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Installing make
       run: |
-        apt-get update
-        apt-get -y install make
+        sudo apt-get update
+        sudo apt-get -y install make
     - name: Build conda package
       run: make conda-build
     - name: Test conda package
