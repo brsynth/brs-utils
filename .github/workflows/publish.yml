@@ -64,7 +64,7 @@ jobs:
       #   # with:
       #   #   ruby-version: '2.6' # Version range or exact version of a Ruby version to use, using semvers version range syntax.
       - uses: docker://githubchangeloggenerator/github-changelog-generator
-        name: Generate CHANGELOG
+      - name: Generate CHANGELOG
         env:
           CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: github_changelog_generator -u brsynth -p brs-utils
