@@ -7,8 +7,8 @@ on:
   push:
     branches:
       - stable
-    paths:
-      - '${{ env.PACKAGE }}/**'
+    # paths:
+    #   - '${{ env.PACKAGE }}/**'
 
 jobs:
 
@@ -60,15 +60,17 @@ jobs:
         with:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
-      - uses: actions/setup-ruby@v1
-        # with:
-        #   ruby-version: '2.6' # Version range or exact version of a Ruby version to use, using semvers version range syntax.
+      # - uses: actions/setup-ruby@v1
+      #   # with:
+      #   #   ruby-version: '2.6' # Version range or exact version of a Ruby version to use, using semvers version range syntax.
       - name: Generate CHANGELOG
+        uses: docker://githubchangeloggenerator/github-changelog-generator
         env:
           CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gem install github_changelog_generator
-          github_changelog_generator -u brsynth -p brs-utils
+        run: github_changelog_generator -u brsynth -p brs-utils
+        # run: |
+        #   gem install github_changelog_generator
+        #   github_changelog_generator -u brsynth -p brs-utils
       - name: Update _version.py
         env:
           CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
