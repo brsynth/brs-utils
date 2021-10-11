@@ -45,7 +45,6 @@ from brs_utils.Cache import Cache
 from brs_utils._version import (
     __version__
 )
-
                 
 # __all__ = (
 #     'total_size', 'check_nb_args',
