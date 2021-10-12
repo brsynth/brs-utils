@@ -35,6 +35,12 @@ check: ## Test code with 'pytest', this is the fastest way to test the code
 test: ## Test code with 'pytest', this is the fastest way to test the code
 	   @$(MAKE_CMD) -f test.mk test args="$(args)"
 
+%-buildenv: ## Test conda package
+ifneq ($(strip $(env)),)
+	$(eval env=${PACKAGE}_$*)
+endif
+	@$(MAKE_CMD) -f conda.mk build-environment-$* env=$(env)
+
 %-inconda: ## Test conda package
 ifneq ($(strip $(env)),)
 	$(eval env=${PACKAGE}_$*)
