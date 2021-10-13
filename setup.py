@@ -4,7 +4,7 @@ from os import path as os_path
 
 ## INFOS ##
 package     = 'brs_utils'
-descr       = 'Generic utilities'
+descr       = 'Basic utilities'
 url         = 'https://github.com/brsynth/brs-utils'
 authors     = 'Joan Hérisson'
 corr_author = 'joan.herisson@univ-evry.fr'
