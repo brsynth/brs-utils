@@ -1,4 +1,4 @@
-# brs-utils [![Anaconda-Server Badge](https://anaconda.org/conda-forge/brs_utils/badges/latest_release_date.svg)](https://anaconda.org/conda-forge/brs_utils)
+# brs-utils
 
 
 **Basic Utilities**
