@@ -1,15 +1,21 @@
-# brs-utils
+# brs-utils [![Anaconda-Server Badge](https://anaconda.org/conda-forge/brs_utils/badges/latest_release_date.svg)](https://anaconda.org/conda-forge/brs_utils)
 
-**Generic Utilities**
 
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/brs_utils/badges/latest_release_date.svg)](https://anaconda.org/conda-forge/brs_utils) [![Anaconda-Server Badge](https://anaconda.org/conda-forge/brs_utils/badges/version.svg)](https://anaconda.org/conda-forge/brs_utils)
+**Basic Utilities**
+
+
+Current release info
+====================
+
+| Name | Downloads | Version | Platforms |
+| --- | --- | --- | --- |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-brs_utils-green.svg)](https://anaconda.org/conda-forge/brs_utils) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/brs_utils.svg)](https://anaconda.org/conda-forge/brs_utils) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/brs_utils.svg)](https://anaconda.org/conda-forge/brs_utils) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/brs_utils.svg)](https://anaconda.org/conda-forge/brs_utils) |
+
 
 ## Installation
 
 ```sh
-conda create --name <myenv>
-conda activate <myenv>
-conda install -c brsynth -c conda-forge brs_utils
+conda install -c conda-forge brs_utils
 ``` 
 
 ## Usage
@@ -46,8 +52,7 @@ You need to install *pytest* and *pytest-cov* if it's not done yet (`conda insta
 
 ```bash
 cd <repository>
-cd tests
-pytest -v --cov --cov-report term-missing
+python -m pytest -v --cov --cov-report term-missing
 ```
 
 ## CI/CD
@@ -56,7 +61,6 @@ For further tests and development tools, a CI toolkit is provided in `ci` folder
 
 ## Authors
 
-* **Melchior du Lac**
 * **Joan Hérisson**
 
 
