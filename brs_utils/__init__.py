@@ -6,7 +6,8 @@ Created on June 16 2020
 
 from brs_utils.misc import (
     total_size,
-    check_nb_args
+    check_nb_args,
+    timeout
 )
 from brs_utils.file import (
     download,
