@@ -69,7 +69,6 @@ def check_nb_args(*args, f_name, nb_args):
         raise TypeError(f_name+' takes '+str(nb_args)+' positional arguments but '+str(len(args))+' were given')
     return True
 
-
 import multiprocessing.pool
 import functools
 def timeout(max_timeout):
