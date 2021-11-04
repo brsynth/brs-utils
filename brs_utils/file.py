@@ -9,7 +9,7 @@ from os import (
     remove,
     path as os_path,
     walk,
-    stat as os_statPurePath
+    stat as os_stat
 )
 from pathlib import (
     PurePath
