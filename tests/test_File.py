@@ -6,12 +6,17 @@ Created on Jul 14 2020
 
 from unittest import TestCase
 
-from brs_utils import file_length, \
-                      read_dict, \
-                      download, \
-                      compress_tar_gz, compress_gz, \
-                      extract_gz, extract_tar_gz, extract_gz_to_string, \
-                      download_and_extract_tar_gz
+from brs_utils import (
+    file_length,
+    read_dict,
+    download,
+    compress_tar_gz, compress_gz,
+    extract_gz, extract_tar_gz, extract_gz_to_string,
+    download_and_extract_tar_gz
+)
+from brs_utils.file import (
+    compare_dir
+)
 from tempfile  import (
     NamedTemporaryFile,
     TemporaryDirectory,
@@ -272,3 +277,40 @@ class Test_File(TestCase):
                 sha256(Path(os_path.join(tempd, 'test_Download.py')).read_bytes()).hexdigest(),
                 '504676268634b8c340a11e202b4d9c7cc08f9daea749f4c9cf5db9294772bc39'
                             )
+
+    def test_compare_dir(self):
+        self.assertTrue(
+            compare_dir(
+                os_path.join(self.DATA_FOLDER, 'dir.a'),
+                os_path.join(self.DATA_FOLDER, 'dir.a'),
+                recursive=True
+            )
+        )
+        self.assertTrue(
+            compare_dir(
+                os_path.join(self.DATA_FOLDER, 'dir.b'),
+                os_path.join(self.DATA_FOLDER, 'dir.b'),
+                recursive=True
+            )
+        )
+        self.assertTrue(
+            compare_dir(
+                os_path.join(self.DATA_FOLDER, 'dir.b'),
+                os_path.join(self.DATA_FOLDER, 'dir.c'),
+                recursive=False
+            )
+        )
+        self.assertFalse(
+            compare_dir(
+                os_path.join(self.DATA_FOLDER, 'dir.b'),
+                os_path.join(self.DATA_FOLDER, 'dir.c'),
+                recursive=True
+            )
+        )
+        self.assertFalse(
+            compare_dir(
+                os_path.join(self.DATA_FOLDER, 'dir.b'),
+                os_path.join(self.DATA_FOLDER, 'dir.d'),
+                recursive=True
+            )
+        )

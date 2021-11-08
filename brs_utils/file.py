@@ -3,13 +3,16 @@ Created on June 16 2020
 
 @author: Joan Hérisson
 """
-
+from glob import glob
 from os import (
     makedirs,
     remove,
     path as os_path,
     walk,
     stat as os_stat
+)
+from pathlib import (
+    PurePath
 )
 from requests import get as r_get
 from tempfile import (
@@ -33,7 +36,11 @@ from logging import (
     Logger,
     getLogger
 )
-from hashlib import sha512
+from hashlib import (
+    _hashlib,
+    md5,
+    sha512
+)
 from pathlib import Path
 
 
@@ -257,3 +264,74 @@ def read_dict(filename: str) -> Dict:
         f.close()
         d = literal_eval(s)
     return d
+
+
+def hash_dir(
+    dir1: str,
+    recursive: bool=False,
+    chunk: int=65536
+) -> str:
+    '''Return an heaxadigest from md5 of file an name of files/folders excepted the name of root directory
+
+    :param dir1: A path of a directory
+    :param recursive: Recursively compare directory
+    :param chunk: Chunk read files 
+
+    :type dir1: str
+    :type recursive: bool
+    :type chunk: int
+
+    :return: An hexadigest tag
+    :rtype: str
+    '''
+    files = []
+    if recursive:
+        files = glob(
+            os_path.join(dir1, '**', '*'),
+            recursive=recursive
+        )
+    else:
+        files = glob(
+            os_path.join(dir1, '*'),
+            recursive=recursive
+        )
+    root_dir = os_path.basename(dir1)
+    h = md5()
+    for path in files:
+
+        parts = PurePath(path).parts
+        parts = parts[parts.index(root_dir):]
+        if len(parts) > 1:
+            parts = parts[1:]
+        
+        for part in parts: 
+            h.update(os_path.basename(part).encode('utf8'))
+        if os_path.isfile(path):
+            with open(path, 'rb') as fid:
+                while True:
+                    data = fid.read(65536) # read stuff in 64kb chunks!
+                    if not data:
+                        break
+                    h.update(data)
+    return h.hexdigest()
+
+
+def compare_dir(
+    dir1: str,
+    dir2: str,
+    recursive: bool=False
+) -> bool:
+    '''Compare two directories taking account tree and file composition
+
+    :param dir1: A first directory
+    :param dir2: A second directory
+    :param recursive: Check recursivly content of directory
+
+    :type dir1: str
+    :type dir2: str
+    :type recursive: bool
+
+    :return: Success or not of equality between the directories
+    :rtype: bool
+    '''
+    return hash_dir(dir1, recursive) == hash_dir(dir2, recursive)
