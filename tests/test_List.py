@@ -9,6 +9,9 @@ from brs_utils import (
     insert_and_or_replace_in_sorted_list,
     diff
 )
+from brs_utils.list import (
+    flatten
+)
 
 class Obj():
     def __init__(self, l):
@@ -106,4 +109,21 @@ class List(TestCase):
         self.assertSequenceEqual(
             diff(l1, l2),
             [1, 4]
+        )
+
+    def test_flatten(self):
+        l1 = [1, 2, 3, 4, 5]
+        self.assertEqual(
+            l1,
+            list(flatten(l1))
+        )
+        l2 = [1, [2], [3, [4, [5, 6]]]]
+        self.assertEqual(
+            [1, 2, 3, 4, 5, 6],
+            list(flatten(l2))
+        )
+        l3 = ['a', [2, {'b'}]]
+        self.assertEqual(
+            ['a', 2, 'b'],
+            list(flatten(l3))
         )

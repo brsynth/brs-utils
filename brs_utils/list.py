@@ -5,6 +5,8 @@ Created on Sep 11 2020
 """
 
 from typing import (
+    Iterable,
+    Generator,
     List,
     TypeVar
 )
@@ -82,3 +84,22 @@ def diff(first, second):
       else:
          l3 += [el]
    return l3
+
+
+def flatten(
+    items: List=[]
+) -> Generator:
+    '''Flatten a list.
+
+    :param items: A nested list
+    :type items: list
+
+    :return: Atomic values
+    :rtype: Generator
+    '''
+    # https://stackoverflow.com/questions/952914/how-to-make-a-flat-list-out-of-a-list-of-lists
+    for x in items:
+        if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
+            yield from flatten(x)
+        else:
+            yield x
