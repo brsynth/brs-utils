@@ -3,7 +3,6 @@ Created on Sep 11 2020
 
 @author: Joan Hérisson
 """
-
 from typing import (
     Iterable,
     Generator,
