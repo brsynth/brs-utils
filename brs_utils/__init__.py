@@ -3,7 +3,6 @@ Created on June 16 2020
 
 @author: Joan Hérisson
 """
-
 from brs_utils.misc import (
     total_size,
     check_nb_args,
