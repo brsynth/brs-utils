@@ -1,4 +1,4 @@
-name: brs_utils-dev
+name: brs_utils
 channels:
   - conda-forge
 dependencies:
