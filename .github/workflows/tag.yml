@@ -52,10 +52,6 @@ jobs:
         shell: bash -l {0}
     steps:
       - uses: actions/checkout@v2
-      - name: Deploying miniconda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
       - name: Checkout CI/CD Toolkit
         uses: actions/checkout@v2
         with:
@@ -68,15 +64,15 @@ jobs:
         with:
           name: recipe
           path: cicd-toolkit/recipe
+      - name: Deploying miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          environment-file: cicd-toolkit/recipe/conda_build_env.yaml
+          activate-environment: test
       - name: Building & Testing conda package
         run: |
-          conda env create --force \
-            -f cicd-toolkit/recipe/conda_build_env.yaml \
-            -n build
-          conda init bash
-          conda activate build
-          cat cicd-toolkit/recipe/meta.yaml
-          conda-build --quiet --numpy 1.11 cicd-toolkit/recipe
+          conda-build cicd-toolkit/recipe
 
   # Tag:
   #   needs: [Conda-Build]
