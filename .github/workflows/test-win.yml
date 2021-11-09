@@ -16,7 +16,7 @@ jobs:
 
   Test:
 
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # runs-on: ${{ matrix.os }}-latest
     # strategy:
     #   matrix:
@@ -30,10 +30,13 @@ jobs:
       with:
         miniconda-version: "latest"
 
-    - name: Creating and activating environment
+    - name: Creating environment
       run: |
         conda env create --force -f environment.yaml -n test
-        conda activate test
+        conda init
+
+    - name: Activating environment
+      run: conda activate test
 
     - name: Adding testing tools
       run: conda install -y python pytest
