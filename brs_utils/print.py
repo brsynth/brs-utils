@@ -3,7 +3,6 @@ Created on June 16 2020
 
 @author: Joan Hérisson
 """
-
 from sys import stdout as sys_stdout
 from logging import(
     Logger,
