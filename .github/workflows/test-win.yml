@@ -17,13 +17,10 @@ jobs:
   Test:
 
     runs-on: ubuntu-latest
-    # runs-on: ${{ matrix.os }}
+    # runs-on: ${{ matrix.os }}-latest
     # strategy:
     #   matrix:
-    #     include:
-    #       - os: ubuntu-latest
-    #       - os: macos-latest
-    #       - os: windows-latest
+    #     os: ["ubuntu", "macos", "windows"]
 
     steps:
     - name: Checkout package repository
@@ -32,12 +29,13 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-        environment-file: environment.yaml
+
+    - name: Create environment
+      run: conda env create --force -f environment.yaml -n test
 
     - name: Adding testing tools
       run: |
-        conda env list
-        conda install -y pytest pytest-cov pytest-mock
+        conda run -n test conda install -y pytest
 
     - name: Testing package
-      run: python -m pytest
+      run: conda run --live-stream -n test python -m pytest
