@@ -16,7 +16,7 @@ on:
 
 jobs:
 
-  Recipe:
+  Build-Recipe:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,19 +31,25 @@ jobs:
           path: cicd-toolkit
           persist-credentials: false
           fetch-depth: 0
-      - name: Build recipe
+      - name: Building recipe
         run: |
           cd cicd-toolkit
           make -C makefiles -f conda.mk build-recipe
-      - name: Save recipe
+      - name: Saving recipe
         uses: actions/upload-artifact@v2
         with:
           name: recipe
           path: cicd-toolkit/recipe/meta.yaml
 
-  Conda:
+  Conda-Build:
     needs: [Recipe]
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os: ["ubuntu", "macos", "windows"]
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - uses: actions/checkout@v2
       - name: Checkout CI/CD Toolkit
@@ -53,7 +59,7 @@ jobs:
           path: cicd-toolkit
           persist-credentials: false
           fetch-depth: 0
-      - name: Load recipe
+      - name: Loading recipe
         uses: actions/download-artifact@v2
         with:
           name: recipe
@@ -61,16 +67,17 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
-      - name: Build & Test conda package
+      - name: Building & Testing conda package
         run: |
-          conda env create --force -f cicd-toolkit/recipe/conda_build_env.yaml -n build
+          conda env create --force \
+            -f cicd-toolkit/recipe/conda_build_env.yaml \
+            -n build
           conda init bash
           conda activate build
-          conda run --name build \
-            conda build \
-              --quiet --numpy 1.11 \
-              --output-folder conda-bld \
-              cicd-toolkit/recipe \
+          conda build \
+            --quiet --numpy 1.11 \
+            --output-folder conda-bld \
+            cicd-toolkit/recipe \
 
   # Tag:
   #   needs: [Conda]
