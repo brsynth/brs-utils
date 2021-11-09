@@ -42,7 +42,7 @@ jobs:
           path: cicd-toolkit/recipe/meta.yaml
 
   Conda-Build:
-    needs: [Recipe]
+    needs: [Build-Recipe]
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
