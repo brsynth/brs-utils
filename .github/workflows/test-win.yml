@@ -25,20 +25,26 @@ jobs:
     - name: Checkout package repository
       uses: actions/checkout@v2
 
-    - uses: conda-incubator/setup-miniconda@v2
+    - name: Deploying miniconda
+      if: matrix.os == 'windows-latest'
+      uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
 
-    - name: Creating environment
-      run: conda env create --force -f environment.yaml -n test
-
-    - name: Run tests
-      if: matrix.os == 'windows-latest'
-      run: |
-        conda activate test
-        conda install -y python pytest
-        python -m pytest
+    - name: Deploying miniconda
       if: matrix.os != 'windows-latest'
+      uses: docker://continuumio/miniconda3
+
+    - name: Creating environment
       run: |
-        conda run -n test conda install -y python pytest
-        conda run -n test python -m pytest
+        conda env create --force -f environment.yaml -n test
+        conda init
+
+    - name: Activating environment
+      run: conda activate test
+
+    - name: Adding testing tools
+      run: conda install -y python pytest
+
+    - name: Testing package
+      run: python -m pytest
