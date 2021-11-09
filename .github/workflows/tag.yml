@@ -52,6 +52,10 @@ jobs:
         shell: bash -l {0}
     steps:
       - uses: actions/checkout@v2
+      - name: Deploying miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
       - name: Checkout CI/CD Toolkit
         uses: actions/checkout@v2
         with:
@@ -63,10 +67,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: recipe
-      - name: Deploying miniconda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
       - name: Building & Testing conda package
         run: |
           conda env create --force \
@@ -74,13 +74,14 @@ jobs:
             -n build
           conda init bash
           conda activate build
+          ls cicd-toolkit/recipe
           conda build \
             --quiet --numpy 1.11 \
             --output-folder conda-bld \
             cicd-toolkit/recipe \
 
   # Tag:
-  #   needs: [Conda]
+  #   needs: [Conda-Build]
   #   runs-on: ubuntu-latest
   #   outputs: # Create variable usable from another job
   #     new_tag: ${{ steps.tag_version.outputs.new_tag }}
