@@ -34,9 +34,7 @@ jobs:
       run: |
         conda env create --force -f environment.yaml -n test
         conda init
-
-    - name: Activating environment
-      run: conda activate test
+        conda activate test
 
     - name: Adding testing tools
       run: conda install -y python pytest
