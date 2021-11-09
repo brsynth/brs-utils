@@ -74,7 +74,8 @@ jobs:
             -n build
           conda init bash
           conda activate build
-          ls cicd-toolkit/recipe
+          pwd
+          ls
           conda build \
             --quiet --numpy 1.11 \
             --output-folder conda-bld \
