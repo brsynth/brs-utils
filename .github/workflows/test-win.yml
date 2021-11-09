@@ -47,6 +47,5 @@ jobs:
       shell: bash -l {0}
       run: |
         cd cicd-toolkit
-        conda info
-        make test-buildenv env=test
+        conda env create -f environment.yaml -n test
         conda run -n test make test
