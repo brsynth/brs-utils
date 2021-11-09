@@ -19,7 +19,16 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout package repository
+      uses: actions/checkout@v2
+
+    - name: Checkout CI/CD Toolkit
+      uses: actions/checkout@v2
+      with:
+        repository: breakthewall/cicd-toolkit
+        path: cicd-toolkit
+        persist-credentials: false
+        fetch-depth: 0
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
@@ -34,14 +43,6 @@ jobs:
 
     - name: Installing make
       run: choco install make
-
-    - name: Checkout CI/CD Toolkit
-      uses: actions/checkout@v2
-      with:
-        repository: breakthewall/cicd-toolkit
-        path: cicd-toolkit
-        persist-credentials: false
-        fetch-depth: 0
 
     - name: Testing package
       shell: bash -l {0}
