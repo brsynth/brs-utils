@@ -36,11 +36,11 @@ jobs:
     - name: Creating environment
       run: |
         conda env create --force -f environment.yaml -n test
-        # conda init bash
-        # conda activate test
+        conda init bash
+        conda activate test
 
     - name: Adding testing tools
-      run: conda run -n test conda install -y python pytest
+      run: conda install -y python pytest
 
     - name: Running tests
-      run: conda run -n test python -m pytest
+      run: python -m pytest
