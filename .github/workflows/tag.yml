@@ -16,7 +16,7 @@ on:
 
 jobs:
 
-  Build-Recipe:
+  Recipe:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +41,8 @@ jobs:
           name: recipe
           path: cicd-toolkit/recipe/meta.yaml
 
-  Conda-Build_Test:
+  Conda:
+    needs: [Recipe]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -72,7 +73,7 @@ jobs:
               cicd-toolkit/recipe \
 
   # Tag:
-  #   needs: [Conda-Build_Test]
+  #   needs: [Conda]
   #   runs-on: ubuntu-latest
   #   outputs: # Create variable usable from another job
   #     new_tag: ${{ steps.tag_version.outputs.new_tag }}
