@@ -75,10 +75,8 @@ jobs:
             -n build
           conda init bash
           conda activate build
-          conda build \
-            --quiet --numpy 1.11 \
-            --output-folder conda-bld \
-            cicd-toolkit/recipe \
+          cat cicd-toolkit/recipe/meta.yaml
+          conda-build --quiet --numpy 1.11 cicd-toolkit/recipe
 
   # Tag:
   #   needs: [Conda-Build]
