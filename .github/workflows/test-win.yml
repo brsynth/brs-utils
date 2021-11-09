@@ -19,7 +19,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
@@ -32,22 +32,20 @@ jobs:
         Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
         choco -?
 
-    # - name: Updating conda
-    #   run: conda update --all -y
+    - name: Installing make
+      run: choco install make
 
-    # - name: Installing make
-    #   run: conda install -y make
+    - name: Checkout CI/CD Toolkit
+      uses: actions/checkout@v2
+      with:
+        repository: breakthewall/cicd-toolkit
+        path: cicd-toolkit
+        persist-credentials: false
+        fetch-depth: 0
 
-    # - name: Checkout CI/CD Toolkit
-    #   uses: actions/checkout@v2
-    #   with:
-    #     repository: breakthewall/cicd-toolkit
-    #     path: cicd-toolkit
-    #     persist-credentials: false
-    #     fetch-depth: 0
-
-    # - name: Testing package
-    #   run: |
-    #     cd cicd-toolkit
-    #     make test-buildenv env=test
-    #     conda run -n test make test
+    - name: Testing package
+      shell: bash -l {0}
+      run: |
+        cd cicd-toolkit
+        make test-buildenv env=test
+        conda run -n test make test
