@@ -29,11 +29,12 @@ jobs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
+        auto-activate-base: true
+        activate-environment: ""
 
     - name: Creating environment
       run: |
         conda env create --force -f environment.yaml -n test
-        conda init
         conda activate test
 
     - name: Adding testing tools
