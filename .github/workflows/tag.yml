@@ -32,7 +32,9 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
       - name: Build recipe
-        run: make -C makefiles -f conda.mk build-recipe
+        run: |
+          cd cicd-toolkit
+          make -C makefiles -f conda.mk build-recipe
       - name: Save recipe
         uses: actions/upload-artifact@v2
         with:
