@@ -24,6 +24,7 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v1
       with:
         miniconda-version: "latest"
+        activate-environment: test
 
     - name: Installing Chocolatey
       shell: powershell
