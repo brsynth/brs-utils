@@ -26,13 +26,13 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Deploying miniconda
-      if: matrix.os == 'windows-latest'
+      if: matrix.os == 'windows'
       uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
 
     - name: Deploying miniconda
-      if: matrix.os != 'windows-latest'
+      if: matrix.os != 'windows'
       uses: docker://continuumio/miniconda3
 
     - name: Creating environment
@@ -44,5 +44,5 @@ jobs:
     - name: Adding testing tools
       run: conda install -y python pytest
 
-    - name: Testing package
+    - name: Running tests
       run: python -m pytest
