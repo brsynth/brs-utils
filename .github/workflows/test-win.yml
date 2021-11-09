@@ -38,7 +38,6 @@ jobs:
       shell: powershell
       run: |
         Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-        choco -?
 
     - name: Installing make
       run: choco install make
@@ -46,7 +45,6 @@ jobs:
     - name: Testing package
       shell: bash -l {0}
       run: |
-        conda env create -f environment.yaml
         cd cicd-toolkit
         make test-buildenv env=test
         conda run -n test make test
