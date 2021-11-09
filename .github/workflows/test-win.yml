@@ -35,10 +35,6 @@ jobs:
         miniconda-version: "latest"
         activate-environment: test
 
-    - name: Check conda
-      shell: bash -l {0}
-      run: conda info
-
     - name: Installing Chocolatey
       shell: powershell
       run: |
@@ -51,6 +47,4 @@ jobs:
     - name: Testing package
       shell: bash -l {0}
       run: |
-        cd cicd-toolkit
-        make test-buildenv env=test
-        conda run -n test make test
+        conda info
