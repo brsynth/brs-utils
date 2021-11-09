@@ -22,28 +22,29 @@ jobs:
     - name: Checkout package repository
       uses: actions/checkout@v2
 
-    - name: Checkout CI/CD toolkit
-      uses: actions/checkout@v2
-      with:
-        repository: breakthewall/cicd-toolkit
-        path: cicd-toolkit
-        persist-credentials: false
-        fetch-depth: 0
+    # - name: Checkout CI/CD toolkit
+    #   uses: actions/checkout@v2
+    #   with:
+    #     repository: breakthewall/cicd-toolkit
+    #     path: cicd-toolkit
+    #     persist-credentials: false
+    #     fetch-depth: 0
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
+        environment-file: environment.yaml
 
-    - name: Installing Chocolatey
-      shell: powershell
-      run: |
-        Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    # - name: Installing Chocolatey
+    #   shell: powershell
+    #   run: |
+    #     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-    - name: Installing make
-      run: choco install make
+    # - name: Installing make
+    #   run: choco install make
+
+    - name: Adding testing tools
+      run: conda install -y pytest pytest-cov pytest-mock
 
     - name: Testing package
-      shell: bash -l {0}
-      run: |
-        cd cicd-toolkit
-        make test
+      run: python -m pytest
