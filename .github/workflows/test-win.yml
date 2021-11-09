@@ -32,12 +32,13 @@ jobs:
     - name: Creating environment
       run: conda env create --force -f environment.yaml -n test
 
-    - name: Activating environment
+    - name: Run tests
       if: matrix.os == 'windows-latest'
-      run: conda activate test
-
-    - name: Adding testing tools
-      run: conda run -n test conda install -y python pytest
-
-    - name: Testing package
-      run: conda run -n test python -m pytest
+      run: |
+        conda activate test
+        conda install -y python pytest
+        python -m pytest
+      if: matrix.os != 'windows-latest'
+      run: |
+        conda run -n test conda install -y python pytest
+        conda run -n test python -m pytest
