@@ -22,7 +22,7 @@ jobs:
     - name: Checkout package repository
       uses: actions/checkout@v2
 
-    - name: Checkout CI/CD Toolkit
+    - name: Checkout CI/CD toolkit
       uses: actions/checkout@v2
       with:
         repository: breakthewall/cicd-toolkit
@@ -34,6 +34,10 @@ jobs:
       with:
         miniconda-version: "latest"
         activate-environment: test
+
+    - name: Check conda
+      shell: bash -l {0}
+      run: conda info
 
     - name: Installing Chocolatey
       shell: powershell
