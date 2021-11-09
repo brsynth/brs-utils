@@ -6,9 +6,9 @@ name: Tests
 on:
 
   push:
-    branches: [ win ]
+    branches: [ main, master, dev ]
     paths:
-      - '**.yml'
+      - '**.py'
   pull_request:
     branches: [ main, master ]
 
