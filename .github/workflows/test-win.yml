@@ -34,8 +34,7 @@ jobs:
       run: conda env create --force -f environment.yaml -n test
 
     - name: Adding testing tools
-      run: |
-        conda run -n test conda install -y python pytest
+      run: conda run -n test conda install -y python pytest
 
     - name: Testing package
-      run: conda run --live-stream -n test python -m pytest
+      run: conda run -n test python -m pytest
