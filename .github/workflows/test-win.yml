@@ -16,11 +16,10 @@ jobs:
 
   Test:
 
-    runs-on: ubuntu-latest
-    # runs-on: ${{ matrix.os }}-latest
-    # strategy:
-    #   matrix:
-    #     os: ["ubuntu", "macos", "windows"]
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os: ["ubuntu", "macos", "windows"]
 
     steps:
     - name: Checkout package repository
@@ -31,15 +30,14 @@ jobs:
         miniconda-version: "latest"
 
     - name: Creating environment
-      run: |
-        conda env create --force -f environment.yaml -n test
-        conda init
+      run: conda env create --force -f environment.yaml -n test
 
     - name: Activating environment
+      if: matrix.os == 'windows-latest'
       run: conda activate test
 
     - name: Adding testing tools
-      run: conda install -y python pytest
+      run: conda run -n test conda install -y python pytest
 
     - name: Testing package
-      run: python -m pytest
+      run: conda run -n test python -m pytest
