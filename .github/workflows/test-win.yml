@@ -21,9 +21,6 @@ jobs:
     # strategy:
     #   matrix:
     #     os: ["ubuntu", "macos", "windows"]
-    defaults:
-      run:
-        shell: bash
 
     steps:
     - name: Checkout package repository
@@ -34,10 +31,12 @@ jobs:
         miniconda-version: "latest"
 
     - name: Create environment
-      run: conda env create --force -f environment.yaml -n test
+      run: |
+        conda env create --force -f environment.yaml -n test
+        conda activate test
 
     - name: Adding testing tools
-      run: conda run -n test conda install -y python pytest
+      run: conda install -y python pytest
 
     - name: Testing package
-      run: conda run --live-stream -n test python -m pytest
+      run: python -m pytest
