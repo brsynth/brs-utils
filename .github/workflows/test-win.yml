@@ -47,4 +47,4 @@ jobs:
     - name: Testing package
       shell: bash -l {0}
       run: |
-        conda info
+        conda env list
