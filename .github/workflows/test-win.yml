@@ -36,9 +36,7 @@ jobs:
       uses: docker://continuumio/miniconda3
 
     - name: Creating environment
-      run: |
-        conda env create --force -f environment.yaml -n test
-        conda init
+      run: conda env create --force -f environment.yaml -n test
 
     - name: Activating environment
       run: conda activate test
