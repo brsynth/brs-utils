@@ -46,7 +46,7 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: ["ubuntu"]
+        os: ["ubuntu", "windows", "macos"]
     defaults:
       run:
         shell: bash -l {0}
@@ -67,6 +67,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: recipe
+          path: cicd-toolkit/recipe
       - name: Building & Testing conda package
         run: |
           conda env create --force \
@@ -74,8 +75,6 @@ jobs:
             -n build
           conda init bash
           conda activate build
-          pwd
-          ls
           conda build \
             --quiet --numpy 1.11 \
             --output-folder conda-bld \
