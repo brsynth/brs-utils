@@ -2,6 +2,7 @@ name: brs_utils
 channels:
   - conda-forge
 dependencies:
+  - python
   - requests
   - colorlog
   - colored
