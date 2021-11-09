@@ -43,4 +43,7 @@ jobs:
       run: conda install -y python pytest
 
     - name: Running tests
-      run: python -m pytest
+      run: |
+        conda env list
+        conda list
+        python -m pytest
