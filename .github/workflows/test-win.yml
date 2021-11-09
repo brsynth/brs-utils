@@ -46,5 +46,4 @@ jobs:
       shell: bash -l {0}
       run: |
         cd cicd-toolkit
-        make test-buildenv env=test
-        conda run -n test make test
+        make test
