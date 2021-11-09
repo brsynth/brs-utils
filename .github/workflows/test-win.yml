@@ -33,12 +33,10 @@ jobs:
       with:
         miniconda-version: "latest"
 
-    - name: Creating environment
+    - name: Running tests
       run: |
         conda env create --force -f environment.yaml -n test
-        conda init bash
-        conda activate test
-        conda install -y python pytest
+        conda run -n test conda install -y python pytest
         conda env list
         conda list
-        python -m pytest
+        conda run -n test python -m pytest
