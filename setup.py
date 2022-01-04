@@ -1,52 +1,40 @@
-from setuptools import setup
-from os import path as os_path
-
-
 ## INFOS ##
-package     = 'brs_utils'
+name        = 'brs_utils'
 descr       = 'Basic utilities'
-url         = 'https://github.com/brsynth/brs-utils'
+url         = f'https://github.com/brsynth/{name}'
 authors     = 'Joan Hérisson'
 corr_author = 'joan.herisson@univ-evry.fr'
+###########
 
-## LONG DESCRIPTION
-with open(
+###########
+from setuptools import (
+    setup,
+    find_packages
+)
+from os import path as os_path
+
+here = os_path.dirname(os_path.realpath(__file__))
+exec(open(f"{name}/_version.py").read())  # loads __version__
+description = open(
     os_path.join(
-        os_path.dirname(os_path.realpath(__file__)),
+        here,
         'README.md'
     ),
-    'r',
     encoding='utf-8'
-) as f:
-    long_description = f.read()
-
-def get_version():
-    with open(
-        os_path.join(
-            os_path.dirname(os_path.realpath(__file__)),
-            'CHANGELOG.md'
-        ),
-        'r'
-    ) as f:
-        lines = f.readlines()
-    for line in lines:
-        if line.startswith('##'):
-            from re import search
-            m = search("\[(.+)\]", line)
-            if m:
-                return m.group(1)
+).read()
 
 setup(
-    name                          = package,
-    version                       = get_version(),
+    name                          = name,
+    version                       = __version__,
     author                        = authors,
     author_email                  = corr_author,
     description                   = descr,
-    long_description              = long_description,
+    long_description              = description,
     long_description_content_type = 'text/markdown',
     url                           = url,
-    packages                      = [package],
-    package_dir                   = {package: package},
+    packages                      = find_packages(exclude=""),
+#    packages                      = [src_dir],
+#    package_dir                   = {package: package},
     include_package_data          = True,
     test_suite                    = 'pytest',
     license                       = 'MIT',
