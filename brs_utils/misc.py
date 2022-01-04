@@ -31,8 +31,7 @@ from subprocess import (
 def subprocess_call(
     cmd: str,
     stdout = None,
-    stderr = None, 
-    shell: bool = False,
+    stderr = None,
     logger: Logger = getLogger(__name__)
 ) -> int:
     if stdout is None:
@@ -44,7 +43,7 @@ def subprocess_call(
             cmd.split(),
             stdout=stdout,
             stderr=stderr,
-            shell=shell
+            shell=False
         )  # nosec
         logger.debug(CPE)
         return CPE.returncode
