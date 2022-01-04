@@ -14,7 +14,8 @@ from setuptools import (
 from os import path as os_path
 
 here = os_path.dirname(os_path.realpath(__file__))
-exec(open(f"{name}/_version.py").read())  # loads __version__
+version_file = os_path.join(here, name, '_version.py')
+exec(open(f"{version_file}").read())  # loads __version__
 description = open(
     os_path.join(
         here,
