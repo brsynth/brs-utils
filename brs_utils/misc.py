@@ -46,6 +46,7 @@ def subprocess_call(
             stderr=stderr,
             shell=shell
         )  # nosec
+        logger.debug(CPE)
         return CPE.returncode
     except OSError as e:
         logger.error(e)
