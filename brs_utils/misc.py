@@ -8,13 +8,48 @@ from sys import (
     getsizeof,
     stderr
 )
+from os import (
+    devnull,
+)
 from collections import deque
 from itertools import chain
 try:
     from reprlib import repr
 except ImportError:
     pass
+from logging import (
+    Logger,
+    getLogger
+)
+from subprocess import (
+    run,
+    STDOUT,
+    TimeoutExpired
+)  # nosec
 
+
+def subprocess_call(
+    cmd: str,
+    stdout = None,
+    stderr = None, 
+    shell: bool = False,
+    logger: Logger = getLogger(__name__)
+) -> int:
+    if stdout is None:
+        stdout = open(devnull, 'wb') if logger.level > 10 else None
+    if stderr is None:
+        stderr = open(devnull, 'wb') if logger.level > 10 else None
+    try:
+        CPE = run(
+            cmd.split(),
+            stdout=stdout,
+            stderr=stderr,
+            shell=shell
+        )  # nosec
+        return CPE.returncode
+    except OSError as e:
+        logger.error(e)
+        return -1
 
 def total_size(o, handlers={}, verbose=False):
     """ Returns the approximate memory footprint an object and all of its contents.
