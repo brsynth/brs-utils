@@ -233,7 +233,7 @@ class Test_File(TestCase):
             from os import walk, stat
             print(next(walk(tempd), (None, None, []))[2])
             print(
-                self.file_100l,
+                stat(self.file_100l).st_size,
                 stat(os_path.join(tempd, '100l_file.txt')).st_size
             )
             self.assertTrue(
