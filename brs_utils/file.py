@@ -277,7 +277,6 @@ def download_and_extract_tar_gz(
     remove(filename)
 
 
-
 def download_and_extract_gz(
     url: str,
     path: str
