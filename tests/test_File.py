@@ -230,6 +230,9 @@ class Test_File(TestCase):
     def test_download_and_unzip(self):
         with TemporaryDirectory() as tempd:
             download_and_unzip(Test_File.DOWNLOAD_ZIP_URL, tempd)
+            from os import walk
+            (_, _, filenames) = walk(tempd).next()
+            print(filenames)
             self.assertTrue(
                 cmp(
                     self.file_100l,
