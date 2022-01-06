@@ -33,7 +33,8 @@ from hashlib   import sha256
 from json      import dumps as json_dumps
 from os import (
     path as os_path,
-    remove
+    remove,
+    stat
 )
 from shutil import (
     copyfile
@@ -230,18 +231,9 @@ class Test_File(TestCase):
     def test_download_and_unzip(self):
         with TemporaryDirectory() as tempd:
             download_and_unzip(Test_File.DOWNLOAD_ZIP_URL, tempd)
-            from os import walk, stat
-            print(next(walk(tempd), (None, None, []))[2])
-            print(
-                stat(self.file_100l).st_size,
+            self.assertEqual(
+                2300,
                 stat(os_path.join(tempd, '100l_file.txt')).st_size
-            )
-            exit()
-            self.assertTrue(
-                cmp(
-                    self.file_100l,
-                    os_path.join(tempd, '100l_file.txt')
-                )
             )
 
     def test_download_and_extract_tar_gz(self):
