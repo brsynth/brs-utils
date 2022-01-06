@@ -12,7 +12,8 @@ from brs_utils import (
     download,
     compress_tar_gz, compress_gz,
     extract_gz, extract_tar_gz, extract_gz_to_string,
-    download_and_extract_tar_gz
+    download_and_extract_tar_gz,
+    download_and_unzip
 )
 from brs_utils.file import (
     compare_dir
@@ -40,7 +41,8 @@ from shutil import (
 
 class Test_File(TestCase):
 
-    DOWNLOAD_URL    = 'https://github.com/brsynth/brs-utils/raw/master/tests/data/data.tar.gz'
+    DOWNLOAD_TARGZ_URL    = 'https://github.com/brsynth/brs-utils/raw/master/tests/data/data.tar.gz'
+    DOWNLOAD_ZIP_URL = 'https://github.com/brsynth/brs-utils/raw/master/tests/data/100l_file.txt.zip'
     DOWNLOAD_HASH   = '451f23622ee6df7b96648039db374e7baa8c41495e4dbf91dbf232950db65a13'
     DOWNLOAD_HASHES = {'test_rpSBML.py':    '2031eefaf7305428e10f5a3c6ab485085d69979b8be6a1e3b2e375349ec7b9bd',
                        'test_TotalSize.py': '6a81f09015f516b8cfed8f39badbac3380e758df625c0ce3b9c87a79745813e2',
@@ -78,7 +80,7 @@ class Test_File(TestCase):
 
     def test_download_with_filename(self):
         download_f = download(
-            Test_File.DOWNLOAD_URL
+            Test_File.DOWNLOAD_TARGZ_URL
         )
         self.assertEqual(
             sha256(
@@ -88,7 +90,7 @@ class Test_File(TestCase):
         remove(download_f)
 
     def test_download_without_filename(self):
-        outfile = download(Test_File.DOWNLOAD_URL)
+        outfile = download(Test_File.DOWNLOAD_TARGZ_URL)
         self.assertEqual(
             sha256(
                 Path(outfile).read_bytes()).hexdigest(),
@@ -225,9 +227,19 @@ class Test_File(TestCase):
             self.assertTrue(cmp(infile, extract_gz(outfile, tempd)))
         remove(outfile)
 
+    def test_download_and_unzip(self):
+        with TemporaryDirectory() as tempd:
+            download_and_unzip(Test_File.DOWNLOAD_ZIP_URL, tempd)
+            self.assertTrue(
+                cmp(
+                    self.file_100l,
+                    os_path.join(tempd, '100l_file.txt')
+                )
+            )
+
     def test_download_and_extract_tar_gz(self):
         with TemporaryDirectory() as tempd:
-            download_and_extract_tar_gz(Test_File.DOWNLOAD_URL, tempd)
+            download_and_extract_tar_gz(Test_File.DOWNLOAD_TARGZ_URL, tempd)
             for member in Test_File.DOWNLOAD_HASHES:
                 self.assertEqual(
                     Test_File.DOWNLOAD_HASHES[member],
@@ -237,7 +249,7 @@ class Test_File(TestCase):
     def test_download_and_extract_tar_gz_member(self):
         _member = 'test_rpSBML.py'
         with TemporaryDirectory() as tempd:
-            download_and_extract_tar_gz(Test_File.DOWNLOAD_URL, tempd, _member)
+            download_and_extract_tar_gz(Test_File.DOWNLOAD_TARGZ_URL, tempd, _member)
             for member in Test_File.DOWNLOAD_HASHES:
                 m = os_path.join(tempd, member)
                 if member == _member:

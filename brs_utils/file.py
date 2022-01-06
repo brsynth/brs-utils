@@ -42,6 +42,42 @@ from hashlib import (
     sha512
 )
 from pathlib import Path
+from zipfile import ZipFile
+
+
+def unzip(
+    file: str,
+    dir: str
+) -> None:
+    '''Unzip the given file.
+
+    Parameters
+    ----------
+    file: str
+        Filename to unzip
+    dir: str
+        Directory to unzip into
+    '''
+    with ZipFile(file, 'r') as zip_ref:
+        zip_ref.extractall(dir)
+
+
+def download_and_unzip(
+    url: str,
+    dir: str
+) -> None:
+    '''Download file from URL and unzip it.
+
+    Parameters
+    ----------
+    url: str
+        URL of the file to download
+    dir: str
+        Directory to unzip into
+    '''
+    filename = download(url)
+    unzip(filename, dir)
+    remove(filename)
 
 
 def check_file_size(
@@ -56,6 +92,7 @@ def check_file_size(
     logger.debug('stored: {size}'.format(size=size))
     logger.debug('--')
     return s == size
+
 
 def check_sha(
     filename: str,
