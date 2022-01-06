@@ -236,6 +236,7 @@ class Test_File(TestCase):
                 stat(self.file_100l).st_size,
                 stat(os_path.join(tempd, '100l_file.txt')).st_size
             )
+            exit()
             self.assertTrue(
                 cmp(
                     self.file_100l,
