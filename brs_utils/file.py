@@ -30,7 +30,8 @@ from shutil import (
 )
 from ast import literal_eval
 from typing import (
-    Dict
+    Dict,
+    List
 )
 from logging import (
     Logger,
@@ -44,7 +45,6 @@ from hashlib import (
 from pathlib import Path
 from zipfile import ZipFile
 from csv import reader as csv_reader
-from typing import List
 
 
 def read_sep_file(
