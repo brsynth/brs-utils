@@ -7,6 +7,9 @@ Created on Jul 14 2020
 from unittest import TestCase
 
 from brs_utils import (
+    read_sep_file,
+    read_csv,
+    read_tsv,
     file_length,
     read_dict,
     download,
@@ -39,6 +42,7 @@ from os import (
 from shutil import (
     copyfile
 )
+from json import load as json_load
 
 class Test_File(TestCase):
 
@@ -325,3 +329,35 @@ class Test_File(TestCase):
                 recursive=True
             )
         )
+
+    def test_read_sep_file(self):
+        f_json = open(os_path.join(self.DATA_FOLDER, 'comp_xref.json'))
+        self.assertListEqual(
+            read_sep_file(
+                filename=os_path.join(self.DATA_FOLDER, 'comp_xref.csv'),
+                sep=',',
+                comment='#'
+            ),
+            json_load(f_json)
+        )
+        f_json.close()
+
+    def test_read_csv(self):
+        f_json = open(os_path.join(self.DATA_FOLDER, 'comp_xref.json'))
+        self.assertListEqual(
+            read_csv(
+                filename=os_path.join(self.DATA_FOLDER, 'comp_xref.csv'),
+            ),
+            json_load(f_json)
+        )
+        f_json.close()
+
+    def test_read_tsv(self):
+        f_json = open(os_path.join(self.DATA_FOLDER, 'comp_xref.json'))
+        self.assertListEqual(
+            read_tsv(
+                filename=os_path.join(self.DATA_FOLDER, 'comp_xref.tsv')
+            ),
+            json_load(f_json)
+        )
+        f_json.close()

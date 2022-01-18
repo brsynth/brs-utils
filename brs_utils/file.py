@@ -43,8 +43,69 @@ from hashlib import (
 )
 from pathlib import Path
 from zipfile import ZipFile
+from csv import reader as csv_reader
+from typing import List
 
 
+def read_sep_file(
+    filename: str,
+    sep: str=',',
+    comment: str='#'
+) -> List[List[str]]:
+    '''Read file with a specific separator
+    
+    Parameters
+    ----------
+    filename: str
+        Filename to read data from
+    separator: str
+        Separator which splits the line
+    comment: str
+        Lines start with 'comment' will be ignored
+
+    Parameters
+    ----------
+    lines: List[List[str]]
+        Each line of the input file is represented as a list of string.
+        All lines of input file are put together into a list.
+    '''
+    f = open(filename)
+    f_read = csv_reader(f, delimiter=sep)
+    res = [line for line in f_read if not line[0].startswith('#')]
+    f.close()
+    return res
+
+def read_tsv(filename: str) -> List[List[str]]:
+    '''Read TSV file
+    
+    Parameters
+    ----------
+    filename: str
+        Filename to read data from
+
+    Parameters
+    ----------
+    lines: List[List[str]]
+        Each line of the input file is represented as a list of string.
+        All lines of input file are put together into a list.
+    '''
+    return read_sep_file(filename=filename, sep='\t')
+
+def read_csv(filename: str) -> List[List[str]]:
+    '''Read CSV file
+    
+    Parameters
+    ----------
+    filename: str
+        Filename to read data from
+
+    Parameters
+    ----------
+    lines: List[List[str]]
+        Each line of the input file is represented as a list of string.
+        All lines of input file are put together into a list.
+    '''
+    return read_sep_file(filename=filename, sep=',')
 
 def unzip(
     file: str,
