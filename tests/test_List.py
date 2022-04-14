@@ -100,8 +100,7 @@ class InsertOrReplace(TestCase):
         self.assertSequenceEqual(l, l2)
 
 
-class List(TestCase):
-    __test__ = True
+class Test_List(TestCase):
 
     def test_diff(self):
         l1 = [1, 2, 1, 3, 4]
