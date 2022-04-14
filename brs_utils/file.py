@@ -38,8 +38,7 @@ from logging import (
     getLogger
 )
 from hashlib import (
-    _hashlib,
-    md5,
+    sha256,
     sha512
 )
 from pathlib import Path
@@ -369,7 +368,7 @@ def hash_dir(
     recursive: bool=False,
     chunk: int=65536
 ) -> str:
-    '''Return an heaxadigest from md5 of file an name of files/folders excepted the name of root directory
+    '''Return an hexadigest from sha256 of file an name of files/folders excepted the name of root directory
 
     :param dir1: A path of a directory
     :param recursive: Recursively compare directory
@@ -394,7 +393,7 @@ def hash_dir(
             recursive=recursive
         )
     root_dir = os_path.basename(dir1)
-    h = md5()
+    h = sha256()
     for path in files:
 
         parts = PurePath(path).parts
