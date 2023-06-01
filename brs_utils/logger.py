@@ -8,14 +8,16 @@ from colorlog import ColoredFormatter
 from logging import (
     Logger,
     getLogger,
-    StreamHandler
+    StreamHandler,
+    FileHandler
 )
 from argparse import ArgumentParser
 
 
 def create_logger(
     name: str = __name__,
-    log_level: str = 'def_info'
+    log_level: str = 'def_info',
+    log_file: str = ''
     ) -> Logger:
     """
     Create a logger with name and log_level.
@@ -28,6 +30,9 @@ def create_logger(
     log_level : str
         A string containing the verbosity of the logger
 
+    log_file : str
+        A string containing the path to the log file. If empty, no file is created.
+
     Returns
     -------
     Logger
@@ -35,7 +40,6 @@ def create_logger(
 
     """    
     logger  = getLogger(name)
-    handler = StreamHandler()
 
     if log_level.startswith('def_'):
         log_format = '%(log_color)s%(message)s%(reset)s'
@@ -44,8 +48,13 @@ def create_logger(
         log_format = '%(log_color)s%(levelname)-8s | %(asctime)s.%(msecs)03d %(module)s - %(funcName)s(): %(message)s%(reset)s'
  
     formatter = ColoredFormatter(log_format)
+    handler = StreamHandler()
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+    if log_file:
+        handler = FileHandler(log_file)
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
     logger.setLevel(log_level.upper())
 
     return logger
