@@ -53,7 +53,6 @@ def create_logger(
     logger.addHandler(handler)
     if log_file:
         handler = FileHandler(log_file)
-        handler.setFormatter(formatter)
         logger.addHandler(handler)
     logger.setLevel(log_level.upper())
 
