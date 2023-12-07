@@ -251,7 +251,12 @@ def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
         if not is_within_directory(path, member_path):
             raise Exception("Attempted Path Traversal in Tar File")
 
-    tar.extractall(path, members, numeric_owner=numeric_owner) 
+    if members:
+        _members = [x for x in tar.getmembers() if x.name in members]
+    else:
+        _members = None
+
+    tar.extractall(path, _members, numeric_owner=numeric_owner) 
 
 
 def extract_tar_gz(
