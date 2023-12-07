@@ -74,6 +74,7 @@ def read_sep_file(
     f.close()
     return res
 
+
 def read_tsv(filename: str) -> List[List[str]]:
     '''Read TSV file
     
@@ -90,6 +91,7 @@ def read_tsv(filename: str) -> List[List[str]]:
     '''
     return read_sep_file(filename=filename, sep='\t')
 
+
 def read_csv(filename: str) -> List[List[str]]:
     '''Read CSV file
     
@@ -105,6 +107,7 @@ def read_csv(filename: str) -> List[List[str]]:
         All lines of input file are put together into a list.
     '''
     return read_sep_file(filename=filename, sep=',')
+
 
 def unzip(
     file: str,
@@ -221,6 +224,36 @@ def download(
     return file
 
 
+def is_within_directory(directory, target):
+    """
+    Check if the target is within the given directory.
+
+    Parameters:
+    directory  -- Path to a directory
+    target -- Path to a target
+
+    Returns:
+    True if the target is under the given directory,
+    False otherwise
+    """
+    abs_directory = os_path.abspath(directory)
+    abs_target = os_path.abspath(target)
+
+    prefix = os_path.commonprefix([abs_directory, abs_target])
+
+    return prefix == abs_directory
+
+
+def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+
+    for member in tar.getmembers():
+        member_path = os_path.join(path, member.name)
+        if not is_within_directory(path, member_path):
+            raise Exception("Attempted Path Traversal in Tar File")
+
+    tar.extractall(path, members, numeric_owner=numeric_owner) 
+
+
 def extract_tar_gz(
       file: str,
        dir: str,
@@ -233,9 +266,9 @@ def extract_tar_gz(
         makedirs(dir, exist_ok=True)
     tar = tf_open(file, mode='r:gz')
     if member == '':
-        tar.extractall(dir)
+        safe_extract(tar, path=dir)
     else:
-        tar.extract(member, dir)
+        safe_extract(tar, path=dir, members=[member])
     tar.close()
     if delete:
         rmtree(dir)
