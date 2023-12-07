@@ -26,6 +26,7 @@ from subprocess import (
     STDOUT,
     TimeoutExpired
 )  # nosec
+from argparse import ArgumentTypeError
 
 
 def subprocess_call(
@@ -46,10 +47,10 @@ def subprocess_call(
             shell=False
         )  # nosec
         logger.debug(CPE)
-        return CPE.returncode
+        return CPE.returncode, CPE
     except OSError as e:
         logger.error(e)
-        return -1
+        return -1, CPE
 
 def total_size(o, handlers={}, verbose=False):
     """ Returns the approximate memory footprint an object and all of its contents.
@@ -119,3 +120,26 @@ def timeout(max_timeout):
             return async_result.get(max_timeout)
         return func_wrapper
     return timeout_decorator
+
+
+def arg_range(mini, maxi):
+    """Return function handle of an argument type function for 
+       ArgumentParser checking a float range: mini <= arg <= maxi
+         mini - minimum acceptable argument
+         maxi - maximum acceptable argument"""
+
+    # Define the function with default arguments
+    def arg_range_checker(arg):
+        """New Type function for argparse - a float within predefined range."""
+
+        type_ = type(mini)
+        try:
+            f = type_(arg)
+        except ValueError:    
+            raise ArgumentTypeError(f"must be a {type_} number")
+        if f < mini or f > maxi:
+            raise ArgumentTypeError(f"must be in range [{str(mini)}..{str(maxi)}]")
+        return f
+
+    # Return function handle to checking function
+    return arg_range_checker
