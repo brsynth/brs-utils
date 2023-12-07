@@ -5,6 +5,7 @@ Created on June 17 2020
 """
 
 from unittest import TestCase
+from platform import system
 
 from brs_utils import total_size
 
@@ -22,4 +23,11 @@ class Test_TotalSize(TestCase):
     def test_totalsize_str(self):
         msg = 'this is a test'
         size = total_size(str(msg))
-        self.assertEqual(size, 49+len(msg))
+        # different size on Linux and MacOS
+        # check the OS
+        if system() == 'Linux':
+            self.assertEqual(size, 41+len(msg))
+        elif system() == 'Darwin':
+            self.assertEqual(size, 49+len(msg))
+        else:
+            self.fail('OS not supported')
