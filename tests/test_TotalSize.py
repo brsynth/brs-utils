@@ -29,5 +29,7 @@ class Test_TotalSize(TestCase):
             self.assertEqual(size, 41+len(msg))
         elif system() == 'Darwin':
             self.assertEqual(size, 49+len(msg))
+        elif system() == 'Windows':
+            self.assertEqual(size, 49+len(msg))
         else:
             self.fail('OS not supported')
