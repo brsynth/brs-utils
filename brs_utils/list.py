@@ -86,7 +86,7 @@ def diff(first, second):
 
 
 def flatten(
-    items: List=[]
+    items: List=None
 ) -> Generator:
     '''Flatten a list.
 
@@ -96,6 +96,8 @@ def flatten(
     :return: Atomic values
     :rtype: Generator
     '''
+    if items is None:
+        items = []
     # https://stackoverflow.com/questions/952914/how-to-make-a-flat-list-out-of-a-list-of-lists
     for x in items:
         if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
