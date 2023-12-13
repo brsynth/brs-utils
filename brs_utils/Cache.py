@@ -29,7 +29,6 @@ from typing import (
     TypeVar
 )
 from logging import (
-    Logger,
     getLogger,
     ERROR
 )
