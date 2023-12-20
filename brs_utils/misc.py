@@ -47,10 +47,11 @@ def subprocess_call(
             shell=False
         )  # nosec
         logger.debug(CPE)
-        return CPE.returncode, CPE
+        return CPE
     except OSError as e:
         logger.error(e)
-        return -1, CPE
+        logger.debug(CPE)
+        return CPE
 
 def total_size(o, handlers={}, verbose=False):
     """ Returns the approximate memory footprint an object and all of its contents.
