@@ -17,7 +17,8 @@ from argparse import ArgumentParser
 def create_logger(
     name: str = __name__,
     log_level: str = 'def_info',
-    log_file: str = ''
+    log_file: str = '',
+    no_color: bool = False
     ) -> Logger:
     """
     Create a logger with name and log_level.
@@ -33,6 +34,9 @@ def create_logger(
     log_file : str
         A string containing the path to the log file. If empty, no file is created.
 
+    no_color : bool
+        If True, the logger will not use colors.
+
     Returns
     -------
     Logger
@@ -41,11 +45,16 @@ def create_logger(
     """    
     logger  = getLogger(name)
 
+    if no_color:
+        log_format = ''
+    else:
+        log_format = '%(log_color)s'
+
     if log_level.startswith('def_'):
-        log_format = '%(log_color)s%(message)s%(reset)s'
+        log_format += '%(message)s%(reset)s'
         log_level  = log_level[4:]
     else:
-        log_format = '%(log_color)s%(levelname)-8s | %(asctime)s.%(msecs)03d %(module)s - %(funcName)s(): %(message)s%(reset)s'
+        log_format += '%(levelname)-8s | %(asctime)s.%(msecs)03d %(module)s - %(funcName)s(): %(message)s%(reset)s'
  
     formatter = ColoredFormatter(log_format)
     handler = StreamHandler()
