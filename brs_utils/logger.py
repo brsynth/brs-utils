@@ -3,7 +3,6 @@ Created on Feb 4 2021
 
 @author: Joan Hérisson
 """
-
 from colorlog import ColoredFormatter
 from logging import (
     Logger,
