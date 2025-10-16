@@ -21,6 +21,7 @@ from brs_utils.file import (
     extract_gz,
     extract_tar_gz,
     extract_gz_to_string,
+    safe_extract,
     download_and_extract_gz,
     download_and_extract_tar_gz,
     download_and_unzip,
@@ -28,7 +29,11 @@ from brs_utils.file import (
     read_dict,
     chown_r,
     check_sha,
-    check_file_size
+    check_file_size,
+    is_within_directory,
+    compare_dir,
+    hash_dir,
+    unzip
 )
 from brs_utils.print import (
     print_OK,
