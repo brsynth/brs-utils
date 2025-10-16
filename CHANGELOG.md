@@ -1,8 +1,16 @@
 # Changelog
 
+## [1.24.1](https://github.com/brsynth/brs-utils/tree/1.24.1) (2025-10-16)
+
+[Full Changelog](https://github.com/brsynth/brs-utils/compare/1.24.0...1.24.1)
+
 ## [1.24.0](https://github.com/brsynth/brs-utils/tree/1.24.0) (2025-09-30)
 
 [Full Changelog](https://github.com/brsynth/brs-utils/compare/1.23.1...1.24.0)
+
+**Merged pull requests:**
+
+- build\(deps\): bump actions/download-artifact from 2 to 4.1.7 in /.github/workflows [\#5](https://github.com/brsynth/brs-utils/pull/5) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [1.23.1](https://github.com/brsynth/brs-utils/tree/1.23.1) (2023-12-20)
 
