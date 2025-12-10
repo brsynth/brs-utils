@@ -23,8 +23,7 @@ from logging import (
 )
 from subprocess import (
     run,
-    STDOUT,
-    TimeoutExpired
+    DEVNULL
 )  # nosec
 from argparse import ArgumentTypeError
 
@@ -36,9 +35,9 @@ def subprocess_call(
     logger: Logger = getLogger(__name__)
 ) -> int:
     if stdout is None:
-        stdout = open(devnull, 'wb') if logger.level > 10 else None
+        stdout = DEVNULL if logger.level > 10 else None
     if stderr is None:
-        stderr = open(devnull, 'wb') if logger.level > 10 else None
+        stderr = DEVNULL if logger.level > 10 else None
     try:
         CPE = run(
             cmd.split(),
