@@ -34,7 +34,7 @@ from colored import fg, bg, attr
 import multiprocessing.pool
 import functools
 
-from brs_utils import create_logger
+from brs_utils.logger import create_logger
 
 
 def subprocess_call(
