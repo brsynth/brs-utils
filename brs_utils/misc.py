@@ -25,7 +25,16 @@ from subprocess import (
     run,
     DEVNULL
 )  # nosec
-from argparse import ArgumentTypeError
+from argparse import (
+    ArgumentTypeError,
+    ArgumentParser,
+    Namespace
+)
+from colored import fg, bg, attr
+import multiprocessing.pool
+import functools
+
+from brs_utils import create_logger
 
 
 def subprocess_call(
@@ -105,8 +114,6 @@ def check_nb_args(*args, f_name, nb_args):
         raise TypeError(f_name+' takes '+str(nb_args)+' positional arguments but '+str(len(args))+' were given')
     return True
 
-import multiprocessing.pool
-import functools
 def timeout(max_timeout):
     """Timeout decorator, parameter in seconds."""
     def timeout_decorator(item):
@@ -120,7 +127,6 @@ def timeout(max_timeout):
             return async_result.get(max_timeout)
         return func_wrapper
     return timeout_decorator
-
 
 def arg_range(mini, maxi):
     """Return function handle of an argument type function for 
@@ -143,3 +149,27 @@ def arg_range(mini, maxi):
 
     # Return function handle to checking function
     return arg_range_checker
+
+def init(
+    parser: ArgumentParser,
+    args: Namespace,
+    version: str
+) -> Logger:
+    if args.log.lower() in ['silent', 'quiet'] or args.silent:
+        args.log = 'CRITICAL'
+
+    # Create logger
+    logger = create_logger(parser.prog, args.log)
+
+    logger.info(
+        '{color}{typo}{prog} {version}{rst}{color}{rst}\n'.format(
+            prog = logger.name,
+            version = version,
+            color=fg('white'),
+            typo=attr('bold'),
+            rst=attr('reset')
+        )
+    )
+    logger.debug(args)
+
+    return logger
