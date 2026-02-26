@@ -8,7 +8,8 @@ from brs_utils.misc import (
     total_size,
     check_nb_args,
     timeout,
-    subprocess_call
+    subprocess_call,
+    init
 )
 from brs_utils.file import (
     read_sep_file,

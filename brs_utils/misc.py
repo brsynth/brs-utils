@@ -25,16 +25,7 @@ from subprocess import (
     run,
     DEVNULL
 )  # nosec
-from argparse import (
-    ArgumentTypeError,
-    ArgumentParser,
-    Namespace
-)
-from colored import fg, bg, attr
-import multiprocessing.pool
-import functools
-
-from brs_utils import create_logger
+from argparse import ArgumentTypeError
 
 
 def subprocess_call(
