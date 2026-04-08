@@ -3,56 +3,27 @@ Created on June 16 2020
 
 @author: Joan Hérisson
 """
+
 from glob import glob
-from os import (
-    makedirs,
-    remove,
-    path as os_path,
-    walk,
-    stat as os_stat
-)
-from pathlib import (
-    PurePath
-)
+from os import makedirs, remove, path as os_path, walk, stat as os_stat
+from pathlib import PurePath
 from requests import get as r_get
-from tempfile import (
-    NamedTemporaryFile,
-    mkdtemp
-)
-from tarfile  import open as tf_open
-from gzip     import (
-    open        as gz_open
-)
-from shutil import (
-    copyfileobj,
-    rmtree,
-    chown
-)
+from tempfile import NamedTemporaryFile, mkdtemp
+from tarfile import open as tf_open
+from gzip import open as gz_open
+from shutil import copyfileobj, rmtree, chown
 from ast import literal_eval
-from typing import (
-    Dict,
-    List
-)
-from logging import (
-    Logger,
-    getLogger
-)
-from hashlib import (
-    sha256,
-    sha512
-)
+from typing import Dict, List
+from logging import Logger, getLogger
+from hashlib import sha256, sha512
 from pathlib import Path
 from zipfile import ZipFile
 from csv import reader as csv_reader
 
 
-def read_sep_file(
-    filename: str,
-    sep: str=',',
-    comment: str='#'
-) -> List[List[str]]:
-    '''Read file with a specific separator
-    
+def read_sep_file(filename: str, sep: str = ",", comment: str = "#") -> List[List[str]]:
+    """Read file with a specific separator
+
     Parameters
     ----------
     filename: str
@@ -67,17 +38,17 @@ def read_sep_file(
     lines: List[List[str]]
         Each line of the input file is represented as a list of string.
         All lines of input file are put together into a list.
-    '''
+    """
     f = open(filename)
     f_read = csv_reader(f, delimiter=sep)
-    res = [line for line in f_read if not line[0].startswith('#')]
+    res = [line for line in f_read if not line[0].startswith("#")]
     f.close()
     return res
 
 
 def read_tsv(filename: str) -> List[List[str]]:
-    '''Read TSV file
-    
+    """Read TSV file
+
     Parameters
     ----------
     filename: str
@@ -88,13 +59,13 @@ def read_tsv(filename: str) -> List[List[str]]:
     lines: List[List[str]]
         Each line of the input file is represented as a list of string.
         All lines of input file are put together into a list.
-    '''
-    return read_sep_file(filename=filename, sep='\t')
+    """
+    return read_sep_file(filename=filename, sep="\t")
 
 
 def read_csv(filename: str) -> List[List[str]]:
-    '''Read CSV file
-    
+    """Read CSV file
+
     Parameters
     ----------
     filename: str
@@ -105,15 +76,12 @@ def read_csv(filename: str) -> List[List[str]]:
     lines: List[List[str]]
         Each line of the input file is represented as a list of string.
         All lines of input file are put together into a list.
-    '''
-    return read_sep_file(filename=filename, sep=',')
+    """
+    return read_sep_file(filename=filename, sep=",")
 
 
-def unzip(
-    file: str,
-    dir: str
-) -> None:
-    '''Unzip the given file.
+def unzip(file: str, dir: str) -> None:
+    """Unzip the given file.
 
     Parameters
     ----------
@@ -121,16 +89,13 @@ def unzip(
         Filename to unzip
     dir: str
         Directory to unzip into
-    '''
-    with ZipFile(file, 'r') as zip_ref:
+    """
+    with ZipFile(file, "r") as zip_ref:
         zip_ref.extractall(dir)
 
 
-def download_and_unzip(
-    url: str,
-    dir: str
-) -> None:
-    '''Download file from URL and unzip it.
+def download_and_unzip(url: str, dir: str) -> None:
+    """Download file from URL and unzip it.
 
     Parameters
     ----------
@@ -138,43 +103,30 @@ def download_and_unzip(
         URL of the file to download
     dir: str
         Directory to unzip into
-    '''
+    """
     filename = download(url)
     unzip(filename, dir)
     remove(filename)
 
 
 def check_file_size(
-    filename: str,
-    size: int,
-    logger: Logger = getLogger(__name__)
+    filename: str, size: int, logger: Logger = getLogger(__name__)
 ) -> bool:
-    logger.debug('file: {fname}'.format(fname=filename))
-    logger.debug('-- SIZE')
+    logger.debug("file: {fname}".format(fname=filename))
+    logger.debug("-- SIZE")
     s = os_stat(filename).st_size
-    logger.debug('computed: {size}'.format(size=s))
-    logger.debug('stored: {size}'.format(size=size))
-    logger.debug('--')
+    logger.debug("computed: {size}".format(size=s))
+    logger.debug("stored: {size}".format(size=size))
+    logger.debug("--")
     return s == size
 
 
-def check_sha(
-    filename: str,
-    sum: str,
-    logger: Logger = getLogger(__name__)
-) -> bool:
+def check_sha(filename: str, sum: str, logger: Logger = getLogger(__name__)) -> bool:
 
-    return sum == sha512(
-        Path(filename).read_bytes()
-    ).hexdigest()
+    return sum == sha512(Path(filename).read_bytes()).hexdigest()
 
 
-def chown_r(
-    path: str,
-    user,
-    group = -1,
-    logger: Logger = getLogger(__name__)
-):
+def chown_r(path: str, user, group=-1, logger: Logger = getLogger(__name__)):
     """
     Recursively belongs path folder to uid:gid.
 
@@ -196,10 +148,7 @@ def chown_r(
         logger.error(e)
 
 
-def download(
-    url: str,
-    file: str = ""
-) -> str:
+def download(url: str, file: str = "") -> str:
     """
     Download a file from 'url' and save it as 'file'.
 
@@ -212,13 +161,10 @@ def download(
     """
     r = r_get(url)
     if not file:
-        f = NamedTemporaryFile(
-            mode='wb',
-            delete=False
-        )
+        f = NamedTemporaryFile(mode="wb", delete=False)
         file = f.name
     else:
-        f = open(file, 'wb')
+        f = open(file, "wb")
     f.write(r.content)
     f.close()
     return file
@@ -256,21 +202,16 @@ def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
     else:
         _members = None
 
-    tar.extractall(path, _members, numeric_owner=numeric_owner) 
+    tar.extractall(path, _members, numeric_owner=numeric_owner)
 
 
-def extract_tar_gz(
-      file: str,
-       dir: str,
-    member: str = '',
-    delete: bool = False
-) -> None:
+def extract_tar_gz(file: str, dir: str, member: str = "", delete: bool = False) -> None:
     if not dir:
         dir = mkdtemp()
     if not os_path.exists(dir):
         makedirs(dir, exist_ok=True)
-    tar = tf_open(file, mode='r:gz')
-    if member == '':
+    tar = tf_open(file, mode="r:gz")
+    if member == "":
         safe_extract(tar, path=dir)
     else:
         safe_extract(tar, path=dir, members=[member])
@@ -280,11 +221,7 @@ def extract_tar_gz(
     return dir
 
 
-def compress_tar_gz(
-       path:  str,
-    outFile:  str = '',
-     delete: bool = False
-) -> str:
+def compress_tar_gz(path: str, outFile: str = "", delete: bool = False) -> str:
     """
     Compress 'path' into tar.gz format.
 
@@ -297,18 +234,12 @@ def compress_tar_gz(
     The archive filename
     """
     if not outFile:
-        f = NamedTemporaryFile(
-            mode='wb',
-            delete=False
-        )
+        f = NamedTemporaryFile(mode="wb", delete=False)
         outFile = f.name
     else:
-        f = open(outFile, 'wb')
-    with tf_open(fileobj=f, mode='w:gz') as tar:
-        tar.add(
-            path,
-            arcname = os_path.basename(path)
-        )
+        f = open(outFile, "wb")
+    with tf_open(fileobj=f, mode="w:gz") as tar:
+        tar.add(path, arcname=os_path.basename(path))
         tar.close()
     if delete:
         if os_path.isfile(path):
@@ -318,11 +249,7 @@ def compress_tar_gz(
     return outFile
 
 
-def compress_gz(
-     inFile:  str,
-    outFile:  str = '',
-     delete: bool = False
-) -> str:
+def compress_gz(inFile: str, outFile: str = "", delete: bool = False) -> str:
     """
     Compress 'inFile' into gzip format.
 
@@ -335,8 +262,8 @@ def compress_gz(
     The archive filename
     """
     if not outFile:
-        outFile = inFile+'.gz'
-    with open(inFile, 'rb') as f_in, gz_open(outFile, 'wb') as f_out:
+        outFile = inFile + ".gz"
+    with open(inFile, "rb") as f_in, gz_open(outFile, "wb") as f_out:
         f_out.writelines(f_in)
         f_in.close()
         f_out.close()
@@ -347,46 +274,36 @@ def compress_gz(
 
 
 def extract_gz_to_string(filename: str) -> str:
-    gz = gz_open(filename, mode='rb')
+    gz = gz_open(filename, mode="rb")
     decode = gz.read().decode()
     gz.close()
     return decode
 
 
-def extract_gz(
-    file: str,
-    path: str
-) -> str:
+def extract_gz(file: str, path: str) -> str:
     outfile = os_path.join(path, os_path.basename(file[:-3]))
     makedirs(path, exist_ok=True)
-    with gz_open(file, 'rb') as f_in, open(outfile, 'wb') as f_out:
+    with gz_open(file, "rb") as f_in, open(outfile, "wb") as f_out:
         copyfileobj(f_in, f_out)
         f_in.close()
         f_out.close()
     return outfile
 
 
-def download_and_extract_tar_gz(
-    url: str,
-    dir: str,
-    member: str = ''
-) -> None:
+def download_and_extract_tar_gz(url: str, dir: str, member: str = "") -> None:
     filename = download(url)
     extract_tar_gz(filename, dir, member)
     remove(filename)
 
 
-def download_and_extract_gz(
-    url: str,
-    path: str
-) -> None:
+def download_and_extract_gz(url: str, path: str) -> None:
     filename = download(url)
     extract_gz(filename, path)
     remove(filename)
 
 
 def file_length(filename: str) -> int:
-    with open(filename, 'rb') as f:
+    with open(filename, "rb") as f:
         n = sum(1 for line in f)
         f.close()
     return n
@@ -394,23 +311,19 @@ def file_length(filename: str) -> int:
 
 def read_dict(filename: str) -> Dict:
     d = {}
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         s = f.read()
         f.close()
         d = literal_eval(s)
     return d
 
 
-def hash_dir(
-    dir1: str,
-    recursive: bool=False,
-    chunk: int=65536
-) -> str:
-    '''Return an hexadigest from sha256 of file an name of files/folders excepted the name of root directory
+def hash_dir(dir1: str, recursive: bool = False, chunk: int = 65536) -> str:
+    """Return an hexadigest from sha256 of file an name of files/folders excepted the name of root directory
 
     :param dir1: A path of a directory
     :param recursive: Recursively compare directory
-    :param chunk: Chunk read files 
+    :param chunk: Chunk read files
 
     :type dir1: str
     :type recursive: bool
@@ -418,45 +331,35 @@ def hash_dir(
 
     :return: An hexadigest tag
     :rtype: str
-    '''
+    """
     files = []
     if recursive:
-        files = glob(
-            os_path.join(dir1, '**', '*'),
-            recursive=recursive
-        )
+        files = glob(os_path.join(dir1, "**", "*"), recursive=recursive)
     else:
-        files = glob(
-            os_path.join(dir1, '*'),
-            recursive=recursive
-        )
+        files = glob(os_path.join(dir1, "*"), recursive=recursive)
     root_dir = os_path.basename(dir1)
     h = sha256()
     for path in files:
 
         parts = PurePath(path).parts
-        parts = parts[parts.index(root_dir):]
+        parts = parts[parts.index(root_dir) :]
         if len(parts) > 1:
             parts = parts[1:]
-        
-        for part in parts: 
-            h.update(os_path.basename(part).encode('utf8'))
+
+        for part in parts:
+            h.update(os_path.basename(part).encode("utf8"))
         if os_path.isfile(path):
-            with open(path, 'rb') as fid:
+            with open(path, "rb") as fid:
                 while True:
-                    data = fid.read(65536) # read stuff in 64kb chunks!
+                    data = fid.read(65536)  # read stuff in 64kb chunks!
                     if not data:
                         break
                     h.update(data)
     return h.hexdigest()
 
 
-def compare_dir(
-    dir1: str,
-    dir2: str,
-    recursive: bool=False
-) -> bool:
-    '''Compare two directories taking account tree and file composition
+def compare_dir(dir1: str, dir2: str, recursive: bool = False) -> bool:
+    """Compare two directories taking account tree and file composition
 
     :param dir1: A first directory
     :param dir2: A second directory
@@ -468,5 +371,5 @@ def compare_dir(
 
     :return: Success or not of equality between the directories
     :rtype: bool
-    '''
+    """
     return hash_dir(dir1, recursive) == hash_dir(dir2, recursive)

@@ -3,22 +3,40 @@ Created on Feb 4 2021
 
 @author: Joan Hérisson
 """
+
 from colorlog import ColoredFormatter
-from logging import (
-    Logger,
-    getLogger,
-    StreamHandler,
-    FileHandler
-)
-from argparse import ArgumentParser
+from colored import fg, attr
+from logging import Logger, getLogger, StreamHandler, FileHandler
+from argparse import Namespace, ArgumentParser
+
+
+def init(parser: ArgumentParser, args: Namespace, version: str) -> Logger:
+    if args.log.lower() in ["silent", "quiet"] or args.silent:
+        args.log = "CRITICAL"
+
+    # Create logger
+    logger = create_logger(parser.prog, args.log)
+
+    logger.info(
+        "{color}{typo}{prog} {version}{rst}{color}{rst}\n".format(
+            prog=logger.name,
+            version=version,
+            color=fg("white"),
+            typo=attr("bold"),
+            rst=attr("reset"),
+        )
+    )
+    logger.debug(args)
+
+    return logger
 
 
 def create_logger(
     name: str = __name__,
-    log_level: str = 'def_info',
-    log_file: str = '',
-    no_color: bool = False
-    ) -> Logger:
+    log_level: str = "def_info",
+    log_file: str = "",
+    no_color: bool = False,
+) -> Logger:
     """
     Create a logger with name and log_level.
 
@@ -41,20 +59,20 @@ def create_logger(
     Logger
         The logger object.
 
-    """    
-    logger  = getLogger(name)
+    """
+    logger = getLogger(name)
 
     if no_color:
-        log_format = ''
+        log_format = ""
     else:
-        log_format = '%(log_color)s'
+        log_format = "%(log_color)s"
 
-    if log_level.startswith('def_'):
-        log_format += '%(message)s%(reset)s'
-        log_level  = log_level[4:]
+    if log_level.startswith("def_"):
+        log_format += "%(message)s%(reset)s"
+        log_level = log_level[4:]
     else:
-        log_format += '%(levelname)-8s | %(asctime)s.%(msecs)03d %(module)s - %(funcName)s(): %(message)s%(reset)s'
- 
+        log_format += "%(levelname)-8s | %(asctime)s.%(msecs)03d %(module)s - %(funcName)s(): %(message)s%(reset)s"
+
     formatter = ColoredFormatter(log_format)
     handler = StreamHandler()
     handler.setFormatter(formatter)
@@ -65,30 +83,3 @@ def create_logger(
     logger.setLevel(log_level.upper())
 
     return logger
-
-
-def add_arguments(parser: ArgumentParser) -> ArgumentParser:
-    parser.add_argument(
-        '--log', '-l',
-        metavar='ARG',
-        type=str,
-        choices=[
-            'debug', 'info', 'warning', 'error', 'critical', 'silent', 'quiet',
-            'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL', 'SILENT', 'QUIET'
-        ],
-        default='def_info',
-        help='Adds a console logger for the specified level (default: error)'
-    )
-    parser.add_argument(
-        '--log_file',
-        type=str,
-        default='',
-        help='Filename where to put logs'
-    )
-    parser.add_argument(
-        '--silent', '-s',
-        action='store_true',
-        default=False,
-        help='run %(prog)s silently'
-    )
-    return parser

@@ -12,5 +12,5 @@ from brs_utils import create_logger
 class Test_Logger(TestCase):
 
     def test_call(self):
-        logger = create_logger('TEST', 'INFO')
+        create_logger("TEST", "INFO")
         self.assertTrue(True)

@@ -3,12 +3,8 @@ Created on Sep 11 2020
 
 @author: Joan Hérisson
 """
-from typing import (
-    Iterable,
-    Generator,
-    List,
-    TypeVar
-)
+
+from typing import Iterable, Generator, List, TypeVar
 from copy import deepcopy
 from bisect import insort as bisect_insort
 
@@ -38,9 +34,18 @@ class Item:
         return self.score > item.score
 
     def __str__(self):
-        return 'Item' + '\n' \
-             + '\t' + 'score:  ' + str(self.score)      + '\n' \
-             + '\t' + 'object: ' + str(self.object)      + '\n' \
+        return (
+            "Item"
+            + "\n"
+            + "\t"
+            + "score:  "
+            + str(self.score)
+            + "\n"
+            + "\t"
+            + "object: "
+            + str(self.object)
+            + "\n"
+        )
 
 
 ## Function to insert and/or replace item in list
@@ -49,8 +54,7 @@ class Item:
 #  @param list sorted list of items to insert item
 #  @return updated list
 def insert_and_or_replace_in_sorted_list(
-    item: object,
-    list: List[object]
+    item: object, list: List[object]
 ) -> List[object]:
 
     # If present, remove the same item with worse score from the list
@@ -75,27 +79,25 @@ def insert_and_or_replace_in_sorted_list(
 
 
 def diff(first, second):
-   l2 = list(second)
-   l3 = []
-   for el in first:
-      if el in l2:
-         l2.remove(el)
-      else:
-         l3 += [el]
-   return l3
+    l2 = list(second)
+    l3 = []
+    for el in first:
+        if el in l2:
+            l2.remove(el)
+        else:
+            l3 += [el]
+    return l3
 
 
-def flatten(
-    items: List=None
-) -> Generator:
-    '''Flatten a list.
+def flatten(items: List = None) -> Generator:
+    """Flatten a list.
 
     :param items: A nested list
     :type items: list
 
     :return: Atomic values
     :rtype: Generator
-    '''
+    """
     if items is None:
         items = []
     # https://stackoverflow.com/questions/952914/how-to-make-a-flat-list-out-of-a-list-of-lists
