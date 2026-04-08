@@ -1,14 +1,8 @@
-from logging import (
-    Logger,
-    getLogger
-)
+from logging import Logger, getLogger
 import re
 
-def comp_succ(
-    string: str,
-    char: str,
-    logger: Logger=getLogger()
-) -> str:
+
+def comp_succ(string: str, char: str, logger: Logger = getLogger()) -> str:
     """
     Compress a succession of 'char' into one single occurence.
 
@@ -26,6 +20,6 @@ def comp_succ(
     String
         String without successions of 'char'.
 
-    """    
-    pattern = char + '{2,}'
+    """
+    pattern = char + "{2,}"
     return re.sub(pattern, char, string)
