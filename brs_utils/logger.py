@@ -4,13 +4,42 @@ Created on Feb 4 2021
 @author: Joan Hérisson
 """
 from colorlog import ColoredFormatter
+from colored import fg, bg, attr
 from logging import (
     Logger,
     getLogger,
     StreamHandler,
     FileHandler
 )
-from argparse import ArgumentParser
+from argparse import (
+    Namespace,
+    ArgumentParser
+)
+
+
+def init(
+    parser: ArgumentParser,
+    args: Namespace,
+    version: str
+) -> Logger:
+    if args.log.lower() in ['silent', 'quiet'] or args.silent:
+        args.log = 'CRITICAL'
+
+    # Create logger
+    logger = create_logger(parser.prog, args.log)
+
+    logger.info(
+        '{color}{typo}{prog} {version}{rst}{color}{rst}\n'.format(
+            prog = logger.name,
+            version = version,
+            color=fg('white'),
+            typo=attr('bold'),
+            rst=attr('reset')
+        )
+    )
+    logger.debug(args)
+
+    return logger
 
 
 def create_logger(
@@ -65,30 +94,3 @@ def create_logger(
     logger.setLevel(log_level.upper())
 
     return logger
-
-
-def add_arguments(parser: ArgumentParser) -> ArgumentParser:
-    parser.add_argument(
-        '--log', '-l',
-        metavar='ARG',
-        type=str,
-        choices=[
-            'debug', 'info', 'warning', 'error', 'critical', 'silent', 'quiet',
-            'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL', 'SILENT', 'QUIET'
-        ],
-        default='def_info',
-        help='Adds a console logger for the specified level (default: error)'
-    )
-    parser.add_argument(
-        '--log_file',
-        type=str,
-        default='',
-        help='Filename where to put logs'
-    )
-    parser.add_argument(
-        '--silent', '-s',
-        action='store_true',
-        default=False,
-        help='run %(prog)s silently'
-    )
-    return parser

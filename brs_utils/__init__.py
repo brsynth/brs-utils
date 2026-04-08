@@ -8,8 +8,7 @@ from brs_utils.misc import (
     total_size,
     check_nb_args,
     timeout,
-    subprocess_call,
-    init
+    subprocess_call
 )
 from brs_utils.file import (
     read_sep_file,
@@ -51,9 +50,10 @@ from brs_utils.list import (
     diff
 )
 from brs_utils.logger import (
-    create_logger,
-    add_arguments as add_logger_args,
+    init,
+    create_logger
 )
+from brs_utils.parser import build_args_parser
 from brs_utils.string import (
     comp_succ,
 )

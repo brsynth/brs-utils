@@ -25,16 +25,9 @@ from subprocess import (
     run,
     DEVNULL
 )  # nosec
-from argparse import (
-    ArgumentTypeError,
-    ArgumentParser,
-    Namespace
-)
-from colored import fg, bg, attr
+from argparse import ArgumentTypeError
 import multiprocessing.pool
 import functools
-
-from brs_utils.logger import create_logger
 
 
 def subprocess_call(
@@ -149,27 +142,3 @@ def arg_range(mini, maxi):
 
     # Return function handle to checking function
     return arg_range_checker
-
-def init(
-    parser: ArgumentParser,
-    args: Namespace,
-    version: str
-) -> Logger:
-    if args.log.lower() in ['silent', 'quiet'] or args.silent:
-        args.log = 'CRITICAL'
-
-    # Create logger
-    logger = create_logger(parser.prog, args.log)
-
-    logger.info(
-        '{color}{typo}{prog} {version}{rst}{color}{rst}\n'.format(
-            prog = logger.name,
-            version = version,
-            color=fg('white'),
-            typo=attr('bold'),
-            rst=attr('reset')
-        )
-    )
-    logger.debug(args)
-
-    return logger
